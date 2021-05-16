@@ -1,11 +1,22 @@
-import { FC } from 'react';
-import Header from './components/header/Header';
+import {
+  FC, Suspense, lazy,
+} from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Loading from 'components/contents/loding/Loding';
 import './App.css';
 
+const Home = lazy(() => import('components/pages/home/Home'));
+const SignUp = lazy(() => import('components/pages/sign_up/SignUp'));
+
 const App: FC = () => (
-  <div className="App">
-    <Header />
-  </div>
+  <BrowserRouter>
+    <Suspense fallback={Loading}>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/signup" component={SignUp} />
+      </Switch>
+    </Suspense>
+  </BrowserRouter>
 );
 
 export default App;
