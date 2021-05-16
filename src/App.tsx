@@ -1,45 +1,22 @@
-import { useState, useEffect, FC } from 'react';
-import axios from 'axios';
-import logo from './logo.svg';
+import {
+  FC, Suspense, lazy,
+} from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Loading from 'components/contents/loding/Loding';
 import './App.css';
 
-const App: FC = () => {
-  const [isState, toggleState] = useState<boolean>(false);
-  const change = () => {
-    axios.get('http://localhost:3001/health');
-    toggleState(false);
-  };
+const Home = lazy(() => import('components/pages/home/Home'));
+const SignUp = lazy(() => import('components/pages/sign_up/SignUp'));
 
-  useEffect(() => {
-    document.getElementById('change')?.addEventListener('click', change);
-  });
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit
-          {' '}
-          <code>src/App.tsx</code>
-          {' '}
-          and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React www
-        </a>
-        <button id="change" type="button">
-          api :
-          {isState}
-        </button>
-      </header>
-    </div>
-  );
-};
+const App: FC = () => (
+  <BrowserRouter>
+    <Suspense fallback={Loading}>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/signup" component={SignUp} />
+      </Switch>
+    </Suspense>
+  </BrowserRouter>
+);
 
 export default App;

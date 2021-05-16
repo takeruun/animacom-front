@@ -20,7 +20,7 @@ module.exports = {
     },
     ecmaVersion: 12,
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
+    project: './tsconfig.json',
     sourceType: 'module',
   },
   root: true,
@@ -48,11 +48,11 @@ module.exports = {
       },
     ],
     'react/react-in-jsx-scope': 'off',
+    'import/no-unresolved': 'off',
   },
   settings: {
     'import/resolver': {
       node: {
-        paths: ['src'],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },
