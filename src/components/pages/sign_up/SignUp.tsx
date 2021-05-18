@@ -1,4 +1,6 @@
-import { FC } from 'react';
+import {
+  ChangeEvent, FC, useCallback, useState,
+} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,6 +13,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useDispatch } from 'react-redux';
+import signUp from 're-ducks/users/operations';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,6 +38,28 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp: FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [password, setPassword] = useState('');
+
+  const inputName = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  }, [setName]);
+
+  const inputEmail = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  }, [setEmail]);
+
+  const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setNickname(event.target.value);
+  }, [setNickname]);
+
+  const inputPassword = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  }, [setPassword]);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -47,27 +73,31 @@ const SignUp: FC = () => {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 autoComplete="fname"
-                name="firstName"
+                name="ame"
                 variant="outlined"
                 required
                 fullWidth
-                id="firstName"
-                label="First Name"
+                id="name"
+                label="Name"
                 autoFocus
+                value={name}
+                onChange={inputName}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
+                id="nickName"
+                label="Nick Name"
+                name="nickName"
                 autoComplete="lname"
+                value={nickname}
+                onChange={inputNickname}
               />
             </Grid>
             <Grid item xs={12}>
@@ -79,6 +109,8 @@ const SignUp: FC = () => {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={email}
+                onChange={inputEmail}
               />
             </Grid>
             <Grid item xs={12}>
@@ -91,6 +123,8 @@ const SignUp: FC = () => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={inputPassword}
               />
             </Grid>
             <Grid item xs={12}>
@@ -106,8 +140,11 @@ const SignUp: FC = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={() => dispatch(signUp({
+              email, name, nickname, password,
+            }))}
           >
-            Sign Up
+            Sign Up!
           </Button>
 
         </form>

@@ -1,22 +1,9 @@
-import {
-  FC, Suspense, lazy,
-} from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Loading from 'components/contents/loding/Loding';
+import { FC } from 'react';
 import './App.css';
-
-const Home = lazy(() => import('components/pages/home/Home'));
-const SignUp = lazy(() => import('components/pages/sign_up/SignUp'));
+import Router from 'Router';
 
 const App: FC = () => (
-  <BrowserRouter>
-    <Suspense fallback={Loading}>
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/signup" component={SignUp} />
-      </Switch>
-    </Suspense>
-  </BrowserRouter>
+  <Router />
 );
 
 export default App;
