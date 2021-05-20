@@ -5,6 +5,8 @@ import createStore from 're-ducks/store/store';
 import { ConnectedRouter } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
 import App from './App';
+import './assets/reset.css';
+import './assets/style.css';
 import reportWebVitals from './reportWebVitals';
 
 const history = createBrowserHistory();
