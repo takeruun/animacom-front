@@ -1,8 +1,10 @@
 import axios from 'axios';
+import { push } from 'connected-react-router';
 import { Action, Dispatch } from 'redux';
-import { signUpAction } from './actions';
+import { signUpAction, signInAction } from './actions';
 import { UserState } from './types';
 
+const url = 'http://localhost:3001';
 type UserParams = {
   email: string,
   name: string,
@@ -10,8 +12,13 @@ type UserParams = {
   password: string
 }
 
+type SignInParams = {
+  email: string,
+  password: string
+}
+
 export const signUp = (params: UserParams) => (
-  async (dispatch: Dispatch<Action>, getState: () => UserState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: () => UserState): Promise<void | boolean> => {
     const state = getState();
     const { isSignedIn } = state;
     let uid = '';
@@ -19,8 +26,8 @@ export const signUp = (params: UserParams) => (
     if (!isSignedIn) {
       if (params.email === '' || params.name === '' || params.nickname === '' || params.password === '') {
         alert('入力しろ');
+        return false;
       }
-      const url = 'http://localhost:3001';
 
       await axios.post(`${url}/v1/users/auth`, {
         email: params.email,
@@ -40,7 +47,44 @@ export const signUp = (params: UserParams) => (
         name: params.name,
         nickname: params.nickname,
       }));
-    }
-  });
+      dispatch(push('/'));
 
-export default signUp;
+      return true;
+    }
+    return false;
+  }
+);
+
+export const signIn = (params: SignInParams) => (
+  async (dispatch: Dispatch<Action>, getState:() => UserState): Promise<void> => {
+    const state = getState();
+    const { isSignedIn } = state;
+
+    if (!isSignedIn) {
+      if (params.email === '' || params.password === '') {
+        alert('入力しろ');
+      }
+
+      await axios.post(`${url}/v1/users/auth/sign_in`, {
+        email: params.email,
+        password: params.password,
+      }).then((res) => {
+        console.log(res);
+        const headers = {
+          accessToken: res.headers['access-token'],
+          client: res.headers.clien,
+          expiry: res.headers.expiry,
+          uid: res.headers.uid,
+        };
+        localStorage.setItem('headers', JSON.stringify(headers));
+        dispatch(signInAction({
+          isSignedIn: true,
+          uid: res.headers.uid,
+          name: res.data.user.name,
+          nickname: res.data.user.nickname,
+        }));
+        dispatch(push('/'));
+      });
+    }
+  }
+);

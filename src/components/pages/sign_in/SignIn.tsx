@@ -2,7 +2,7 @@ import {
   ChangeEvent, FC, useCallback, useState,
 } from 'react';
 import { useDispatch } from 'react-redux';
-import { signUp } from 're-ducks/users/operations';
+import { signIn } from 're-ducks/users/operations';
 import { push } from 'connected-react-router';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -22,26 +22,17 @@ const useStyles = makeStyles((theme) => createStyles({
   },
 }));
 
-const SignUp: FC = () => {
+const SignIn: FC = () => {
   const classes = useStyles();
+
   const dispatch = useDispatch();
 
-  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
-
-  const inputName = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  }, [setName]);
 
   const inputEmail = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   }, [setEmail]);
-
-  const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value);
-  }, [setNickname]);
 
   const inputPassword = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -49,28 +40,8 @@ const SignUp: FC = () => {
 
   return (
     <div className="c-section-container">
-      <h2 className="u-text-center u-text__headline">アカウント登録</h2>
+      <h2 className="u-text-center u-text__headline">ログイン</h2>
       <div className="module-spacer--medium" />
-      <TextField
-        fullWidth
-        label="ユーザー名"
-        multiline={false}
-        required
-        rows={1}
-        value={name}
-        type="text"
-        onChange={inputName}
-      />
-      <TextField
-        fullWidth
-        label="ニックネーム"
-        multiline={false}
-        required
-        rows={1}
-        value={nickname}
-        type="text"
-        onChange={inputNickname}
-      />
       <TextField
         fullWidth
         label="メールアドレス"
@@ -95,18 +66,18 @@ const SignUp: FC = () => {
       <div className="center">
         <Button
           className={classes.button}
-          onClick={() => dispatch(signUp({
-            name, nickname, email, password,
+          onClick={() => dispatch(signIn({
+            email, password,
           }))}
         >
-          新規登録
+          ログイン
         </Button>
 
         <div className="module-spacer--small" />
-        <div role="presentation" className="u-text-small" onClick={() => dispatch(push('/sign_in'))} onKeyDown={() => dispatch(push('/sign_in'))}>アカウントをお持ちの方はこちら</div>
+        <p role="presentation" className="u-text-small" onClick={() => dispatch(push('/sign_up'))} onKeyDown={() => dispatch(push('signin'))}>アカウントをお持ちの方はこちら</p>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default SignIn;

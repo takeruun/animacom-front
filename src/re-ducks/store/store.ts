@@ -8,7 +8,7 @@ import UsersReducer from 're-ducks/users/reducers';
 import { History } from 'history';
 import thunk from 'redux-thunk';
 
-export default function createReducer(history: History) {
+export default function createStore(history: History) {
   return reduxCreateStore(
     combineReducers({
       // historyの情報をreduxのrouterで管理できる
