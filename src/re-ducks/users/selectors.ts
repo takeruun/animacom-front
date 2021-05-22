@@ -3,6 +3,11 @@ import { InitialState } from 're-ducks/store/initialState';
 
 const usersSelector = (state: InitialState) => state.users;
 
+export const getIsSignedIn = createSelector(
+  [usersSelector],
+  (state) => state.isSignedIn,
+);
+
 export const getUserId = createSelector(
   [usersSelector],
   (state) => state.uid,

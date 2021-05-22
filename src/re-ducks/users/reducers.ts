@@ -1,6 +1,6 @@
 import initialState from 're-ducks/store/initialState';
 import {
-  SIGN_UP, SIGN_IN,
+  SIGN_UP, SIGN_IN, SIGN_OUT,
 } from 're-ducks/users/actions';
 import { ActionsType, UserState } from './types';
 
@@ -12,6 +12,11 @@ const UsersReducer = (state: UserState = initialState.users, action: ActionsType
         ...action.payload,
       };
     case SIGN_IN:
+      return {
+        ...state,
+        ...action.payload,
+      };
+    case SIGN_OUT:
       return {
         ...state,
         ...action.payload,

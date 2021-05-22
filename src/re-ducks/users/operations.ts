@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { push } from 'connected-react-router';
 import { Action, Dispatch } from 'redux';
-import { signUpAction, signInAction } from './actions';
+import { signUpAction, signInAction, signOutAction } from './actions';
 import { UserState } from './types';
 
 const url = 'http://localhost:3001';
@@ -69,7 +69,6 @@ export const signIn = (params: SignInParams) => (
         email: params.email,
         password: params.password,
       }).then((res) => {
-        console.log(res);
         const headers = {
           accessToken: res.headers['access-token'],
           client: res.headers.clien,
@@ -88,3 +87,11 @@ export const signIn = (params: SignInParams) => (
     }
   }
 );
+
+export const signOut = () => async (dispatch: Dispatch<Action>): Promise<void> => {
+  await axios.post(`${url}/v1/users/auth/sign_out`)
+    .then(() => {
+      dispatch(signOutAction());
+      dispatch(push('/'));
+    });
+};
