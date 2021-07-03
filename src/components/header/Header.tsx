@@ -13,6 +13,8 @@ import PeopleIcon from '@material-ui/icons/People';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SearchIcon from '@material-ui/icons/Search';
 import CategoryIcon from '@material-ui/icons/Category';
+import { useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -90,6 +92,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Header: FC = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   return (
     <div className={classes.root}>
@@ -139,8 +142,8 @@ const Header: FC = () => {
             />
           </div>
           <div className={classes.signButton}>
-            <Button variant="contained" color="secondary">新規登録</Button>
-            <Button variant="outlined">ログイン</Button>
+            <Button variant="contained" color="secondary" onClick={() => dispatch(push('/sign_up'))}>新規登録</Button>
+            <Button variant="outlined" onClick={() => dispatch(push('/sign_in'))}>ログイン</Button>
           </div>
         </Toolbar>
       </AppBar>

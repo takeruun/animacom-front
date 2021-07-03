@@ -71,11 +71,11 @@ export const signIn = (params: SignInParams) => (
       }).then((res) => {
         const headers = {
           accessToken: res.headers['access-token'],
-          client: res.headers.clien,
+          client: res.headers.client,
           expiry: res.headers.expiry,
           uid: res.headers.uid,
         };
-        localStorage.setItem('headers', JSON.stringify(headers));
+        sessionStorage.setItem('anima', JSON.stringify(headers));
         dispatch(signInAction({
           isSignedIn: true,
           uid: res.headers.uid,
