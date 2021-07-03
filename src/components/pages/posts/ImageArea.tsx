@@ -34,7 +34,9 @@ const ImageArea: FC = () => {
           </InputLable>
         </IconButton>
       </div>
-      <img alt="プレビュー画像" src={imageUrl} />
+      {
+        imageUrl && <img alt="プレビュー画像" src={imageUrl} />
+      }
     </div>
   );
 };
