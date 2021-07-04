@@ -1,13 +1,21 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { InitialState } from 're-ducks/store/initialState';
 import {
-  ChangeEvent, FC, useCallback, useState,
+  ChangeEvent, FC, useCallback, useEffect, useState,
 } from 'react';
 import { InputText, SelectBox } from 'components/UIKit/index';
 import Button from '@material-ui/core/Button';
-import { createPost } from 're-ducks/posts/operations';
+import { createPost, getPost } from 're-ducks/posts/operations';
 import ImageArea from './ImageArea';
+import { getPostTitle } from 're-ducks/posts/selectors';
 
 const PostEdit: FC = () => {
+  let id = window.location.pathname.split('/post/edit')[1];
+  if (id !== '') {
+    id = id.split('/')[1];
+  }
+
+  const selecter = useSelector((state: InitialState) => state);
   const dispatch = useDispatch();
   const categories = [
     { id: '1', name: '猫' },
@@ -30,6 +38,16 @@ const PostEdit: FC = () => {
   const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setBody(event.target.value);
   }, [setBody]);
+
+  useEffect(() => {
+    if (id !== '') {
+      const getPostDate = async (id: number) => {
+        await dispatch(getPost(id));
+        const title = getPostTitle(selecter);
+      }
+      getPostDate(Number(id));
+    }
+  }, [id])
 
   return (
     <section>

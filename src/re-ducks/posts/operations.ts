@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Action, Dispatch } from 'redux';
-import { createPostAction } from './actions';
+import { getPostAction, createPostAction } from './actions';
 
 const url = 'http://localhost:3001';
 
@@ -22,6 +22,35 @@ const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
   client,
   uid,
 });
+
+export const getPost = (id: number) => (
+  async (dispatch: Dispatch<Action>): Promise<void> => {
+    const client = axios.create({
+      baseURL: url,
+    });
+
+    const reqConfig: AxiosRequestConfig = {
+      url: `/v1/posts/${id}`,
+      headers: {},
+      method: 'get',
+    };
+
+    if (sessionStorage.getItem('anima')) {
+      reqConfig.headers = authHeaders(JSON.parse(sessionStorage.getItem('anima') || '{}'));
+    } else return;
+
+    await client(reqConfig)
+      .then((res) => {
+        dispatch(getPostAction({
+          title: res.data.post.title,
+          subTitle: res.data.post.subTitle,
+          body: res.data.post.body,
+          categoryId: res.data.post.categoryId,
+        }));
+      })
+      .catch(() => null);
+  }
+)
 
 export const createPost = (params: PostParams) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {

@@ -8,4 +8,9 @@ export const getPosts = createSelector(
   (state) => state.list,
 );
 
+export const getPostTitle = createSelector(
+  [postsSelector],
+  (state) => state.list[0].title
+)
+
 export default getPosts;
