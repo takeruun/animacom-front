@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import Header from 'components/header/Header';
 import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 
@@ -8,7 +7,6 @@ const Home: FC = () => {
 
   return (
     <>
-      <Header />
       <div>home</div>
       <div
         role="presentation"

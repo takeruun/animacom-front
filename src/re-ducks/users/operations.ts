@@ -37,7 +37,13 @@ export const signUp = (params: UserParams) => (
       })
         .then((res) => {
           uid = res.headers.uid;
-          localStorage.setItem('headers', JSON.stringify(res.headers));
+          const headers = {
+            accessToken: res.headers['access-token'],
+            client: res.headers.client,
+            expiry: res.headers.expiry,
+            uid: res.headers.uid,
+          };
+          localStorage.setItem('anima', JSON.stringify(headers));
         })
         .catch(() => null);
 
@@ -56,7 +62,7 @@ export const signUp = (params: UserParams) => (
 );
 
 export const signIn = (params: SignInParams) => (
-  async (dispatch: Dispatch<Action>, getState:() => UserState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: () => UserState): Promise<void> => {
     const state = getState();
     const { isSignedIn } = state;
 

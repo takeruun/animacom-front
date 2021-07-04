@@ -15,8 +15,9 @@ const Router: FC = () => (
       <Route exact path="(/)?" component={Home} />
       <Route exact path="/sign_up" component={SignUp} />
       <Route exact path="/sign_in" component={SignIn} />
-      <Route exact path="/post/edit(/:id)?" component={PostEdit} />
-      <Auth />
+      <Auth>
+        <Route exact path="/post/edit(/:id)?" component={PostEdit} />
+      </Auth>
     </Switch>
   </Suspense>
 );
