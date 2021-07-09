@@ -7,7 +7,7 @@ const Auth: React.FC<any> = ({ children }) => {
   const auth = localStorage.getItem('anima');
 
   useEffect(() => {
-    if (auth && JSON.parse(auth).accessToken?.length > 0) {
+    if (!auth || JSON.parse(auth)?.accessToken?.length < 0) {
       dispatch(push('/sign_in'));
     }
   });

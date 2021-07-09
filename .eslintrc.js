@@ -49,6 +49,7 @@ module.exports = {
     ],
     'react/react-in-jsx-scope': 'off',
     'import/no-unresolved': 'off',
+    "prefer-destructuring": ["error", { "object": false, "array": false }],
   },
   settings: {
     'import/resolver': {
