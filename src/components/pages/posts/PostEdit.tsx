@@ -1,13 +1,26 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { InitialState } from 're-ducks/store/initialState';
 import {
-  ChangeEvent, FC, useCallback, useState,
+  ChangeEvent, FC, useCallback, useEffect, useState,
 } from 'react';
-import { InputText, SelectBox } from 'components/UIKit/index';
+import {
+  createPost, startFetch, editPost, fetchPostApi, endFetch,
+} from 're-ducks/posts/operations';
+import { getLoding } from 're-ducks/posts/selectors';
+import {
+  InputText, SelectBox,
+} from 'components/UIKit/index';
 import Button from '@material-ui/core/Button';
-import { createPost } from 're-ducks/posts/operations';
 import ImageArea from './ImageArea';
 
 const PostEdit: FC = () => {
+  let id = window.location.pathname.split('/post/edit')[1];
+  if (id !== '') {
+    id = id.split('/')[1];
+  }
+
+  const selecter = useSelector((state: InitialState) => state);
+  const loading = getLoding(selecter);
   const dispatch = useDispatch();
   const categories = [
     { id: '1', name: '猫' },
@@ -30,6 +43,58 @@ const PostEdit: FC = () => {
   const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setBody(event.target.value);
   }, [setBody]);
+
+  useEffect(() => {
+    if (id !== '') {
+      const execApi = async (postId: string) => {
+        dispatch(startFetch());
+
+        const res = await fetchPostApi(postId);
+        setTitle(res.post.title);
+        setSubTitle(res.post.subTitle);
+        setBody(res.post.body);
+        setCategoryId(res.post.categoryId);
+
+        dispatch(endFetch());
+      };
+      execApi(id);
+    }
+  }, [id, dispatch]);
+
+  function button() {
+    if (id) {
+      return (
+        <Button
+          onClick={() => dispatch(
+            editPost(id, {
+              title,
+              subTitle,
+              body,
+              categoryId,
+            }),
+          )}
+        >
+          編集！
+        </Button>
+      );
+    }
+    return (
+      <Button
+        onClick={() => dispatch(
+          createPost({
+            title,
+            subTitle,
+            body,
+            categoryId,
+          }),
+        )}
+      >
+        投稿！
+      </Button>
+    );
+  }
+
+  if (loading) return <p>...loding</p>;
 
   return (
     <section>
@@ -75,18 +140,7 @@ const PostEdit: FC = () => {
         />
         <div className="module-spacer--small" />
         <div className="cneter">
-          <Button
-            onClick={() => dispatch(
-              createPost({
-                title,
-                subTitle,
-                body,
-                categoryId,
-              }),
-            )}
-          >
-            投稿！
-          </Button>
+          {button()}
         </div>
       </div>
     </section>

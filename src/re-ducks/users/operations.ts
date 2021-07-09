@@ -36,13 +36,14 @@ export const signUp = (params: UserParams) => (
         nickname: params.nickname,
       })
         .then((res) => {
-          uid = res.headers.uid;
           const headers = {
             accessToken: res.headers['access-token'],
             client: res.headers.client,
             expiry: res.headers.expiry,
             uid: res.headers.uid,
           };
+          uid = headers.uid;
+
           localStorage.setItem('anima', JSON.stringify(headers));
         })
         .catch(() => null);
@@ -81,7 +82,8 @@ export const signIn = (params: SignInParams) => (
           expiry: res.headers.expiry,
           uid: res.headers.uid,
         };
-        sessionStorage.setItem('anima', JSON.stringify(headers));
+        localStorage.setItem('anima', JSON.stringify(headers));
+
         dispatch(signInAction({
           isSignedIn: true,
           uid: res.headers.uid,
