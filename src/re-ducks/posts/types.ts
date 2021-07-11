@@ -5,6 +5,7 @@ export type PostType = {
   subTitle: string,
   body: string,
   categoryId: string,
+  images: Array<{ id: string, file: File | null, iamgePath: string }>
   loading: boolean,
   error: boolean,
 }

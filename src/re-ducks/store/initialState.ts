@@ -15,6 +15,7 @@ const initialState = {
     subTitle: '',
     body: '',
     categoryId: '',
+    images: [],
   },
 };
 

@@ -6,13 +6,6 @@ import {
 
 const url = 'http://localhost:3001';
 
-type PostParams = {
-  title: string,
-  subTitle: string,
-  body: string,
-  categoryId: string,
-}
-
 type AuthType = {
   accessToken: string
   client: string
@@ -57,9 +50,10 @@ export const fetchPost = (id: number) => (
       .then((res) => {
         dispatch(getPostAction({
           title: res.data.post.title,
-          subTitle: res.data.post.sub_title,
+          subTitle: res.data.post.subTitle,
           body: res.data.post.body,
-          categoryId: res.data.post.category_id,
+          categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
           loading: false,
           error: false,
         }));
@@ -70,7 +64,7 @@ export const fetchPost = (id: number) => (
   }
 );
 
-export const createPost = (params: PostParams) => (
+export const createPost = (data: FormData) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {
     const client = axios.create({
       baseURL: url,
@@ -80,18 +74,14 @@ export const createPost = (params: PostParams) => (
       url: '/v1/posts',
       headers: {},
       method: 'post',
-      data: {
-        post: {
-          title: params.title,
-          subTitle: params.subTitle,
-          body: params.body,
-          categoryId: params.categoryId,
-        },
-      },
+      data,
     };
 
     if (localStorage.getItem('anima')) {
-      reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || '{}'));
+      reqConfig.headers = {
+        ...authHeaders(JSON.parse(localStorage.getItem('anima') || '')),
+        'Content-Type': 'multipart/form-data',
+      };
     } else return;
 
     await client(reqConfig)
@@ -101,6 +91,7 @@ export const createPost = (params: PostParams) => (
           subTitle: res.data.post.subTitle,
           body: res.data.post.body,
           categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
           loading: false,
           error: false,
         }));
@@ -111,7 +102,7 @@ export const createPost = (params: PostParams) => (
   }
 );
 
-export const editPost = (id: string, params: PostParams) => (
+export const editPost = (id: string, data: FormData) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {
     const client = axios.create({
       baseURL: url,
@@ -121,18 +112,14 @@ export const editPost = (id: string, params: PostParams) => (
       url: `/v1/posts/${id}`,
       headers: {},
       method: 'put',
-      data: {
-        post: {
-          title: params.title,
-          subTitle: params.subTitle,
-          body: params.body,
-          categoryId: params.categoryId,
-        },
-      },
+      data,
     };
 
     if (localStorage.getItem('anima')) {
-      reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || '{}'));
+      reqConfig.headers = {
+        ...authHeaders(JSON.parse(localStorage.getItem('anima') || '')),
+        'Content-Type': 'multipart/form-data',
+      };
     } else return;
 
     await client(reqConfig)
@@ -142,6 +129,7 @@ export const editPost = (id: string, params: PostParams) => (
           subTitle: res.data.post.subTitle,
           body: res.data.post.body,
           categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
           loading: false,
           error: false,
         }));

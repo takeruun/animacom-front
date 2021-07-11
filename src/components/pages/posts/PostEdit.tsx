@@ -11,9 +11,27 @@ import {
   InputText, SelectBox,
 } from 'components/UIKit/index';
 import Button from '@material-ui/core/Button';
-import ImageArea from './ImageArea';
+import { AddPhotoAlternate } from '@material-ui/icons';
+import IconButton from '@material-ui/core/IconButton';
+import InputLable from '@material-ui/core/InputLabel';
+import { makeStyles } from '@material-ui/core';
+import ImagePreview from './ImagePreview';
+
+export type ImageType = {
+  id: string,
+  imagePath: string,
+  file: File,
+}
+
+const useStyles = makeStyles({
+  icon: {
+    height: 48,
+    width: 48,
+  },
+});
 
 const PostEdit: FC = () => {
+  const classes = useStyles();
   let id = window.location.pathname.split('/post/edit')[1];
   if (id !== '') {
     id = id.split('/')[1];
@@ -31,6 +49,7 @@ const PostEdit: FC = () => {
   const [subTitle, setSubTitle] = useState('');
   const [body, setBody] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [images, setImages] = useState<Array<ImageType>>([]);
 
   const inputTitle = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -44,6 +63,42 @@ const PostEdit: FC = () => {
     setBody(event.target.value);
   }, [setBody]);
 
+  const inputImage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files !== null) {
+      const reader = new FileReader();
+      const imageFile = event.target.files[0];
+      reader.readAsDataURL(imageFile);
+      reader.onload = () => {
+        const newImage = { id: '', file: imageFile, imagePath: URL.createObjectURL(imageFile) };
+        setImages(((prenvState) => [...prenvState, newImage]));
+      };
+    }
+  }, [setImages]);
+
+  const deleteImage = useCallback((imageId: string) => {
+    const newImages = images.filter((image) => image.id !== imageId);
+    setImages(newImages);
+  }, [images]);
+
+  const submit = (method: string) => {
+    try {
+      const data = new FormData();
+      data.append('post[title]', title);
+      data.append('post[subTitle]', subTitle);
+      data.append('post[body]', body);
+      data.append('post[categoryId]', categoryId);
+      images.forEach((image) => data.append('post[images][]', image.file));
+
+      if (method === 'post') {
+        dispatch(createPost(data));
+      } else if (method === 'edit') {
+        dispatch(editPost(id, data));
+      }
+    } catch (err) {
+      console.error('request err', err);
+    }
+  };
+
   useEffect(() => {
     if (id !== '') {
       const execApi = async (postId: string) => {
@@ -54,6 +109,7 @@ const PostEdit: FC = () => {
         setSubTitle(res.post.subTitle);
         setBody(res.post.body);
         setCategoryId(res.post.categoryId);
+        setImages(res.post.images);
 
         dispatch(endFetch());
       };
@@ -65,14 +121,7 @@ const PostEdit: FC = () => {
     if (id) {
       return (
         <Button
-          onClick={() => dispatch(
-            editPost(id, {
-              title,
-              subTitle,
-              body,
-              categoryId,
-            }),
-          )}
+          onClick={() => submit('edit')}
         >
           編集！
         </Button>
@@ -80,14 +129,7 @@ const PostEdit: FC = () => {
     }
     return (
       <Button
-        onClick={() => dispatch(
-          createPost({
-            title,
-            subTitle,
-            body,
-            categoryId,
-          }),
-        )}
+        onClick={() => submit('post')}
       >
         投稿！
       </Button>
@@ -130,7 +172,22 @@ const PostEdit: FC = () => {
           type="text"
           input={inputBody}
         />
-        <ImageArea />
+        <div>
+          <div className="u-text-rigth">
+            <span>画像を登録する🐾</span>
+            <IconButton className={classes.icon}>
+              <InputLable>
+                <AddPhotoAlternate />
+                <input className="u-display-none" type="file" id="image" onChange={inputImage} />
+              </InputLable>
+            </IconButton>
+          </div>
+          {
+            images.map((image) => (
+              <ImagePreview delete={deleteImage} id={image.id} imagePath={image.imagePath} />
+            ))
+          }
+        </div>
         <SelectBox
           label="カテゴリ🐾"
           required
