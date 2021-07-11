@@ -87,7 +87,10 @@ const PostEdit: FC = () => {
       data.append('post[subTitle]', subTitle);
       data.append('post[body]', body);
       data.append('post[categoryId]', categoryId);
-      images.forEach((image) => data.append('post[images][]', image.file));
+      images.forEach((image) => {
+        data.append('post[images][][id]', image.id);
+        data.append('post[images][][file]', image.file);
+      });
 
       if (method === 'post') {
         dispatch(createPost(data));
