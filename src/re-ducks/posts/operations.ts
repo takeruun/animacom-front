@@ -50,9 +50,10 @@ export const fetchPost = (id: number) => (
       .then((res) => {
         dispatch(getPostAction({
           title: res.data.post.title,
-          subTitle: res.data.post.sub_title,
+          subTitle: res.data.post.subTitle,
           body: res.data.post.body,
-          categoryId: res.data.post.category_id,
+          categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
           loading: false,
           error: false,
         }));
@@ -90,6 +91,7 @@ export const createPost = (data: FormData) => (
           subTitle: res.data.post.subTitle,
           body: res.data.post.body,
           categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
           loading: false,
           error: false,
         }));
@@ -127,6 +129,7 @@ export const editPost = (id: string, data: FormData) => (
           subTitle: res.data.post.subTitle,
           body: res.data.post.body,
           categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
           loading: false,
           error: false,
         }));

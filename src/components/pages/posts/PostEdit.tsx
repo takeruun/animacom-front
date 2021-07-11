@@ -109,6 +109,7 @@ const PostEdit: FC = () => {
         setSubTitle(res.post.subTitle);
         setBody(res.post.body);
         setCategoryId(res.post.categoryId);
+        setImages(res.post.images);
 
         dispatch(endFetch());
       };

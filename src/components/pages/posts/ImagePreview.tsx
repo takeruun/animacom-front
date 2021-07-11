@@ -11,8 +11,8 @@ const ImagePreview = (props: PropsType) => {
 
   return (
     <div className="p-media__thumb">
-      <Button onClick={() => deleteImage(id)}> X </Button>
       <img alt="アイキャッチ画像" src={imagePath} />
+      <Button onClick={() => deleteImage(id)}> X </Button>
     </div>
   );
 };
