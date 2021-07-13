@@ -81,6 +81,40 @@
   width: calc(50% - 1rem);
 }
 
+.p-media_privew {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+}
+
+.p-media__thumb {
+  position: relative;
+  /* 横スクロール用 */
+  display: inline-block;
+  width: 50%;
+
+  /* 見た目調整 */
+  height: 200px;
+  margin: 16px;
+  font-size: 48px;
+  
+}
+
+.p-media__thumb > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: rgba(255, 0, 0, 0.4);
+}
+
+.p-media__thumb > .btn {
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  left: 0;
+}
+
+/*
 .p-media__thumb {
   position: relative;
   overflow: hidden;
@@ -102,6 +136,7 @@
   width: 100%;
   height: auto;
 }
+*/
 
 /*********** Footer ***********/
 .l-footer {

@@ -185,11 +185,13 @@ const PostEdit: FC = () => {
               </InputLable>
             </IconButton>
           </div>
-          {
-            images.map((image) => (
-              <ImagePreview delete={deleteImage} id={image.id} imagePath={image.imagePath} />
-            ))
-          }
+          <ul className="p-media_privew">
+            {
+              images.map((image) => (
+                <ImagePreview delete={deleteImage} id={image.id} imagePath={image.imagePath} />
+              ))
+            }
+          </ul>
         </div>
         <SelectBox
           label="カテゴリ🐾"
