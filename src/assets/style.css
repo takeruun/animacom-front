@@ -14,8 +14,16 @@
 
 /*********** Section ***********/
 .c-main {
-  padding: 96px 0
+  padding: 96px 0;
 }
+
+.posts-list {
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 50px;
+  background-color: rgba(161, 240, 151, 0.7);
+}
+
 .c-section-wrapin {
   margin: 0 auto;
   max-width: 575px;

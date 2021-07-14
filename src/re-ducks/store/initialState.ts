@@ -1,5 +1,7 @@
 import { UserState } from 're-ducks/users/types';
-import { PostType } from 're-ducks/posts/types';
+import { PostType } from 're-ducks/post/types';
+import { PostsState } from 're-ducks/posts/types';
+import { ApiStatusState } from 're-ducks/apiStatus/types';
 
 const initialState = {
   users: {
@@ -8,20 +10,28 @@ const initialState = {
     name: '',
     nickname: '',
   },
-  posts: {
-    loading: false,
-    error: false,
+  post: {
+    id: '',
     title: '',
     subTitle: '',
     body: '',
     categoryId: '',
     images: [],
   },
+  posts: {
+    latest: [],
+  },
+  apiStatus: {
+    loading: false,
+    error: false,
+  },
 };
 
 export type InitialState = {
   users: UserState,
-  posts: PostType
+  post: PostType,
+  posts: PostsState,
+  apiStatus: ApiStatusState,
 }
 
 export default initialState;
