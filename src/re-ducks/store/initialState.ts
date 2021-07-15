@@ -20,6 +20,7 @@ const initialState = {
   },
   posts: {
     latest: [],
+    dayAgo: [],
   },
   apiStatus: {
     loading: false,

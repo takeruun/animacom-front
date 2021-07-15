@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Action, Dispatch } from 'redux';
-import { fetchPostsAction } from 're-ducks/posts/actions';
+import { fetchLatetPostsAction, fetchDayAgoPostsAction } from 're-ducks/posts/actions';
 import {
   createPostAction,
   getPostAction,
@@ -172,10 +172,12 @@ export const destroyPost = (id: string) => (
 
     await client(reqConfig)
       .then(() => {
-        const { latest } = state;
-        const nextPosts = latest.filter((post) => post.id !== id);
+        const { latest, dayAgo } = state;
+        const nextLatest = latest.filter((post) => post.id !== id);
+        const nextDayAgo = dayAgo.filter((post) => post.id !== id);
         dispatch(destroyPostAction());
-        dispatch(fetchPostsAction(nextPosts));
+        dispatch(fetchLatetPostsAction(nextLatest));
+        dispatch(fetchDayAgoPostsAction(nextDayAgo));
       })
       .catch((err) => {
         throw new Error(err);

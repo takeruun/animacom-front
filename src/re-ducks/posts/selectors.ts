@@ -3,9 +3,12 @@ import { InitialState } from 're-ducks/store/initialState';
 
 const postsSelector = (state: InitialState) => state.posts;
 
-export const getPostsLatest = createSelector(
+export const getLatestPosts = createSelector(
   [postsSelector],
   (state) => state.latest,
 );
 
-export default getPostsLatest;
+export const getDayAgoPosts = createSelector(
+  [postsSelector],
+  (state) => state.dayAgo,
+);
