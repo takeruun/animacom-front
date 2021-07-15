@@ -3,23 +3,37 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchPosts } from 're-ducks/posts/operations';
 import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
 import { InitialState } from 're-ducks/store/initialState';
-import { getPostsLatest } from 're-ducks/posts/selectors';
+import { getDayAgoPosts, getLatestPosts } from 're-ducks/posts/selectors';
+import { PostType } from 're-ducks/post/types';
 import PostCard from './PostCard';
 
-const PostList: FC = () => {
+type PropsType = {
+  param: string,
+}
+
+const PostList: FC<PropsType> = (props: PropsType) => {
   const dispatch = useDispatch();
   const selecter = useSelector((state: InitialState) => state);
-  const posts = getPostsLatest(selecter);
+  const { param } = props;
+
+  function getPosts(): Array<PostType> {
+    if (param === 'day_ago') {
+      return getDayAgoPosts(selecter);
+    }
+    return getLatestPosts(selecter);
+  }
+  const posts = getPosts();
 
   useEffect(() => {
     dispatch(startFetch());
-    dispatch(fetchPosts());
+    dispatch(fetchPosts(param));
     dispatch(endFetch());
-  }, [dispatch]);
+  }, [dispatch, param]);
 
   return (
     <div className="posts-list">
-      <p>今日の投稿一覧</p>
+      {param === 'latest' && (<p>今日の投稿一覧</p>)}
+      {param === 'day_ago' && (<p>昨日の投稿一覧</p>)}
       <section className="c-section-wrapin">
         <div className="p-grid__row">
           {
