@@ -1,34 +1,18 @@
 import initialState from 're-ducks/store/initialState';
 import {
-  GET_POST, START_FETCH, EDIT_POST, END_FETCH,
+  FETCH_POSTS,
 } from './actions';
-import { PostType, ActionsType } from './types';
+import { ActionsType, PostsState } from './types';
 
-const PostsReducer = (state: PostType = initialState.posts, action: ActionsType): PostType => {
+const PostReducer = (state: PostsState = initialState.posts, action: ActionsType): PostsState => {
   switch (action.type) {
-    case START_FETCH:
+    case FETCH_POSTS:
       return {
-        ...state,
-        loading: true,
-      };
-    case GET_POST:
-      return {
-        ...state,
-        ...action.payload,
-      };
-    case EDIT_POST:
-      return {
-        ...state,
-        ...action.payload,
-      };
-    case END_FETCH:
-      return {
-        ...state,
-        loading: false,
+        latest: action.payload,
       };
     default:
       return state;
   }
 };
 
-export default PostsReducer;
+export default PostReducer;
