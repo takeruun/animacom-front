@@ -1,10 +1,12 @@
+import { FC } from 'react';
+
 type PropsType = {
   delete: (id: string) => void,
   id: string,
   imagePath: string,
 }
 
-const ImagePreview = (props: PropsType) => {
+const ImagePreview: FC<PropsType> = (props: PropsType) => {
   const { delete: deleteImage, id, imagePath } = props;
 
   return (

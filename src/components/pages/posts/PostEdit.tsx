@@ -4,9 +4,10 @@ import {
   ChangeEvent, FC, useCallback, useEffect, useState,
 } from 'react';
 import {
-  createPost, startFetch, editPost, fetchPostApi, endFetch,
-} from 're-ducks/posts/operations';
-import { getLoding } from 're-ducks/posts/selectors';
+  createPost, editPost, fetchPostApi,
+} from 're-ducks/post/operations';
+import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
+import { getApiStatusLoading } from 're-ducks/apiStatus/selectors';
 import {
   InputText, SelectBox,
 } from 'components/UIKit/index';
@@ -32,13 +33,13 @@ const useStyles = makeStyles({
 
 const PostEdit: FC = () => {
   const classes = useStyles();
-  let id = window.location.pathname.split('/post/edit')[1];
-  if (id !== '') {
+  let id = window.location.pathname.split('/posts/edit')[1];
+  if (id !== undefined && id !== '') {
     id = id.split('/')[1];
   }
 
   const selecter = useSelector((state: InitialState) => state);
-  const loading = getLoding(selecter);
+  const loading = getApiStatusLoading(selecter);
   const dispatch = useDispatch();
   const categories = [
     { id: '1', name: '猫' },
@@ -103,7 +104,7 @@ const PostEdit: FC = () => {
   };
 
   useEffect(() => {
-    if (id !== '') {
+    if (id !== undefined && id !== '') {
       const execApi = async (postId: string) => {
         dispatch(startFetch());
 
