@@ -7,8 +7,10 @@ export type PostType = {
   body: string,
   categoryId: string,
   images: Array<{ id: string, file: File | null, imagePath: string }>
-  loading?: boolean,
-  error?: boolean,
+  cuteCount: number,
+  favCount: number,
+  goodCount: number,
+  coolCount: number,
 }
 
 export interface GET_POST extends Action {

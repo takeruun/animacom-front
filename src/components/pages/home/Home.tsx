@@ -9,7 +9,8 @@ const Home: FC = () => {
   return (
     <>
       <div>home</div>
-      <PostList />
+      <PostList param="latest" />
+      <PostList param="day_ago" />
       <div
         role="presentation"
         className="u-text-small"

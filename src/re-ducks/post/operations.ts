@@ -1,13 +1,12 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Action, Dispatch } from 'redux';
-import { fetchPostsAction } from 're-ducks/posts/actions';
+import { fetchLatetPostsAction, fetchDayAgoPostsAction } from 're-ducks/posts/actions';
 import {
   createPostAction,
-  getPostAction,
   editPostAction,
   destroyPostAction,
 } from 're-ducks/post/actions';
-import { PostsState } from 're-ducks/posts/types';
+import { InitialState } from 're-ducks/store/initialState';
 
 const url = 'http://localhost:3001';
 
@@ -24,6 +23,7 @@ const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
 });
 
 // 未使用
+/*
 export const fetchPost = (id: number) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {
     const client = axios.create({
@@ -56,6 +56,7 @@ export const fetchPost = (id: number) => (
       });
   }
 );
+*/
 
 export const createPost = (data: FormData) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {
@@ -86,6 +87,10 @@ export const createPost = (data: FormData) => (
           body: res.data.post.body,
           categoryId: res.data.post.categoryId,
           images: res.data.post.images,
+          cuteCount: res.data.post.cuteCount,
+          favCount: res.data.post.favCount,
+          goodCount: res.data.post.goodCount,
+          coolCount: res.data.post.coolCount,
         }));
       })
       .catch((err) => {
@@ -123,6 +128,10 @@ export const editPost = (id: string, data: FormData) => (
           body: res.data.post.body,
           categoryId: res.data.post.categoryId,
           images: res.data.post.images,
+          cuteCount: res.data.post.cuteCount,
+          favCount: res.data.post.favCount,
+          goodCount: res.data.post.goodCount,
+          coolCount: res.data.post.coolCount,
         }));
       })
       .catch((err) => {
@@ -154,7 +163,7 @@ export const fetchPostApi = async (id: string) => {
 };
 
 export const destroyPost = (id: string) => (
-  async (dispatch: Dispatch<Action>, getState: () => PostsState): Promise<void> => {
+  async (dispatch: Dispatch<Action>, getState: () => InitialState): Promise<void> => {
     const state = getState();
     const client = axios.create({
       baseURL: url,
@@ -172,10 +181,48 @@ export const destroyPost = (id: string) => (
 
     await client(reqConfig)
       .then(() => {
-        const { latest } = state;
-        const nextPosts = latest.filter((post) => post.id !== id);
+        const { latest, dayAgo } = state.posts;
+        const nextLatest = latest.filter((post) => post.id !== id);
+        const nextDayAgo = dayAgo.filter((post) => post.id !== id);
         dispatch(destroyPostAction());
-        dispatch(fetchPostsAction(nextPosts));
+        dispatch(fetchLatetPostsAction(nextLatest));
+        dispatch(fetchDayAgoPostsAction(nextDayAgo));
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
+  }
+);
+
+export const postReactions = (id: string, kind: string) => (
+  async (dispatch: Dispatch<Action>, getState: () => InitialState): Promise<void> => {
+    const state = getState();
+    const client = axios.create({
+      baseURL: url,
+    });
+
+    const reqConfig: AxiosRequestConfig = {
+      url: `/v1/posts/reactions/${id}`,
+      headers: {},
+      method: 'post',
+      data: {
+        reaction: {
+          kind,
+        },
+      },
+    };
+
+    if (localStorage.getItem('anima')) {
+      reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+    } else return;
+
+    await client(reqConfig)
+      .then((res) => {
+        const { latest, dayAgo } = state.posts;
+        const nextLatest = latest.map((post) => (post.id === id ? res.data.post : post));
+        const nextDayAgo = dayAgo.map((post) => (post.id === id ? res.data.post : post));
+        dispatch(fetchLatetPostsAction(nextLatest));
+        dispatch(fetchDayAgoPostsAction(nextDayAgo));
       })
       .catch((err) => {
         throw new Error(err);

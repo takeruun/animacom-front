@@ -146,6 +146,38 @@
 }
 */
 
+.cute-btn {
+  background-color: rgb(231, 76, 60);
+  color: white;
+  padding: 10px;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.fav-btn {
+  background-color: rgb(236, 240, 21);
+  color: white;
+  padding: 10px;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.good-btn {
+  background-color: rgb(8, 130, 245);
+  color: white;
+  padding: 10px;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.cool-btn {
+  background-color: rgb(8, 245, 48);
+  color: white;
+  padding: 10px;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
 /*********** Footer ***********/
 .l-footer {
   display: flex;
