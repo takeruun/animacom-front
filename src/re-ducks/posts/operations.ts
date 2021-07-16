@@ -4,6 +4,18 @@ import { fetchLatetPostsAction, fetchDayAgoPostsAction } from './actions';
 
 const url = 'http://localhost:3001';
 
+type AuthType = {
+  accessToken: string
+  client: string
+  uid: string
+}
+
+const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
+  'access-token': accessToken,
+  client,
+  uid,
+});
+
 export const fetchPosts = (param: string) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {
     const client = axios.create({
@@ -15,6 +27,10 @@ export const fetchPosts = (param: string) => (
       headers: {},
       method: 'get',
     };
+
+    if (localStorage.getItem('anima')) {
+      reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+    } else return;
 
     await client(reqConfig)
       .then((res) => {

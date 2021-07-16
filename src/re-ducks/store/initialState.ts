@@ -17,6 +17,10 @@ const initialState = {
     body: '',
     categoryId: '',
     images: [],
+    cuteCount: 0,
+    favCount: 0,
+    goodCount: 0,
+    coolCount: 0,
   },
   posts: {
     latest: [],

@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { PostType } from 're-ducks/post/types';
 import { push } from 'connected-react-router';
 import { useDispatch } from 'react-redux';
-import { destroyPost } from 're-ducks/post/operations';
+import { destroyPost, postReactions } from 're-ducks/post/operations';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -12,6 +12,10 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import GradeIcon from '@material-ui/icons/Grade';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import FlareIcon from '@material-ui/icons/Flare';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,7 +54,7 @@ const PostCard: FC<PostType> = (props: PostType) => {
 
   const NoImage = 'assets/no_image.png';
   const {
-    id, title, subTitle, images,
+    id, title, subTitle, images, cuteCount, favCount, goodCount, coolCount,
   } = props;
   const postImages = images.length > 0 ? images : [{ imagePath: NoImage }];
 
@@ -99,7 +103,46 @@ const PostCard: FC<PostType> = (props: PostType) => {
             削除する
           </MenuItem>
         </Menu>
-
+        <span
+          className="cute-btn"
+          role="button"
+          onClick={() => dispatch(postReactions(id, 'cute'))}
+          onKeyDown={() => dispatch(postReactions(id, 'cute'))}
+          tabIndex={0}
+        >
+          <FavoriteIcon />
+          {cuteCount}
+        </span>
+        <span
+          className="fav-btn"
+          role="button"
+          onClick={() => dispatch(postReactions(id, 'fav'))}
+          onKeyDown={() => dispatch(postReactions(id, 'fav'))}
+          tabIndex={0}
+        >
+          <GradeIcon />
+          {favCount}
+        </span>
+        <span
+          className="good-btn"
+          role="button"
+          onClick={() => dispatch(postReactions(id, 'good'))}
+          onKeyDown={() => dispatch(postReactions(id, 'good'))}
+          tabIndex={0}
+        >
+          <ThumbUpAltIcon />
+          {goodCount}
+        </span>
+        <span
+          className="cool-btn"
+          role="button"
+          onClick={() => dispatch(postReactions(id, 'cool'))}
+          onKeyDown={() => dispatch(postReactions(id, 'cool'))}
+          tabIndex={0}
+        >
+          <FlareIcon />
+          {coolCount}
+        </span>
       </CardContent>
     </Card>
   );

@@ -46,6 +46,10 @@ const PostList: FC<PropsType> = (props: PropsType) => {
                 body={post.body}
                 categoryId={post.categoryId}
                 images={post.images}
+                cuteCount={post.cuteCount}
+                favCount={post.favCount}
+                goodCount={post.goodCount}
+                coolCount={post.coolCount}
               />
             ))
           }
