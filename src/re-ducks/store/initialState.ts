@@ -25,6 +25,10 @@ const initialState = {
   posts: {
     latest: [],
     dayAgo: [],
+    cute5: [],
+    fav5: [],
+    good5: [],
+    cool5: [],
   },
   apiStatus: {
     loading: false,
