@@ -1,6 +1,13 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Action, Dispatch } from 'redux';
-import { fetchLatetPostsAction, fetchDayAgoPostsAction } from './actions';
+import {
+  fetchLatetPostsAction,
+  fetchDayAgoPostsAction,
+  fetchCute5PostsAction,
+  fetchFav5PostsAction,
+  fetchGood5PostsAction,
+  fetchCool5PostsAction,
+} from './actions';
 
 const url = 'http://localhost:3001';
 
@@ -16,14 +23,14 @@ const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
   uid,
 });
 
-export const fetchPosts = (param: string) => (
+export const fetchPosts = (path: string) => (
   async (dispatch: Dispatch<Action>): Promise<void> => {
     const client = axios.create({
       baseURL: url,
     });
 
     const reqConfig: AxiosRequestConfig = {
-      url: `/v1/posts/${param}`,
+      url: `/v1/posts/${path}`,
       headers: {},
       method: 'get',
     };
@@ -34,10 +41,18 @@ export const fetchPosts = (param: string) => (
 
     await client(reqConfig)
       .then((res) => {
-        if (param === 'latest') {
+        if (path === 'latest') {
           dispatch(fetchLatetPostsAction(res.data.posts));
-        } else if (param === 'day_ago') {
+        } else if (path === 'day_ago') {
           dispatch(fetchDayAgoPostsAction(res.data.posts));
+        } else if (path === 'reactions/bests/cute') {
+          dispatch(fetchCute5PostsAction(res.data.posts));
+        } else if (path === 'reactions/bests/fav') {
+          dispatch(fetchFav5PostsAction(res.data.posts));
+        } else if (path === 'reactions/bests/good') {
+          dispatch(fetchGood5PostsAction(res.data.posts));
+        } else if (path === 'reactions/bests/cool') {
+          dispatch(fetchCool5PostsAction(res.data.posts));
         }
       })
       .catch((err) => {
