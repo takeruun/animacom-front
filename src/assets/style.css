@@ -95,7 +95,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.p-media__thumb {
+.p-media-pr__thumb {
   position: relative;
   /* 横スクロール用 */
   display: inline-block;
@@ -108,21 +108,20 @@
   
 }
 
-.p-media__thumb > img {
+.p-media-pr__thumb > img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   background: rgba(255, 0, 0, 0.4);
 }
 
-.p-media__thumb > .btn {
+.p-media-pr__thumb> .btn {
   position: absolute;
   display: inline-block;
   top: 0;
   left: 0;
 }
 
-/*
 .p-media__thumb {
   position: relative;
   overflow: hidden;
@@ -144,7 +143,6 @@
   width: 100%;
   height: auto;
 }
-*/
 
 .cute-btn {
   background-color: rgb(231, 76, 60);

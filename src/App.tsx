@@ -6,7 +6,9 @@ import Header from 'components/header/Header';
 const App: FC = () => (
   <>
     <Header />
-    <Router />
+    <main className="c-main">
+      <Router />
+    </main>
   </>
 );
 

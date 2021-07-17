@@ -8,6 +8,7 @@ const Home = lazy(() => import('components/pages/home/index'));
 const SignUp = lazy(() => import('components/pages/sign_up/index'));
 const SignIn = lazy(() => import('components/pages/sign_in/index'));
 const PostEdit = lazy(() => import('components/pages/posts/PostEdit'));
+const PostDetail = lazy(() => import('components/pages/posts/PostDetail'));
 
 const Router: FC = () => (
   <Suspense fallback={null}>
@@ -17,6 +18,7 @@ const Router: FC = () => (
       <Route exact path="/sign_in" component={SignIn} />
       <Auth>
         <Route path="/posts/edit(/:id)?" component={PostEdit} />
+        <Route exact path="/posts/:id" component={PostDetail} />
       </Auth>
     </Switch>
   </Suspense>
