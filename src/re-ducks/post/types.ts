@@ -11,6 +11,10 @@ export type PostType = {
   favCount: number,
   goodCount: number,
   coolCount: number,
+  alreadyCuted: boolean,
+  alreadyFaved: boolean,
+  alreadyGooded: boolean,
+  alreadyCooled: boolean,
 }
 
 export interface GET_POST extends Action {

@@ -54,7 +54,6 @@ module.exports = {
     ],
     'react/jsx-props-no-spreading': ['off', {
       custom: 'ignore',
-      exceptions: ['Swiper'],
     }],
   },
   settings: {

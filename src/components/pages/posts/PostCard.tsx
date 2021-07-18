@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { PostType } from 're-ducks/post/types';
 import { push } from 'connected-react-router';
 import { useDispatch } from 'react-redux';
-import { destroyPost, postReactions } from 're-ducks/post/operations';
+import { destroyPost } from 're-ducks/post/operations';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -93,7 +93,7 @@ const PostCard: FC<PostType> = (props: PostType) => {
         >
           <MenuItem
             onClick={() => {
-              dispatch(push(`/posts/edit/${id}`));
+              dispatch(push(`/post/edit/${id}`));
               handleClose();
             }}
           >
@@ -103,46 +103,24 @@ const PostCard: FC<PostType> = (props: PostType) => {
             削除する
           </MenuItem>
         </Menu>
-        <span
-          className="cute-btn"
-          role="button"
-          onClick={() => dispatch(postReactions(id, 'cute'))}
-          onKeyDown={() => dispatch(postReactions(id, 'cute'))}
-          tabIndex={0}
-        >
-          <FavoriteIcon />
-          {cuteCount}
-        </span>
-        <span
-          className="fav-btn"
-          role="button"
-          onClick={() => dispatch(postReactions(id, 'fav'))}
-          onKeyDown={() => dispatch(postReactions(id, 'fav'))}
-          tabIndex={0}
-        >
-          <GradeIcon />
-          {favCount}
-        </span>
-        <span
-          className="good-btn"
-          role="button"
-          onClick={() => dispatch(postReactions(id, 'good'))}
-          onKeyDown={() => dispatch(postReactions(id, 'good'))}
-          tabIndex={0}
-        >
-          <ThumbUpAltIcon />
-          {goodCount}
-        </span>
-        <span
-          className="cool-btn"
-          role="button"
-          onClick={() => dispatch(postReactions(id, 'cool'))}
-          onKeyDown={() => dispatch(postReactions(id, 'cool'))}
-          tabIndex={0}
-        >
-          <FlareIcon />
-          {coolCount}
-        </span>
+        <table className="reaction-tb">
+          <colgroup span={1} className="cute" />
+          <colgroup span={1} className="fav" />
+          <colgroup span={1} className="good" />
+          <colgroup span={1} className="cool" />
+          <tr>
+            <td><FavoriteIcon fontSize="small" /></td>
+            <td><GradeIcon fontSize="small" /></td>
+            <td><ThumbUpAltIcon fontSize="small" /></td>
+            <td><FlareIcon fontSize="small" /></td>
+          </tr>
+          <tr>
+            <td>{cuteCount}</td>
+            <td>{favCount}</td>
+            <td>{goodCount}</td>
+            <td>{coolCount}</td>
+          </tr>
+        </table>
       </CardContent>
     </Card>
   );

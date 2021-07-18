@@ -21,6 +21,10 @@ const initialState = {
     favCount: 0,
     goodCount: 0,
     coolCount: 0,
+    alreadyCuted: false,
+    alreadyFaved: false,
+    alreadyGooded: false,
+    alreadyCooled: false,
   },
   posts: {
     latest: [],

@@ -27,8 +27,8 @@ const Home: FC = () => {
       <div
         role="presentation"
         className="u-text-small"
-        onClick={() => dispatch(push('/posts/edit'))}
-        onKeyDown={() => dispatch(push('/posts/edit'))}
+        onClick={() => dispatch(push('/post/edit'))}
+        onKeyDown={() => dispatch(push('/post/edit'))}
       >
         投稿画面へ
       </div>

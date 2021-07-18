@@ -1,7 +1,7 @@
 import {
   FC, Suspense, lazy,
 } from 'react';
-import { Switch, Route } from 'react-router';
+import { Switch, Route } from 'react-router-dom';
 import Auth from 'Auth';
 
 const Home = lazy(() => import('components/pages/home/index'));
@@ -17,8 +17,8 @@ const Router: FC = () => (
       <Route exact path="/sign_up" component={SignUp} />
       <Route exact path="/sign_in" component={SignIn} />
       <Auth>
-        <Route path="/posts/edit(/:id)?" component={PostEdit} />
         <Route exact path="/posts/:id" component={PostDetail} />
+        <Route path="/post/edit(/:id)?" component={PostEdit} />
       </Auth>
     </Switch>
   </Suspense>
