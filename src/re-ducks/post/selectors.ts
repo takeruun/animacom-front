@@ -67,3 +67,8 @@ export const getAlreadyCooled = createSelector(
   [postSelector],
   (state) => state.alreadyCooled,
 );
+
+export const getReactions = createSelector(
+  [postSelector],
+  (state) => state.reactions,
+);

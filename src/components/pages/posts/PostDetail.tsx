@@ -74,6 +74,7 @@ const PostDetail: FC = () => {
         alreadyFaved: res.post.alreadyFaved,
         alreadyGooded: res.post.alreadyGooded,
         alreadyCooled: res.post.alreadyCooled,
+        reactions: res.post.reactions,
       }));
 
       dispatch(endFetch());

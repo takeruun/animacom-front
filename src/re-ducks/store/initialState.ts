@@ -25,6 +25,7 @@ const initialState = {
     alreadyFaved: false,
     alreadyGooded: false,
     alreadyCooled: false,
+    reactions: [],
   },
   posts: {
     latest: [],

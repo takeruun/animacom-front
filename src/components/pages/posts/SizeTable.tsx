@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { InitialState } from 're-ducks/store/initialState';
-import { postReactions } from 're-ducks/post/operations';
+import { postReactions, destroyReactions } from 're-ducks/post/operations';
 import {
   getCuteCount,
   getFavCount,
@@ -11,6 +11,7 @@ import {
   getAlreadyCuted,
   getAlreadyFaved,
   getAlreadyGooded,
+  getReactions,
 } from 're-ducks/post/selectors';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
@@ -51,6 +52,8 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
   const [alreadyGooded, setAlreadyGooded] = useState<boolean>(false);
   const [alreadyCooled, setAlreadyCooled] = useState<boolean>(false);
 
+  const [reactions, setReactions] = useState<{ id: string, kind: number }[]>();
+
   useEffect(() => {
     setCuteCount(getCuteCount(selecter));
     setFavCount(getFavCount(selecter));
@@ -61,10 +64,12 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
     setAlreadyFaved(getAlreadyFaved(selecter));
     setAlreadyGooded(getAlreadyGooded(selecter));
     setAlreadyCooled(getAlreadyCooled(selecter));
+
+    setReactions(getReactions(selecter));
   }, [selecter, setCuteCount]);
 
   const { id } = props;
-
+  console.log(reactions);
   return (
     <TableContainer>
       <Table aria-label="simple table">
@@ -75,8 +80,14 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
             <TableCell className={classes.iconCell}>
               <IconButton className={classes.iconCell} style={{ color: alreadyCuted ? 'rgb(231, 76, 60)' : 'none' }}>
                 <FavoriteIcon onClick={() => {
-                  dispatch(postReactions(id, 'cute'));
-                  setAlreadyCuted(true);
+                  if (alreadyCuted) {
+                    const reaction = reactions!.find((r) => r.kind === 1);
+                    dispatch(destroyReactions(reaction!.id, 'cute'));
+                    setAlreadyCuted(false);
+                  } else {
+                    dispatch(postReactions(id, 'cute'));
+                    setAlreadyCuted(true);
+                  }
                 }}
                 />
               </IconButton>

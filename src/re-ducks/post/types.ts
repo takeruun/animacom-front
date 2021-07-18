@@ -15,6 +15,7 @@ export type PostType = {
   alreadyFaved: boolean,
   alreadyGooded: boolean,
   alreadyCooled: boolean,
+  reactions?: Array<{ id: string, kind: number }>,
 }
 
 export interface GET_POST extends Action {
