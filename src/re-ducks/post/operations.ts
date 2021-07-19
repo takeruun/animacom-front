@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { Action, Dispatch } from 'redux';
+import { getPostAction } from 're-ducks/post/actions';
 import { fetchLatetPostsAction, fetchDayAgoPostsAction } from 're-ducks/posts/actions';
 import {
   createPostAction,
@@ -91,6 +92,10 @@ export const createPost = (data: FormData) => (
           favCount: res.data.post.favCount,
           goodCount: res.data.post.goodCount,
           coolCount: res.data.post.coolCount,
+          alreadyCuted: res.data.post.alreadyCuted,
+          alreadyFaved: res.data.post.alreadyFaved,
+          alreadyGooded: res.data.post.alreadyGooded,
+          alreadyCooled: res.data.post.alreadyCooled,
         }));
       })
       .catch((err) => {
@@ -132,6 +137,10 @@ export const editPost = (id: string, data: FormData) => (
           favCount: res.data.post.favCount,
           goodCount: res.data.post.goodCount,
           coolCount: res.data.post.coolCount,
+          alreadyCuted: res.data.post.alreadyCuted,
+          alreadyFaved: res.data.post.alreadyFaved,
+          alreadyGooded: res.data.post.alreadyGooded,
+          alreadyCooled: res.data.post.alreadyCooled,
         }));
       })
       .catch((err) => {
@@ -221,6 +230,76 @@ export const postReactions = (id: string, kind: string) => (
         const { latest, dayAgo } = state.posts;
         const nextLatest = latest.map((post) => (post.id === id ? res.data.post : post));
         const nextDayAgo = dayAgo.map((post) => (post.id === id ? res.data.post : post));
+        dispatch(getPostAction({
+          id: res.data.post.id,
+          title: res.data.post.title,
+          subTitle: res.data.post.subTitle,
+          body: res.data.post.body,
+          categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
+          cuteCount: res.data.post.cuteCount,
+          favCount: res.data.post.favCount,
+          goodCount: res.data.post.goodCount,
+          coolCount: res.data.post.coolCount,
+          alreadyCuted: res.data.post.alreadyCuted,
+          alreadyFaved: res.data.post.alreadyFaved,
+          alreadyGooded: res.data.post.alreadyGooded,
+          alreadyCooled: res.data.post.alreadyCooled,
+          reactions: res.data.post.reactions,
+        }));
+        dispatch(fetchLatetPostsAction(nextLatest));
+        dispatch(fetchDayAgoPostsAction(nextDayAgo));
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
+  }
+);
+
+export const destroyReactions = (id: string, kind: string) => (
+  async (dispatch: Dispatch<Action>, getState: () => InitialState): Promise<void> => {
+    const state = getState();
+    const client = axios.create({
+      baseURL: url,
+    });
+
+    const reqConfig: AxiosRequestConfig = {
+      url: `/v1/posts/reactions/${id}`,
+      headers: {},
+      method: 'delete',
+      data: {
+        reaction: {
+          kind,
+        },
+      },
+    };
+
+    if (localStorage.getItem('anima')) {
+      reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+    } else return;
+
+    await client(reqConfig)
+      .then((res) => {
+        const { latest, dayAgo } = state.posts;
+        const nextLatest = latest.map((post) => (post.id === id ? res.data.post : post));
+        const nextDayAgo = dayAgo.map((post) => (post.id === id ? res.data.post : post));
+        dispatch(getPostAction({
+          id: res.data.post.id,
+          title: res.data.post.title,
+          subTitle: res.data.post.subTitle,
+          body: res.data.post.body,
+          categoryId: res.data.post.categoryId,
+          images: res.data.post.images,
+          cuteCount: res.data.post.cuteCount,
+          favCount: res.data.post.favCount,
+          goodCount: res.data.post.goodCount,
+          coolCount: res.data.post.coolCount,
+          alreadyCuted: res.data.post.alreadyCuted,
+          alreadyFaved: res.data.post.alreadyFaved,
+          alreadyGooded: res.data.post.alreadyGooded,
+          alreadyCooled: res.data.post.alreadyCooled,
+          reactions: res.data.post.reactions,
+        }));
         dispatch(fetchLatetPostsAction(nextLatest));
         dispatch(fetchDayAgoPostsAction(nextDayAgo));
       })

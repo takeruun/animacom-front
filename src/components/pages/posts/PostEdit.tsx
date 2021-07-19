@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 
 const PostEdit: FC = () => {
   const classes = useStyles();
-  let id = window.location.pathname.split('/posts/edit')[1];
+  let id = window.location.pathname.split('/post/edit')[1];
   if (id !== undefined && id !== '') {
     id = id.split('/')[1];
   }

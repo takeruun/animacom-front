@@ -144,36 +144,29 @@
   height: auto;
 }
 
-.cute-btn {
+.reaction-tb {
+  color: white;
+  text-align: center;
+}
+
+td, th {
+  padding: 5px 10px;
+}
+
+.reaction-tb > .cute {
   background-color: rgb(231, 76, 60);
-  color: white;
-  padding: 10px;
-  border-radius: 0.4rem;
-  cursor: pointer;
 }
 
-.fav-btn {
+.reaction-tb > .fav {
   background-color: rgb(236, 240, 21);
-  color: white;
-  padding: 10px;
-  border-radius: 0.4rem;
-  cursor: pointer;
 }
 
-.good-btn {
+.reaction-tb > .good {
   background-color: rgb(8, 130, 245);
-  color: white;
-  padding: 10px;
-  border-radius: 0.4rem;
-  cursor: pointer;
 }
 
-.cool-btn {
+.reaction-tb > .cool {
   background-color: rgb(8, 245, 48);
-  color: white;
-  padding: 10px;
-  border-radius: 0.4rem;
-  cursor: pointer;
 }
 
 /*********** Footer ***********/

@@ -1,4 +1,6 @@
-import { FC } from 'react';
+import { FC, useCallback, useState } from 'react';
+import { push } from 'connected-react-router';
+import { useDispatch } from 'react-redux';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -13,12 +15,15 @@ import PeopleIcon from '@material-ui/icons/People';
 import DescriptionIcon from '@material-ui/icons/Description';
 import SearchIcon from '@material-ui/icons/Search';
 import CategoryIcon from '@material-ui/icons/Category';
-import { useDispatch } from 'react-redux';
-import { push } from 'connected-react-router';
+import MenuIcon from '@material-ui/icons/Menu';
+import ClosableDrawer from './ClosableDrawer';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     flexGrow: 1,
+  },
+  appBar: {
+    backgroundColor: '#fff',
   },
   toolbar: {
     marginLeft: 150,
@@ -41,7 +46,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   },
   title: {
     flexGrow: 1,
+    color: 'grey',
     display: 'none',
+    cursor: 'pointer',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
@@ -59,6 +66,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       marginLeft: theme.spacing(1),
       width: 'auto',
     },
+    color: 'grey',
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -85,7 +93,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       },
     },
   },
-  signButton: {
+  btn: {
     marginRight: 20,
   },
 }));
@@ -94,14 +102,30 @@ const Header: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerToggle = useCallback((event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+    setOpen(!open);
+  }, [setOpen, open]);
+
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
+          <Typography
+            className={classes.title}
+            variant="h6"
+            onClick={() => dispatch(push('/'))}
+          >
+            AnimaCom
+          </Typography>
           <Tooltip title="ユーザ一覧">
             <IconButton
               className={classes.peopleButton}
-              color="inherit"
+              color="default"
               aria-label="open drawer"
             >
               <PeopleIcon />
@@ -110,7 +134,7 @@ const Header: FC = () => {
           <Tooltip title="投稿一覧">
             <IconButton
               className={classes.descriptionIcon}
-              color="inherit"
+              color="default"
               aria-label="open drawer"
             >
               <DescriptionIcon />
@@ -119,15 +143,12 @@ const Header: FC = () => {
           <Tooltip title="カテゴリ一覧">
             <IconButton
               className={classes.descriptionIcon}
-              color="inherit"
+              color="default"
               aria-label="open drawer"
             >
               <CategoryIcon />
             </IconButton>
           </Tooltip>
-          <Typography className={classes.title} variant="h6" noWrap>
-            AnimaCom
-          </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -141,12 +162,22 @@ const Header: FC = () => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-          <div className={classes.signButton}>
-            <Button variant="contained" color="secondary" onClick={() => dispatch(push('/sign_up'))}>新規登録</Button>
-            <Button variant="outlined" onClick={() => dispatch(push('/sign_in'))}>ログイン</Button>
-          </div>
+          <Button
+            variant="outlined"
+            onClick={() => dispatch(push('/sign_in'))}
+            className={classes.btn}
+          >
+            ログイン
+          </Button>
+          <IconButton>
+            <MenuIcon onClick={(e) => handleDrawerToggle(e)} />
+          </IconButton>
         </Toolbar>
       </AppBar>
+      <ClosableDrawer
+        open={open}
+        onClose={handleDrawerToggle}
+      />
     </div>
   );
 };

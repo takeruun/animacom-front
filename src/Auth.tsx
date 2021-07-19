@@ -2,7 +2,7 @@ import { push } from 'connected-react-router';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-const Auth: React.FC<any> = ({ children }) => {
+const Auth: React.FC<any> = ({ children }: any) => {
   const dispatch = useDispatch();
   const auth = localStorage.getItem('anima');
 

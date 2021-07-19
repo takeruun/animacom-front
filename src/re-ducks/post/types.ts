@@ -11,6 +11,11 @@ export type PostType = {
   favCount: number,
   goodCount: number,
   coolCount: number,
+  alreadyCuted: boolean,
+  alreadyFaved: boolean,
+  alreadyGooded: boolean,
+  alreadyCooled: boolean,
+  reactions?: Array<{ id: string, kind: number }>,
 }
 
 export interface GET_POST extends Action {

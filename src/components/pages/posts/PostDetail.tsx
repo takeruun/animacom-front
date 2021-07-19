@@ -1,6 +1,7 @@
 import { FC, useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { getPostAction } from 're-ducks/post/actions';
 import { endFetch, startFetch } from 're-ducks/apiStatus/operations';
 import { fetchPostApi } from 're-ducks/post/operations';
 import { PostType } from 're-ducks/post/types';
@@ -57,6 +58,25 @@ const PostDetail: FC = () => {
       dispatch(startFetch());
       const res = await fetchPostApi(postId);
       setPost(res.post);
+
+      dispatch(getPostAction({
+        id: res.post.id,
+        title: res.post.title,
+        subTitle: res.post.subTitle,
+        body: res.post.body,
+        categoryId: res.post.categoryId,
+        images: res.post.images,
+        cuteCount: res.post.cuteCount,
+        favCount: res.post.favCount,
+        goodCount: res.post.goodCount,
+        coolCount: res.post.coolCount,
+        alreadyCuted: res.post.alreadyCuted,
+        alreadyFaved: res.post.alreadyFaved,
+        alreadyGooded: res.post.alreadyGooded,
+        alreadyCooled: res.post.alreadyCooled,
+        reactions: res.post.reactions,
+      }));
+
       dispatch(endFetch());
     };
     execApi(id);
@@ -75,7 +95,7 @@ const PostDetail: FC = () => {
             <div className="module-spacer--small" />
             <p>{returnCodeToBr(post.body)}</p>
             <div className="module-spacer--small" />
-            <SizeTable />
+            <SizeTable id={post.id} />
           </div>
         </div>
       )}
