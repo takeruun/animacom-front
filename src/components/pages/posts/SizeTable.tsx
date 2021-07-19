@@ -69,7 +69,7 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
   }, [selecter, setCuteCount]);
 
   const { id } = props;
-  console.log(reactions);
+
   return (
     <TableContainer>
       <Table aria-label="simple table">
