@@ -16,6 +16,11 @@ import SearchIcon from '@material-ui/icons/Search';
 import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import GradeIcon from '@material-ui/icons/Grade';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import FlareIcon from '@material-ui/icons/Flare';
+import { Badge } from '@material-ui/core';
 
 type PropsType = {
   open: boolean,
@@ -38,6 +43,11 @@ const useStyles = makeStyles((theme) => createStyles({
     alignItems: 'center',
     display: 'flex',
     marginLeft: 32,
+  },
+  listTitle: {
+    textAlign: 'center',
+    fontSize: 20,
+    marginTop: '20px',
   },
 }));
 
@@ -63,6 +73,21 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
     },
     {
       func: selectMenu, label: 'プロフィール', icon: <PersonIcon />, id: 'profile', value: '/mypage',
+    },
+  ];
+
+  const reactionMenus = [
+    {
+      func: selectMenu, label: 'かわいい', icon: <FavoriteIcon />, id: 'show', value: '/posts/reaction/cute',
+    },
+    {
+      func: selectMenu, label: 'お気に入り', icon: <GradeIcon />, id: 'show', value: '/posts/reaction/fav',
+    },
+    {
+      func: selectMenu, label: 'いいね', icon: <ThumbUpAltIcon />, id: 'show', value: '/posts/reaction/good',
+    },
+    {
+      func: selectMenu, label: 'かっこいい', icon: <FlareIcon />, id: 'show', value: '/posts/reaction/cool',
     },
   ];
 
@@ -114,6 +139,25 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
             </ListItem>
           </List>
         </div>
+        <Divider />
+        <div className={classes.listTitle}>本日のリアクション</div>
+        <List>
+          {reactionMenus.map((menu) => (
+            <ListItem
+              button
+              key={menu.id}
+              onClick={(e) => menu.func(e, menu.value)}
+            >
+              <ListItemIcon>
+                <Badge badgeContent={0} color="secondary">
+                  {menu.icon}
+                </Badge>
+              </ListItemIcon>
+              <ListItemText primary={menu.label} />
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
       </Drawer>
     </nav>
   );
