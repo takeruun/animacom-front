@@ -60,10 +60,10 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
     setGoodCount(getGoodCount(selecter));
     setCoolCount(getCoolCount(selecter));
 
-    setAlreadyCuted(getAlreadyCuted(selecter));
-    setAlreadyFaved(getAlreadyFaved(selecter));
-    setAlreadyGooded(getAlreadyGooded(selecter));
-    setAlreadyCooled(getAlreadyCooled(selecter));
+    setAlreadyCuted(getAlreadyCuted(selecter) || false);
+    setAlreadyFaved(getAlreadyFaved(selecter) || false);
+    setAlreadyGooded(getAlreadyGooded(selecter) || false);
+    setAlreadyCooled(getAlreadyCooled(selecter) || false);
 
     setReactions(getReactions(selecter));
   }, [selecter, setCuteCount]);
