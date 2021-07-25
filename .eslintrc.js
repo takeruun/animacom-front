@@ -55,6 +55,10 @@ module.exports = {
     'react/jsx-props-no-spreading': ['off', {
       custom: 'ignore',
     }],
+    'no-param-reassign': [
+      'error',
+      { props: true, ignorePropertyModificationsFor: ['state'] }
+    ],
   },
   settings: {
     'import/resolver': {
