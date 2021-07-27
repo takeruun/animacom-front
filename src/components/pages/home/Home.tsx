@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { useDispatch } from 'react-redux';
+import { AppDispatch } from 're-ducks/store/store';
 import { push } from 'connected-react-router';
 import { makeStyles } from '@material-ui/core/styles';
 import { PostList } from 'components/pages/posts/index';
@@ -12,7 +13,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Home: FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const classes = useStyles();
 
   return (

@@ -66,7 +66,7 @@ export const createPost = (data: FormData) => (
     });
 
     const reqConfig: AxiosRequestConfig = {
-      url: '/v1/posts',
+      url: '/v1/users/posts',
       headers: {},
       method: 'post',
       data,
@@ -111,7 +111,7 @@ export const editPost = (id: string, data: FormData) => (
     });
 
     const reqConfig: AxiosRequestConfig = {
-      url: `/v1/posts/${id}`,
+      url: `/v1/users/posts/${id}`,
       headers: {},
       method: 'put',
       data,
@@ -155,7 +155,7 @@ export const fetchPostApi = async (id: string) => {
   });
 
   const reqConfig: AxiosRequestConfig = {
-    url: `/v1/posts/${id}`,
+    url: `/v1/users/posts/${id}`,
     headers: {},
     method: 'get',
   };
@@ -179,7 +179,7 @@ export const destroyPost = (id: string) => (
     });
 
     const reqConfig: AxiosRequestConfig = {
-      url: `/v1/posts/${id}`,
+      url: `/v1/users/posts/${id}`,
       headers: {},
       method: 'delete',
     };
@@ -211,7 +211,7 @@ export const postReactions = (id: string, kind: string) => (
     });
 
     const reqConfig: AxiosRequestConfig = {
-      url: `/v1/posts/reactions/${id}`,
+      url: `/v1/users/posts/reactions/${id}`,
       headers: {},
       method: 'post',
       data: {
@@ -264,7 +264,7 @@ export const destroyReactions = (id: string, kind: string) => (
     });
 
     const reqConfig: AxiosRequestConfig = {
-      url: `/v1/posts/reactions/${id}`,
+      url: `/v1/users/posts/reactions/${id}`,
       headers: {},
       method: 'delete',
       data: {

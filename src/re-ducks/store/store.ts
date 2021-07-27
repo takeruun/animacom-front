@@ -10,6 +10,9 @@ import PostsReducer from 're-ducks/posts/reducers';
 import ApiStatusReducer from 're-ducks/apiStatus/reducers';
 import { History } from 'history';
 import thunk from 'redux-thunk';
+import { userPostModule } from 'modules/userPostModule';
+import { configureStore } from '@reduxjs/toolkit';
+import { createBrowserHistory } from 'history';
 
 export default function createStore(history: History) {
   return reduxCreateStore(
@@ -20,6 +23,7 @@ export default function createStore(history: History) {
       post: PostReducer,
       posts: PostsReducer,
       apiStatus: ApiStatusReducer,
+      userPost: userPostModule.reducer,
     }),
     applyMiddleware(
       routerMiddleware(history),
@@ -27,3 +31,23 @@ export default function createStore(history: History) {
     ),
   );
 }
+
+export const history = createBrowserHistory();
+
+const rootReducer = combineReducers({
+  router: connectRouter(history),
+  users: UsersReducer,
+  post: PostReducer,
+  posts: PostsReducer,
+  apiStatus: ApiStatusReducer,
+  userPost: userPostModule.reducer,
+});
+export const store = configureStore(
+  {
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+      .concat(routerMiddleware(history), thunk),
+  },
+);
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;

@@ -1,3 +1,4 @@
+import { UserPostStateType } from 'modules/userPostModule';
 import { UserState } from 're-ducks/users/types';
 import { PostType } from 're-ducks/post/types';
 import { PostsState } from 're-ducks/posts/types';
@@ -46,6 +47,7 @@ export type InitialState = {
   post: PostType,
   posts: PostsState,
   apiStatus: ApiStatusState,
+  userPost: UserPostStateType,
 }
 
 export default initialState;
