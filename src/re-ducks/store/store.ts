@@ -11,6 +11,7 @@ import ApiStatusReducer from 're-ducks/apiStatus/reducers';
 import { History } from 'history';
 import thunk from 'redux-thunk';
 import { userPostModule } from 'modules/userPostModule';
+import { reactionCountsModule } from 'modules/reactionCountsModule';
 import { configureStore } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 
@@ -24,6 +25,7 @@ export default function createStore(history: History) {
       posts: PostsReducer,
       apiStatus: ApiStatusReducer,
       userPost: userPostModule.reducer,
+      reactionCounts: reactionCountsModule.reducer,
     }),
     applyMiddleware(
       routerMiddleware(history),
@@ -41,6 +43,7 @@ const rootReducer = combineReducers({
   posts: PostsReducer,
   apiStatus: ApiStatusReducer,
   userPost: userPostModule.reducer,
+  reactionCounts: reactionCountsModule.reducer,
 });
 export const store = configureStore(
   {

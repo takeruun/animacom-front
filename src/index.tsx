@@ -1,16 +1,16 @@
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
-import createStore from 're-ducks/store/store';
+import { history, store } from 're-ducks/store/store';
 import { ConnectedRouter } from 'connected-react-router';
-import { createBrowserHistory } from 'history';
+// import { createBrowserHistory } from 'history';
 import App from './App';
 import './assets/reset.css';
 import './assets/style.css';
 import reportWebVitals from './reportWebVitals';
 
-const history = createBrowserHistory();
-export const store = createStore(history);
+// const history = createBrowserHistory();
+// export const store = createStore(history);
 
 ReactDOM.render(
   <Provider store={store}>
@@ -21,7 +21,7 @@ ReactDOM.render(
   document.getElementById('root'),
 );
 
-export default store;
+// export default store;
 // export type RootState = ReturnType<typeof store.getState>;
 // export type AppDispatch = typeof store.dispatch;
 // If you want to start measuring performance in your app, pass a function

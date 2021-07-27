@@ -41,4 +41,28 @@ export const fetchUserReactionPostsAPI = async (kind: string) => {
   return res;
 };
 
+export const fetchUserReactionCountsAPI = async () => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users/posts/reactions/counts',
+    headers: {},
+    method: 'get',
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return {};
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.reactions.counts)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};
+
 export default fetchUserReactionPostsAPI;
