@@ -1,8 +1,10 @@
 import {
-  FC, useCallback, useState, MouseEvent,
+  FC, useCallback, useState, MouseEvent, useEffect,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
+import { RootState } from 're-ducks/store/store';
+import { fetchUserReactionCounts } from 'modules/reactionCountsModule';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { InputText } from 'components/UIKit/index';
 import Drawer from '@material-ui/core/Drawer';
@@ -55,6 +57,7 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
   const classes = useStyles();
   const { open, onClose } = props;
   const dispatch = useDispatch();
+  const reactionCounts = useSelector((state: RootState) => state.reactionCounts);
 
   const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -78,18 +81,22 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
 
   const reactionMenus = [
     {
-      func: selectMenu, label: 'かわいい', icon: <FavoriteIcon />, id: 'show', value: '/posts/reaction/cute',
+      func: selectMenu, label: 'かわいい', icon: <FavoriteIcon />, id: 'show', value: '/posts/reaction/cute', count: reactionCounts.cuteCount,
     },
     {
-      func: selectMenu, label: 'お気に入り', icon: <GradeIcon />, id: 'show', value: '/posts/reaction/fav',
+      func: selectMenu, label: 'お気に入り', icon: <GradeIcon />, id: 'show', value: '/posts/reaction/fav', count: reactionCounts.favCount,
     },
     {
-      func: selectMenu, label: 'いいね', icon: <ThumbUpAltIcon />, id: 'show', value: '/posts/reaction/good',
+      func: selectMenu, label: 'いいね', icon: <ThumbUpAltIcon />, id: 'show', value: '/posts/reaction/good', count: reactionCounts.goodCount,
     },
     {
-      func: selectMenu, label: 'かっこいい', icon: <FlareIcon />, id: 'show', value: '/posts/reaction/cool',
+      func: selectMenu, label: 'かっこいい', icon: <FlareIcon />, id: 'show', value: '/posts/reaction/cool', count: reactionCounts.coolCount,
     },
   ];
+
+  useEffect(() => {
+    dispatch(fetchUserReactionCounts());
+  }, [dispatch]);
 
   return (
     <nav className={classes.drawer}>
@@ -149,7 +156,7 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
               onClick={(e) => menu.func(e, menu.value)}
             >
               <ListItemIcon>
-                <Badge badgeContent={0} color="secondary">
+                <Badge badgeContent={menu.count} color="secondary">
                   {menu.icon}
                 </Badge>
               </ListItemIcon>
