@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUserReactionPostsAPI } from 'api/Endpoint';
-import { RootState } from 're-ducks/store/store';
 
 type PostType = {
   id: string,
@@ -38,16 +37,16 @@ const initialState: UserPostStateType = {
   coolPosts: [],
 };
 
-export const fetchUserCutePosts = createAsyncThunk<
-  Array<PostType>,
+export const fetchUserReactionPosts = createAsyncThunk<
+  { posts: Array<PostType>, kind: string },
   string,
   { rejectValue: { message: string } }
 >(
-  'userPost/fetchUserCutePosts',
+  'userPost/fetchUserReactionPosts',
   async (_args, thunkApi) => {
     try {
       const posts = await fetchUserReactionPostsAPI(_args);
-      return posts;
+      return { posts, kind: _args };
     } catch (e) {
       return thunkApi.rejectWithValue({
         message: e.stack,
@@ -65,19 +64,19 @@ export const userPostModule = createSlice({
     },
     getSuccessCutePosts: (state, action) => {
       state.loading = false;
-      state.cutePosts = action.payload;
+      state.cutePosts = action.payload.posts;
     },
     getSuccessFavPosts: (state, action) => {
       state.loading = false;
-      state.favPosts = action.payload;
+      state.favPosts = action.payload.posts;
     },
     getSuccessGoodPosts: (state, action) => {
       state.loading = false;
-      state.goodPosts = action.payload;
+      state.goodPosts = action.payload.posts;
     },
     getSuccessCoolPosts: (state, action) => {
       state.loading = false;
-      state.coolPosts = action.payload;
+      state.coolPosts = action.payload.posts;
     },
     getFailure: (state, action) => {
       state.loading = false;
@@ -85,11 +84,25 @@ export const userPostModule = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserCutePosts.fulfilled, (state, action) => {
-      const getAction = userPostModule.actions.getSuccessCutePosts(action.payload);
-      userPostModule.caseReducers.getSuccessCutePosts(state, getAction);
+    builder.addCase(fetchUserReactionPosts.pending, (state) => {
+      userPostModule.caseReducers.getStart(state);
     });
-    builder.addCase(fetchUserCutePosts.rejected, (state, action) => {
+    builder.addCase(fetchUserReactionPosts.fulfilled, (state, action) => {
+      if (action.payload.kind === 'cute') {
+        const getAction = userPostModule.actions.getSuccessCutePosts(action.payload.posts);
+        userPostModule.caseReducers.getSuccessCutePosts(state, getAction);
+      } else if (action.payload.kind === 'fav') {
+        const getAction = userPostModule.actions.getSuccessFavPosts(action.payload.posts);
+        userPostModule.caseReducers.getSuccessFavPosts(state, getAction);
+      } else if (action.payload.kind === 'good') {
+        const getAction = userPostModule.actions.getSuccessGoodPosts(action.payload.posts);
+        userPostModule.caseReducers.getSuccessGoodPosts(state, getAction);
+      } else if (action.payload.kind === 'cool') {
+        const getAction = userPostModule.actions.getSuccessCoolPosts(action.payload.posts);
+        userPostModule.caseReducers.getSuccessCoolPosts(state, getAction);
+      }
+    });
+    builder.addCase(fetchUserReactionPosts.rejected, (state, action) => {
       const getAction = userPostModule.actions.getFailure(action.payload);
       userPostModule.caseReducers.getFailure(state, getAction);
     });
@@ -103,5 +116,3 @@ export const {
   getSuccessGoodPosts,
   getSuccessCoolPosts,
 } = userPostModule.actions;
-
-export const cutePostsSelecter = (state: RootState) => state.userPost.cutePosts;
