@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { InitialState } from 're-ducks/store/initialState';
 import {
   ChangeEvent, FC, useCallback, useEffect, useState,
 } from 'react';
@@ -8,6 +7,8 @@ import {
 } from 're-ducks/post/operations';
 import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
 import { getApiStatusLoading } from 're-ducks/apiStatus/selectors';
+import { fetchCategories } from 'modules/categoryModule';
+import { AppDispatch, RootState } from 're-ducks/store/store';
 import {
   InputText, SelectBox,
 } from 'components/UIKit/index';
@@ -38,13 +39,11 @@ const PostEdit: FC = () => {
     id = id.split('/')[1];
   }
 
-  const selecter = useSelector((state: InitialState) => state);
+  const selecter = useSelector((state: RootState) => state);
   const loading = getApiStatusLoading(selecter);
-  const dispatch = useDispatch();
-  const categories = [
-    { id: '1', name: '猫' },
-    { id: '2', name: '犬' },
-  ];
+  const categoryModule = useSelector((state: RootState) => state.category);
+  const dispatch: AppDispatch = useDispatch();
+  const categories = categoryModule.categories;
 
   const [title, setTitle] = useState('');
   const [subTitle, setSubTitle] = useState('');
@@ -107,6 +106,7 @@ const PostEdit: FC = () => {
     if (id !== undefined && id !== '') {
       const execApi = async (postId: string) => {
         dispatch(startFetch());
+        dispatch(fetchCategories());
 
         const res = await fetchPostApi(postId);
         setTitle(res.post.title);
