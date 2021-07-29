@@ -144,6 +144,7 @@ export const editPost = (id: string, data: FormData) => (
           alreadyGooded: res.data.post.alreadyGooded,
           alreadyCooled: res.data.post.alreadyCooled,
         }));
+        dispatch(push('/'));
       })
       .catch((err) => {
         throw new Error(err);
