@@ -7,6 +7,7 @@ import {
   editPostAction,
   destroyPostAction,
 } from 're-ducks/post/actions';
+import { push } from 'connected-react-router';
 import { InitialState } from 're-ducks/store/initialState';
 
 const url = 'http://localhost:3001';
@@ -97,6 +98,7 @@ export const createPost = (data: FormData) => (
           alreadyGooded: res.data.post.alreadyGooded,
           alreadyCooled: res.data.post.alreadyCooled,
         }));
+        dispatch(push('/'));
       })
       .catch((err) => {
         throw new Error(err);
@@ -142,6 +144,7 @@ export const editPost = (id: string, data: FormData) => (
           alreadyGooded: res.data.post.alreadyGooded,
           alreadyCooled: res.data.post.alreadyCooled,
         }));
+        dispatch(push('/'));
       })
       .catch((err) => {
         throw new Error(err);

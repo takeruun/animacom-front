@@ -65,4 +65,21 @@ export const fetchUserReactionCountsAPI = async () => {
   return res;
 };
 
-export default fetchUserReactionPostsAPI;
+export const fetchCategoriesAPI = async () => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/categories',
+    headers: {},
+    method: 'get',
+  };
+  const res = await client(reqConfig)
+    .then((response) => response.data)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};

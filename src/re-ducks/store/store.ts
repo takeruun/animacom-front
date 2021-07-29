@@ -12,6 +12,7 @@ import { History } from 'history';
 import thunk from 'redux-thunk';
 import { userPostModule } from 'modules/userPostModule';
 import { reactionCountsModule } from 'modules/reactionCountsModule';
+import { categoryModule } from 'modules/categoryModule';
 import { configureStore } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 
@@ -44,6 +45,7 @@ const rootReducer = combineReducers({
   apiStatus: ApiStatusReducer,
   userPost: userPostModule.reducer,
   reactionCounts: reactionCountsModule.reducer,
+  category: categoryModule.reducer,
 });
 export const store = configureStore(
   {
