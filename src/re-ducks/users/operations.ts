@@ -119,8 +119,23 @@ export const signIn = (params: SignInParams) => (
 );
 
 export const signOut = () => async (dispatch: Dispatch<Action>): Promise<void> => {
-  await axios.post(`${url}/v1/users/auth/sign_out`)
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users/auth/sign_out',
+    headers: {},
+    method: 'delete',
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return;
+
+  await client(reqConfig)
     .then(() => {
+      localStorage.removeItem('anima');
       dispatch(signOutAction());
       dispatch(push('/'));
     });

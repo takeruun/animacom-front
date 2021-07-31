@@ -1,6 +1,9 @@
 import { FC, useCallback, useState } from 'react';
 import { push } from 'connected-react-router';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getIsSignedIn } from 're-ducks/users/selectors';
+import { InitialState } from 're-ducks/store/initialState';
+import { signOut } from 're-ducks/users/operations';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -101,7 +104,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const Header: FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const selector = useSelector((state: InitialState) => state);
+  const isSignedIn = getIsSignedIn(selector);
   const [open, setOpen] = useState(false);
 
   const handleDrawerToggle = useCallback((event) => {
@@ -162,13 +166,23 @@ const Header: FC = () => {
               inputProps={{ 'aria-label': 'search' }}
             />
           </div>
-          <Button
-            variant="outlined"
-            onClick={() => dispatch(push('/sign_in'))}
-            className={classes.btn}
-          >
-            ログイン
-          </Button>
+          {isSignedIn ? (
+            <Button
+              variant="outlined"
+              onClick={() => dispatch(signOut())}
+              className={classes.btn}
+            >
+              ログアウト
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              onClick={() => dispatch(push('/sign_in'))}
+              className={classes.btn}
+            >
+              ログイン
+            </Button>
+          )}
           <IconButton>
             <MenuIcon onClick={(e) => handleDrawerToggle(e)} />
           </IconButton>

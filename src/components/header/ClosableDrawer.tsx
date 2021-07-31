@@ -4,6 +4,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { RootState } from 're-ducks/store/store';
+import { signOut } from 're-ducks/users/operations';
 import { fetchUserReactionCounts } from 'modules/reactionCountsModule';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { InputText } from 'components/UIKit/index';
@@ -138,7 +139,11 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
                 <ListItemText primary={menu.label} />
               </ListItem>
             ))}
-            <ListItem button key="logout">
+            <ListItem
+              button
+              key="logout"
+              onClick={() => dispatch(signOut())}
+            >
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
