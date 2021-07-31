@@ -1,7 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { push } from 'connected-react-router';
 import { Action, Dispatch } from 'redux';
-import { signUpAction, signInAction, signOutAction } from './actions';
+import {
+  signUpAction,
+  signInAction,
+  signOutAction,
+  getUserAction,
+} from './actions';
 import { UserState } from './types';
 
 const url = 'http://localhost:3001';
@@ -16,6 +21,23 @@ type SignInParams = {
   email: string,
   password: string
 }
+
+type UpdateUserParams = {
+  name: string,
+  nickname: string,
+}
+
+type AuthType = {
+  accessToken: string
+  client: string
+  uid: string
+}
+
+const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
+  'access-token': accessToken,
+  client,
+  uid,
+});
 
 export const signUp = (params: UserParams) => (
   async (dispatch: Dispatch<Action>, getState: () => UserState): Promise<void | boolean> => {
@@ -103,3 +125,65 @@ export const signOut = () => async (dispatch: Dispatch<Action>): Promise<void> =
       dispatch(push('/'));
     });
 };
+
+export const fetchUser = () => async (dispatch: Dispatch<Action>): Promise<void> => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users',
+    headers: {},
+    method: 'get',
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return;
+
+  client(reqConfig)
+    .then((res) => {
+      dispatch(getUserAction({
+        isSignedIn: true,
+        uid: res.data.user.uid,
+        name: res.data.user.name,
+        nickname: res.data.user.nickname,
+      }));
+    }).catch((e) => {
+      throw new Error(e);
+    });
+};
+
+export const updateUser = (params: UpdateUserParams) => (
+  async (dispatch: Dispatch<Action>): Promise<void> => {
+    const client = axios.create({
+      baseURL: url,
+    });
+
+    const reqConfig: AxiosRequestConfig = {
+      url: '/v1/users',
+      headers: {},
+      method: 'put',
+      data: {
+        user: params,
+      },
+    };
+
+    if (localStorage.getItem('anima')) {
+      reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+    } else return;
+
+    client(reqConfig)
+      .then((res) => {
+        dispatch(getUserAction({
+          isSignedIn: true,
+          uid: res.data.user.uid,
+          name: res.data.user.name,
+          nickname: res.data.user.nickname,
+        }));
+        dispatch(push('/mypage'));
+      }).catch((e) => {
+        throw new Error(e);
+      });
+  }
+);
