@@ -83,3 +83,27 @@ export const fetchCategoriesAPI = async () => {
 
   return res;
 };
+
+export const fetchUserAPI = async () => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users',
+    headers: {},
+    method: 'get',
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return {};
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.user)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};

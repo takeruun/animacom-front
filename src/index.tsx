@@ -4,9 +4,11 @@ import { Provider } from 'react-redux';
 import { history, store } from 're-ducks/store/store';
 import { ConnectedRouter } from 'connected-react-router';
 // import { createBrowserHistory } from 'history';
-import App from './App';
 import './assets/reset.css';
 import './assets/style.css';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import App from './App';
+import { theme } from './assets/theme';
 import reportWebVitals from './reportWebVitals';
 
 // const history = createBrowserHistory();
@@ -15,7 +17,9 @@ import reportWebVitals from './reportWebVitals';
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <App />
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
     </ConnectedRouter>
   </Provider>,
   document.getElementById('root'),

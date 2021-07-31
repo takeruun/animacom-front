@@ -22,4 +22,9 @@ export interface SIGN_OUT extends Action {
   payload: UserState;
 }
 
-export type ActionsType = SIGN_UP | SIGN_IN | SIGN_OUT
+export interface FETCH_USER extends Action {
+  type: 'FETCH_USER';
+  payload: UserState;
+}
+
+export type ActionsType = SIGN_UP | SIGN_IN | SIGN_OUT | FETCH_USER
