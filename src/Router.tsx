@@ -10,6 +10,7 @@ const SignIn = lazy(() => import('components/pages/sign_in/index'));
 const PostEdit = lazy(() => import('components/pages/posts/PostEdit'));
 const PostDetail = lazy(() => import('components/pages/posts/PostDetail'));
 const UsersPosts = lazy(() => import('components/pages/users/UsersPosts'));
+const MyPage = lazy(() => import('components/pages/users/MyPage'));
 
 const Router: FC = () => (
   <Suspense fallback={null}>
@@ -21,6 +22,7 @@ const Router: FC = () => (
         <Route exact path="/posts/:id" component={PostDetail} />
         <Route path="/post/edit(/:id)?" component={PostEdit} />
         <Route exact path="/posts/reaction/:kind" component={UsersPosts} />
+        <Route exact path="/mypage" component={MyPage} />
       </Auth>
     </Switch>
   </Suspense>
