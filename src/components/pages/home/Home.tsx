@@ -1,6 +1,16 @@
-import { FC } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 're-ducks/store/store';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchPosts } from 're-ducks/posts/operations';
+import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
+import {
+  getCool5Posts,
+  getCute5Posts,
+  getDayAgoPosts,
+  getFav5Posts,
+  getGood5Posts,
+  getLatestPosts,
+} from 're-ducks/posts/selectors';
+import { InitialState } from 're-ducks/store/initialState';
 import { push } from 'connected-react-router';
 import { makeStyles } from '@material-ui/core/styles';
 import { PostList } from 'components/pages/posts/index';
@@ -13,18 +23,41 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Home: FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch();
+  const selector = useSelector((state: InitialState) => state);
   const classes = useStyles();
+
+  const list = [
+    { path: 'latest', posts: getLatestPosts(selector) },
+    { path: 'day_ago', posts: getDayAgoPosts(selector) },
+    { path: 'reactions/bests/cute', posts: getCute5Posts(selector) },
+    { path: 'reactions/bests/fav', posts: getFav5Posts(selector) },
+    { path: 'reactions/bests/good', posts: getGood5Posts(selector) },
+    { path: 'reactions/bests/cool', posts: getCool5Posts(selector) },
+  ];
+
+  useEffect(() => {
+    dispatch(startFetch());
+    dispatch(fetchPosts('latest'));
+    dispatch(fetchPosts('day_ago'));
+    dispatch(fetchPosts('reactions/bests/cute'));
+    dispatch(fetchPosts('reactions/bests/fav'));
+    dispatch(fetchPosts('reactions/bests/good'));
+    dispatch(fetchPosts('reactions/bests/cool'));
+    dispatch(endFetch());
+  }, [dispatch]);
 
   return (
     <div className={classes.root}>
       <div>home</div>
-      <PostList path="latest" />
-      <PostList path="day_ago" />
-      <PostList path="reactions/bests/cute" />
-      <PostList path="reactions/bests/fav" />
-      <PostList path="reactions/bests/good" />
-      <PostList path="reactions/bests/cool" />
+      {
+        list.map((p) => (
+          <PostList
+            path={p.path}
+            posts={p.posts}
+          />
+        ))
+      }
       <div
         role="presentation"
         className="u-text-small"
