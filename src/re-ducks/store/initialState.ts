@@ -35,6 +35,7 @@ const initialState = {
     fav5: [],
     good5: [],
     cool5: [],
+    searchPosts: [],
   },
   apiStatus: {
     loading: false,

@@ -1,9 +1,15 @@
-import { FC, useCallback, useState } from 'react';
+import {
+  FC,
+  useCallback,
+  useState,
+  KeyboardEvent,
+} from 'react';
 import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsSignedIn } from 're-ducks/users/selectors';
 import { InitialState } from 're-ducks/store/initialState';
 import { signOut } from 're-ducks/users/operations';
+import { searchPosts } from 're-ducks/posts/operations';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -108,6 +114,21 @@ const Header: FC = () => {
   const isSignedIn = getIsSignedIn(selector);
   const [open, setOpen] = useState(false);
 
+  const [searchKeyword, setSearchKeyword] = useState('');
+
+  const inputSearchKeyword = useCallback((event) => {
+    setSearchKeyword(event.target.value);
+  }, [setSearchKeyword]);
+
+  const search = (event: KeyboardEvent<HTMLDivElement>) => {
+    console.log(event.key);
+
+    if (event.key === 'Enter') {
+      dispatch(searchPosts(searchKeyword));
+      dispatch(push(`/search/${searchKeyword}`));
+    }
+  };
+
   const handleDrawerToggle = useCallback((event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
@@ -164,6 +185,9 @@ const Header: FC = () => {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
+              value={searchKeyword}
+              onChange={(e) => inputSearchKeyword(e)}
+              onKeyPress={(e) => search(e)}
             />
           </div>
           {isSignedIn ? (

@@ -1,52 +1,14 @@
-import { FC, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchPosts } from 're-ducks/posts/operations';
-import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
-import { InitialState } from 're-ducks/store/initialState';
-import {
-  getCool5Posts,
-  getCute5Posts,
-  getDayAgoPosts,
-  getFav5Posts,
-  getGood5Posts,
-  getLatestPosts,
-} from 're-ducks/posts/selectors';
+import { FC } from 'react';
 import { PostType } from 're-ducks/post/types';
 import PostCard from './PostCard';
 
 type PropsType = {
   path: string,
+  posts: Array<PostType>,
 }
 
 const PostList: FC<PropsType> = (props: PropsType) => {
-  const dispatch = useDispatch();
-  const selecter = useSelector((state: InitialState) => state);
-  const { path } = props;
-
-  function getPosts(): Array<PostType> {
-    let posts = [];
-    if (path === 'day_ago') {
-      posts = getDayAgoPosts(selecter);
-    } else if (path === 'reactions/bests/cute') {
-      posts = getCute5Posts(selecter);
-    } else if (path === 'reactions/bests/fav') {
-      posts = getFav5Posts(selecter);
-    } else if (path === 'reactions/bests/good') {
-      posts = getGood5Posts(selecter);
-    } else if (path === 'reactions/bests/cool') {
-      posts = getCool5Posts(selecter);
-    } else {
-      posts = getLatestPosts(selecter);
-    }
-    return posts;
-  }
-  const posts = getPosts();
-
-  useEffect(() => {
-    dispatch(startFetch());
-    dispatch(fetchPosts(path));
-    dispatch(endFetch());
-  }, [dispatch, path]);
+  const { path, posts } = props;
 
   return (
     <div className="posts-list">
@@ -61,6 +23,7 @@ const PostList: FC<PropsType> = (props: PropsType) => {
           {
             posts.map((post) => (
               <PostCard
+                key={post.id}
                 {...post}
               />
             ))
