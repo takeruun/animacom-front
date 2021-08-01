@@ -11,7 +11,6 @@ import {
   getLatestPosts,
 } from 're-ducks/posts/selectors';
 import { InitialState } from 're-ducks/store/initialState';
-import { push } from 'connected-react-router';
 import { makeStyles } from '@material-ui/core/styles';
 import { PostList } from 'components/pages/posts/index';
 
@@ -28,12 +27,12 @@ const Home: FC = () => {
   const classes = useStyles();
 
   const list = [
-    { path: 'latest', posts: getLatestPosts(selector) },
-    { path: 'day_ago', posts: getDayAgoPosts(selector) },
-    { path: 'reactions/bests/cute', posts: getCute5Posts(selector) },
-    { path: 'reactions/bests/fav', posts: getFav5Posts(selector) },
-    { path: 'reactions/bests/good', posts: getGood5Posts(selector) },
-    { path: 'reactions/bests/cool', posts: getCool5Posts(selector) },
+    { id: 'latest', path: 'latest', posts: getLatestPosts(selector) },
+    { id: 'day_ago', path: 'day_ago', posts: getDayAgoPosts(selector) },
+    { id: 'cute', path: 'reactions/bests/cute', posts: getCute5Posts(selector) },
+    { id: 'fav', path: 'reactions/bests/fav', posts: getFav5Posts(selector) },
+    { id: 'good', path: 'reactions/bests/good', posts: getGood5Posts(selector) },
+    { id: 'cool', path: 'reactions/bests/cool', posts: getCool5Posts(selector) },
   ];
 
   useEffect(() => {
@@ -49,23 +48,15 @@ const Home: FC = () => {
 
   return (
     <div className={classes.root}>
-      <div>home</div>
       {
         list.map((p) => (
           <PostList
+            key={p.id}
             path={p.path}
             posts={p.posts}
           />
         ))
       }
-      <div
-        role="presentation"
-        className="u-text-small"
-        onClick={() => dispatch(push('/post/edit'))}
-        onKeyDown={() => dispatch(push('/post/edit'))}
-      >
-        投稿画面へ
-      </div>
     </div>
   );
 };

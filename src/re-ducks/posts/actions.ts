@@ -7,6 +7,7 @@ export const FETCH_CUTE5_POSTS = 'FETCH_CUTE5_POSTS';
 export const FETCH_FAV5_POSTS = 'FETCH_FAV5_POSTS';
 export const FETCH_GOOD5_POSTS = 'FETCH_GOOD5_POSTS';
 export const FETCH_COOL5_POSTS = 'FETCH_COOL5_POSTS';
+export const FETCH_SEARCH_POSTS = 'FETCH_SEARCH_POSTS';
 
 export const fetchLatetPostsAction = (payload: Array<PostType>): Types.FETCH_LATEST_POSTS => ({
   type: 'FETCH_LATEST_POSTS',
@@ -35,5 +36,10 @@ export const fetchGood5PostsAction = (payload: Array<PostType>): Types.FETCH_GOO
 
 export const fetchCool5PostsAction = (payload: Array<PostType>): Types.FETCH_COOL5_POSTS => ({
   type: 'FETCH_COOL5_POSTS',
+  payload,
+});
+
+export const fetchSearchPostsAction = (payload: Array<PostType>): Types.FETCH_SEARCH_POSTS => ({
+  type: 'FETCH_SEARCH_POSTS',
   payload,
 });

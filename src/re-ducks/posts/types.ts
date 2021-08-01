@@ -8,6 +8,7 @@ export type PostsState = {
   fav5: Array<PostType>,
   good5: Array<PostType>,
   cool5: Array<PostType>,
+  searchPosts: Array<PostType>,
 }
 
 export interface START_FETCH extends Action {
@@ -54,6 +55,11 @@ export interface FETCH_COOL5_POSTS extends Action {
   payload: Array<PostType>,
 }
 
+export interface FETCH_SEARCH_POSTS extends Action {
+  type: 'FETCH_SEARCH_POSTS',
+  payload: Array<PostType>,
+}
+
 export type ActionsType = START_FETCH |
   END_FETCH |
   FETCH_POSTS |
@@ -62,5 +68,6 @@ export type ActionsType = START_FETCH |
   FETCH_CUTE5_POSTS |
   FETCH_FAV5_POSTS |
   FETCH_GOOD5_POSTS |
-  FETCH_COOL5_POSTS
+  FETCH_COOL5_POSTS |
+  FETCH_SEARCH_POSTS
 

@@ -23,6 +23,7 @@ const PostList: FC<PropsType> = (props: PropsType) => {
           {
             posts.map((post) => (
               <PostCard
+                key={post.id}
                 {...post}
               />
             ))

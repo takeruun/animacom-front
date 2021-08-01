@@ -7,6 +7,7 @@ import {
   fetchFav5PostsAction,
   fetchGood5PostsAction,
   fetchCool5PostsAction,
+  fetchSearchPostsAction,
 } from './actions';
 
 const url = 'http://localhost:3001';
@@ -41,6 +42,33 @@ export const fetchPosts = (path: string) => (
       })
       .catch((err) => {
         throw new Error(err);
+      });
+  }
+);
+
+export const searchPosts = (searchKeyword: string) => (
+  (dispatch: Dispatch<Action>): void => {
+    const client = axios.create({
+      baseURL: url,
+    });
+
+    const reqConfig: AxiosRequestConfig = {
+      url: '/v1/posts/search',
+      headers: {
+
+      },
+      method: 'get',
+      params: {
+        keyword: searchKeyword,
+      },
+    };
+
+    client(reqConfig)
+      .then((res) => {
+        dispatch(fetchSearchPostsAction(res.data.posts));
+      })
+      .catch((e) => {
+        throw new Error(e);
       });
   }
 );

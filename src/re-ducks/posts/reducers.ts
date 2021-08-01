@@ -6,6 +6,7 @@ import {
   FETCH_FAV5_POSTS,
   FETCH_GOOD5_POSTS,
   FETCH_COOL5_POSTS,
+  FETCH_SEARCH_POSTS,
 } from './actions';
 import { ActionsType, PostsState } from './types';
 
@@ -40,6 +41,11 @@ const PostReducer = (state: PostsState = initialState.posts, action: ActionsType
       return {
         ...state,
         cool5: action.payload,
+      };
+    case FETCH_SEARCH_POSTS:
+      return {
+        ...state,
+        searchPosts: action.payload,
       };
     default:
       return state;

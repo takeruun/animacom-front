@@ -32,3 +32,8 @@ export const getGood5Posts = createSelector(
   [postsSelector],
   (state) => state.good5,
 );
+
+export const getSearchPosts = createSelector(
+  [postsSelector],
+  (state) => state.searchPosts,
+);

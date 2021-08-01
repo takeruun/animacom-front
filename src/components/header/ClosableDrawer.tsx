@@ -82,16 +82,16 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
 
   const reactionMenus = [
     {
-      func: selectMenu, label: 'かわいい', icon: <FavoriteIcon />, id: 'show', value: '/posts/reaction/cute', count: reactionCounts.cuteCount,
+      func: selectMenu, label: 'かわいい', icon: <FavoriteIcon />, id: 'show_cute', value: '/posts/reaction/cute', count: reactionCounts.cuteCount,
     },
     {
-      func: selectMenu, label: 'お気に入り', icon: <GradeIcon />, id: 'show', value: '/posts/reaction/fav', count: reactionCounts.favCount,
+      func: selectMenu, label: 'お気に入り', icon: <GradeIcon />, id: 'show_fav', value: '/posts/reaction/fav', count: reactionCounts.favCount,
     },
     {
-      func: selectMenu, label: 'いいね', icon: <ThumbUpAltIcon />, id: 'show', value: '/posts/reaction/good', count: reactionCounts.goodCount,
+      func: selectMenu, label: 'いいね', icon: <ThumbUpAltIcon />, id: 'show_good', value: '/posts/reaction/good', count: reactionCounts.goodCount,
     },
     {
-      func: selectMenu, label: 'かっこいい', icon: <FlareIcon />, id: 'show', value: '/posts/reaction/cool', count: reactionCounts.coolCount,
+      func: selectMenu, label: 'かっこいい', icon: <FlareIcon />, id: 'show_cool', value: '/posts/reaction/cool', count: reactionCounts.coolCount,
     },
   ];
 
