@@ -9,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getIsSignedIn } from 're-ducks/users/selectors';
 import { InitialState } from 're-ducks/store/initialState';
 import { signOut } from 're-ducks/users/operations';
-import { searchPosts } from 're-ducks/posts/operations';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -124,7 +123,6 @@ const Header: FC = () => {
     console.log(event.key);
 
     if (event.key === 'Enter') {
-      dispatch(searchPosts(searchKeyword));
       dispatch(push(`/search/${searchKeyword}`));
     }
   };
