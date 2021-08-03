@@ -7,8 +7,8 @@ import {
 import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsSignedIn } from 're-ducks/users/selectors';
-import { InitialState } from 're-ducks/store/initialState';
 import { signOut } from 're-ducks/users/operations';
+import { AppDispatch, RootState } from 're-ducks/store/store';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -108,8 +108,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Header: FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const selector = useSelector((state: InitialState) => state);
+  const dispatch: AppDispatch = useDispatch();
+  const selector = useSelector((state: RootState) => state);
   const isSignedIn = getIsSignedIn(selector);
   const [open, setOpen] = useState(false);
 
@@ -120,8 +120,6 @@ const Header: FC = () => {
   }, [setSearchKeyword]);
 
   const search = (event: KeyboardEvent<HTMLDivElement>) => {
-    console.log(event.key);
-
     if (event.key === 'Enter') {
       dispatch(push(`/search/${searchKeyword}`));
     }

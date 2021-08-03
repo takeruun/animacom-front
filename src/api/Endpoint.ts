@@ -84,6 +84,25 @@ export const fetchCategoriesAPI = async () => {
   return res;
 };
 
+export const fetchRootCategoriesAPI = async () => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/categories/root',
+    headers: {},
+    method: 'get',
+  };
+  const res = await client(reqConfig)
+    .then((response) => response.data)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};
+
 export const fetchUserAPI = async () => {
   const client = axios.create({
     baseURL: url,
