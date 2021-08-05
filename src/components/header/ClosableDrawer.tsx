@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { RootState } from 're-ducks/store/store';
 import { signOut } from 're-ducks/users/operations';
+import { fetchRootCategories } from 'modules/categoryModule';
 import { fetchUserReactionCounts } from 'modules/reactionCountsModule';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { InputText } from 'components/UIKit/index';
@@ -59,6 +60,8 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
   const { open, onClose } = props;
   const dispatch = useDispatch();
   const reactionCounts = useSelector((state: RootState) => state.reactionCounts);
+  const categoryModule = useSelector((state: RootState) => state.category);
+  const rootCategories = categoryModule.rootCategories;
 
   const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -97,6 +100,7 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
 
   useEffect(() => {
     dispatch(fetchUserReactionCounts());
+    dispatch(fetchRootCategories());
   }, [dispatch]);
 
   return (
@@ -170,6 +174,23 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
           ))}
         </List>
         <Divider />
+        <div className={classes.listTitle}>カテゴリ一覧</div>
+        <List>
+          {
+            rootCategories.map((category) => (
+              <ListItem
+                button
+                key={category.id}
+                onClick={(e) => {
+                  dispatch(push(`/category/${category.id}`));
+                  onClose(e);
+                }}
+              >
+                <ListItemText primary={category.name} />
+              </ListItem>
+            ))
+          }
+        </List>
       </Drawer>
     </nav>
   );

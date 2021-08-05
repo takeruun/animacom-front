@@ -15,6 +15,7 @@ import { reactionCountsModule } from 'modules/reactionCountsModule';
 import { categoryModule } from 'modules/categoryModule';
 import { configureStore } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
+import { postModule } from 'modules/postModule';
 
 export default function createStore(history: History) {
   return reduxCreateStore(
@@ -40,12 +41,11 @@ export const history = createBrowserHistory();
 const rootReducer = combineReducers({
   router: connectRouter(history),
   users: UsersReducer,
-  post: PostReducer,
-  posts: PostsReducer,
   apiStatus: ApiStatusReducer,
   userPost: userPostModule.reducer,
   reactionCounts: reactionCountsModule.reducer,
   category: categoryModule.reducer,
+  post: postModule.reducer,
 });
 export const store = configureStore(
   {

@@ -2,12 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   ChangeEvent, FC, useCallback, useEffect, useState,
 } from 'react';
-import {
-  createPost, editPost, fetchPostApi,
-} from 're-ducks/post/operations';
-import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
-import { getApiStatusLoading } from 're-ducks/apiStatus/selectors';
 import { fetchCategories } from 'modules/categoryModule';
+import { createPost, editPost, fetchPost } from 'modules/postModule';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import {
   InputText, SelectBox,
@@ -39,10 +35,10 @@ const PostEdit: FC = () => {
     id = id.split('/')[1];
   }
 
-  const selecter = useSelector((state: RootState) => state);
-  const loading = getApiStatusLoading(selecter);
-  const categoryModule = useSelector((state: RootState) => state.category);
   const dispatch: AppDispatch = useDispatch();
+  const postModule = useSelector((state: RootState) => state.post);
+  const categoryModule = useSelector((state: RootState) => state.category);
+  const loading = postModule.loading;
   const categories = categoryModule.categories;
 
   const [title, setTitle] = useState('');
@@ -95,7 +91,7 @@ const PostEdit: FC = () => {
       if (method === 'post') {
         dispatch(createPost(data));
       } else if (method === 'edit') {
-        dispatch(editPost(id, data));
+        dispatch(editPost({ id, data }));
       }
     } catch (err) {
       console.error('request err', err);
@@ -105,17 +101,13 @@ const PostEdit: FC = () => {
   useEffect(() => {
     if (id !== undefined && id !== '') {
       const execApi = async (postId: string) => {
-        dispatch(startFetch());
         dispatch(fetchCategories());
-
-        const res = await fetchPostApi(postId);
-        setTitle(res.post.title);
-        setSubTitle(res.post.subTitle);
-        setBody(res.post.body);
-        setCategoryId(res.post.categoryId);
-        setImages(res.post.images);
-
-        dispatch(endFetch());
+        const post = await dispatch(fetchPost(postId)).unwrap();
+        setTitle(post.title);
+        setSubTitle(post.subTitle);
+        setBody(post.body);
+        setCategoryId(post.categoryId);
+        setImages(post.images);
       };
       execApi(id);
     }

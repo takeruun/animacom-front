@@ -71,7 +71,7 @@ const PostCard: FC<PostType> = (props: PostType) => {
       <CardMedia
         className={classes.media}
         image={postImages[0].imagePath}
-        onClick={() => dispatch(push(`posts/${id}`))}
+        onClick={() => dispatch(push(`/posts/${id}`))}
       />
       <CardContent className={classes.content}>
         <div>
