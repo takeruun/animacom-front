@@ -8,7 +8,7 @@ import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsSignedIn } from 're-ducks/users/selectors';
 import { signOut } from 're-ducks/users/operations';
-import { AppDispatch, RootState } from 're-ducks/store/store';
+import { InitialState } from 're-ducks/store/initialState';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -108,8 +108,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Header: FC = () => {
   const classes = useStyles();
-  const dispatch: AppDispatch = useDispatch();
-  const selector = useSelector((state: RootState) => state);
+  const dispatch = useDispatch();
+  const selector = useSelector((state: InitialState) => state);
   const isSignedIn = getIsSignedIn(selector);
   const [open, setOpen] = useState(false);
 

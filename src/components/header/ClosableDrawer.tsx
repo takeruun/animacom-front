@@ -181,6 +181,10 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
               <ListItem
                 button
                 key={category.id}
+                onClick={(e) => {
+                  dispatch(push(`/category/${category.id}`));
+                  onClose(e);
+                }}
               >
                 <ListItemText primary={category.name} />
               </ListItem>
