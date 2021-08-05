@@ -1,10 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { getPostAction } from 're-ducks/post/actions';
-import { endFetch, startFetch } from 're-ducks/apiStatus/operations';
-import { fetchPostApi } from 're-ducks/post/operations';
+import { AppDispatch } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
+import { fetchPost } from 'modules/postModule';
 import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
 import { ImageSwiper, SizeTable } from './index';
@@ -49,35 +48,14 @@ const returnCodeToBr = (text: string) => {
 
 const PostDetail: FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const { id }: { id: string } = useParams();
   const [post, setPost] = useState<PostType>();
 
   useEffect(() => {
     const execApi = async (postId: string) => {
-      dispatch(startFetch());
-      const res = await fetchPostApi(postId);
-      setPost(res.post);
-
-      dispatch(getPostAction({
-        id: res.post.id,
-        title: res.post.title,
-        subTitle: res.post.subTitle,
-        body: res.post.body,
-        categoryId: res.post.categoryId,
-        images: res.post.images,
-        cuteCount: res.post.cuteCount,
-        favCount: res.post.favCount,
-        goodCount: res.post.goodCount,
-        coolCount: res.post.coolCount,
-        alreadyCuted: res.post.alreadyCuted,
-        alreadyFaved: res.post.alreadyFaved,
-        alreadyGooded: res.post.alreadyGooded,
-        alreadyCooled: res.post.alreadyCooled,
-        reactions: res.post.reactions,
-      }));
-
-      dispatch(endFetch());
+      const data = await dispatch(fetchPost(postId)).unwrap();
+      setPost(data);
     };
     execApi(id);
   }, [dispatch, id]);
