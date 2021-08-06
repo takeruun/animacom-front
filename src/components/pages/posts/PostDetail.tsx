@@ -122,7 +122,7 @@ const PostDetail: FC = () => {
                 {comment.userId}
               </div>
               <div>
-                {comment.body}
+                {returnCodeToBr(comment.body)}
               </div>
             </li>
           ))
