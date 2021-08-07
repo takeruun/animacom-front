@@ -16,7 +16,7 @@ import { categoryModule } from 'modules/categoryModule';
 import { configureStore } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 import { postModule } from 'modules/postModule';
-import { commentModule } from 'modules/commentModulet';
+import { commentModule } from 'modules/commentModule';
 
 export default function createStore(history: History) {
   return reduxCreateStore(

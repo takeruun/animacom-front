@@ -5,6 +5,8 @@ import {
   fetchPostAPI,
   createPostAPI,
   editPostAPI,
+  postReactionsAPI,
+  destroyReactionsAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 
@@ -155,6 +157,43 @@ export const createPost = createAsyncThunk<
   },
 );
 
+export const postReactions = createAsyncThunk<
+  PostType,
+  { id: string, kind: string },
+  { rejectValue: { message: string } }
+>(
+  'post/postReactions',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await postReactionsAPI(_args.id, _args.kind);
+      return res;
+    } catch (e) {
+      console.log(e);
+      return _thunkApi.rejectWithValue({
+        message: e.stack,
+      });
+    }
+  },
+);
+
+export const destroyReactions = createAsyncThunk<
+  PostType,
+  { id: string, kind: string },
+  { rejectValue: { message: string } }
+>(
+  'post/destroyReactions',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await destroyReactionsAPI(_args.id, _args.kind);
+      return res;
+    } catch (e) {
+      return _thunkApi.rejectWithValue({
+        message: e.stack,
+      });
+    }
+  },
+);
+
 export const postModule = createSlice({
   name: 'post',
   initialState,
@@ -194,6 +233,14 @@ export const postModule = createSlice({
       state.loading = false;
       state.cool5 = action.payload;
     },
+    postSuccessReactions: (state, action) => {
+      state.loading = false;
+      state.post = action.payload;
+    },
+    destorySuccessReactions: (state, action) => {
+      state.loading = false;
+      state.post = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCategoryPosts.fulfilled, (state, action) => {
@@ -224,6 +271,14 @@ export const postModule = createSlice({
         const getAction = postModule.actions.getSuccessCool5Posts(action.payload.posts);
         postModule.caseReducers.getSuccessCool5Posts(state, getAction);
       }
+    });
+    builder.addCase(postReactions.fulfilled, (state, action) => {
+      const getAction = postModule.actions.postSuccessReactions(action.payload);
+      postModule.caseReducers.postSuccessReactions(state, getAction);
+    });
+    builder.addCase(destroyReactions.fulfilled, (state, action) => {
+      const getAction = postModule.actions.destorySuccessReactions(action.payload);
+      postModule.caseReducers.destorySuccessReactions(state, getAction);
     });
   },
 });

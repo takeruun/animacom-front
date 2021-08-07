@@ -11,7 +11,7 @@ import { createCommentSocketAPI } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
 import { fetchPost } from 'modules/postModule';
-import { fetchComments } from 'modules/commentModulet';
+import { fetchComments } from 'modules/commentModule';
 import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
 import { InputText } from 'components/UIKit/index';

@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import ActionCable from 'actioncable';
 import { Action, Dispatch } from 'redux';
-import { getSuccessComment } from 'modules/commentModulet';
+import { getSuccessComment } from 'modules/commentModule';
 
 const url = 'http://localhost:3001';
 
@@ -182,10 +182,14 @@ export const fetchPostAPI = async (id: string) => {
   });
 
   const reqConfig: AxiosRequestConfig = {
-    url: `/v1/posts/${id}`,
+    url: `/v1/users/posts/${id}`,
     headers: {},
     method: 'get',
   };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return {};
 
   const res = await client(reqConfig)
     .then((response) => response.data.post)
@@ -269,6 +273,64 @@ export const destroyPostAPI = async (id: string) => {
 
   const res = await client(reqConfig)
     .then((response) => response.data)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};
+
+export const postReactionsAPI = async (id: string, kind: string) => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: `/v1/users/posts/reactions/${id}`,
+    headers: {},
+    method: 'post',
+    data: {
+      reaction: {
+        kind,
+      },
+    },
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return {};
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.post)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};
+
+export const destroyReactionsAPI = async (id: string, kind: string) => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: `/v1/users/posts/reactions/${id}`,
+    headers: {},
+    method: 'delete',
+    data: {
+      reaction: {
+        kind,
+      },
+    },
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return {};
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.post)
     .catch((e) => {
       throw new Error(e);
     });
