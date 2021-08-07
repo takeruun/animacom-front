@@ -1,4 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
+import ActionCable from 'actioncable';
+import { Action, Dispatch } from 'redux';
+import { getSuccessComment } from 'modules/commentModulet';
 
 const url = 'http://localhost:3001';
 
@@ -266,6 +269,62 @@ export const destroyPostAPI = async (id: string) => {
 
   const res = await client(reqConfig)
     .then((response) => response.data)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};
+
+export const createCommentSocketAPI = (postId: string) => (
+  (dispatch: Dispatch<Action>) => {
+    const cable = ActionCable.createConsumer(
+      'ws:localhost:3001/v1/cable',
+    );
+    const socket = cable.subscriptions.create(
+      {
+        channel: 'CommentChannel',
+        post_id: postId,
+      },
+      {
+        create: (userId: string, body: string) => {
+          socket.perform('create', {
+            user_id: userId,
+            body,
+          });
+        },
+        received: (data: any) => {
+          const comment = {
+            id: data.id,
+            userId: data.user_id,
+            postId: data.post_id,
+            body: data.body,
+            createdAt: new Date(data.created_at).toISOString(),
+          };
+
+          dispatch(getSuccessComment(comment));
+        },
+        disconnected: () => cable.disconnect(),
+      },
+    );
+
+    return socket;
+  }
+);
+
+export const fetchCommentsAPI = async (id: string) => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: `/v1/posts/${id}/comments`,
+    headers: {},
+    method: 'get',
+  };
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.comments)
     .catch((e) => {
       throw new Error(e);
     });

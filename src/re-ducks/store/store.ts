@@ -16,6 +16,7 @@ import { categoryModule } from 'modules/categoryModule';
 import { configureStore } from '@reduxjs/toolkit';
 import { createBrowserHistory } from 'history';
 import { postModule } from 'modules/postModule';
+import { commentModule } from 'modules/commentModulet';
 
 export default function createStore(history: History) {
   return reduxCreateStore(
@@ -46,6 +47,7 @@ const rootReducer = combineReducers({
   reactionCounts: reactionCountsModule.reducer,
   category: categoryModule.reducer,
   post: postModule.reducer,
+  comment: commentModule.reducer,
 });
 export const store = configureStore(
   {

@@ -1,11 +1,21 @@
-import { FC, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from 're-ducks/store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { createCommentSocketAPI } from 'api/Endpoint';
+import { AppDispatch, RootState } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
 import { fetchPost } from 'modules/postModule';
+import { fetchComments } from 'modules/commentModulet';
 import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
+import { InputText } from 'components/UIKit/index';
+import Button from '@material-ui/core/Button';
 import { ImageSwiper, SizeTable } from './index';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,38 +56,94 @@ const returnCodeToBr = (text: string) => {
   return parse(text.replace(/\r?\n/g, '<br/>'));
 };
 
+type Socket = ActionCable.Channel & {
+  create: (userId: string, body: string) => void;
+  received: (data: any) => void;
+  disconnected: () => void;
+}
+
 const PostDetail: FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
+  const commentModule = useSelector((state: RootState) => state.comment);
+
   const { id }: { id: string } = useParams();
   const [post, setPost] = useState<PostType>();
+  const [socket, setSocket] = useState<Socket>();
+  const [body, setBody] = useState('');
+  const comments = commentModule.comment;
+
+  const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setBody(event.target.value);
+  }, [setBody]);
 
   useEffect(() => {
     const execApi = async (postId: string) => {
       const data = await dispatch(fetchPost(postId)).unwrap();
       setPost(data);
+      setSocket(dispatch(createCommentSocketAPI(id)));
+      dispatch(fetchComments(postId));
     };
     execApi(id);
   }, [dispatch, id]);
 
+  useEffect(() => () => socket?.disconnected(), [socket]);
+
+  const createComment = () => {
+    socket?.create('1', body);
+    setBody('');
+  };
+
   return (
-    <section className="c-section-wrapin">
-      {post && (
-        <div className="p-grid__row">
-          <div className={classes.sliderBox}>
-            <ImageSwiper images={post.images} />
+    <>
+      <section className="c-section-wrapin">
+        {post && (
+          <div className="p-grid__row">
+            <div className={classes.sliderBox}>
+              <ImageSwiper images={post.images} />
+            </div>
+            <div className={classes.detail}>
+              <h2 className="u-text__headline">{post.title}</h2>
+              <p className={classes.subTitle}>{post.subTitle}</p>
+              <div className="module-spacer--small" />
+              <p>{returnCodeToBr(post.body)}</p>
+              <div className="module-spacer--small" />
+              <SizeTable id={post.id} />
+            </div>
           </div>
-          <div className={classes.detail}>
-            <h2 className="u-text__headline">{post.title}</h2>
-            <p className={classes.subTitle}>{post.subTitle}</p>
-            <div className="module-spacer--small" />
-            <p>{returnCodeToBr(post.body)}</p>
-            <div className="module-spacer--small" />
-            <SizeTable id={post.id} />
-          </div>
-        </div>
-      )}
-    </section>
+        )}
+      </section>
+      <div className="comments">
+        {
+          comments.map((comment) => (
+            <li key={comment.id}>
+              <div>
+                userId:
+                {comment.userId}
+              </div>
+              <div>
+                {returnCodeToBr(comment.body)}
+              </div>
+            </li>
+          ))
+        }
+        <InputText
+          label="コメント"
+          fullWidth={false}
+          multiline
+          required
+          rows={5}
+          value={body}
+          type="text"
+          input={inputBody}
+        />
+        <Button
+          onClick={() => createComment()}
+        >
+          送信
+        </Button>
+      </div>
+    </>
   );
 };
 
