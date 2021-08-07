@@ -11,8 +11,7 @@ import { AppDispatch } from 're-ducks/store/store';
 import { getUsername, getUserNickname } from 're-ducks/users/selectors';
 import { updateUser } from 're-ducks/users/operations';
 import { fetchUserAPI } from 'api/Endpoint';
-import { InputText } from 'components/UIKit/index';
-import { SecondaryButton } from 'components/UIKit/index';
+import { InputText, SecondaryButton } from 'components/UIKit/index';
 
 const MyPageEdit: FC = () => {
   const dispatch: AppDispatch = useDispatch();

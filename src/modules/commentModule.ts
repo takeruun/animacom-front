@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchCommentsAPI } from 'api/Endpoint';
 
-type CommentType = {
+export type CommentType = {
   id: number,
   userId: number,
   postId: number,

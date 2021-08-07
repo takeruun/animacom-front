@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCommentSocketAPI } from 'api/Endpoint';
+import { createCommentSocketAPI, ReciveDataType } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
 import { fetchPost } from 'modules/postModule';
@@ -58,7 +58,7 @@ const returnCodeToBr = (text: string) => {
 
 type Socket = ActionCable.Channel & {
   create: (userId: string, body: string) => void;
-  received: (data: any) => void;
+  received: (data: ReciveDataType) => void;
   disconnected: () => void;
 }
 

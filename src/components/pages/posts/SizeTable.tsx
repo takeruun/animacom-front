@@ -31,16 +31,16 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
   const dispatch: AppDispatch = useDispatch();
   const postModule = useSelector((state: RootState) => state.post);
   const post = postModule.post;
+  const alreadyCuted = post.alreadyCuted;
+  const alreadyFaved = post.alreadyFaved;
+  const alreadyGooded = post.alreadyGooded;
+  const alreadyCooled = post.alreadyCooled;
 
   const [cuteCount, setCuteCount] = useState<number>(0);
   const [favCount, setFavCount] = useState<number>(0);
   const [goodCount, setGoodCount] = useState<number>(0);
   const [coolCount, setCoolCount] = useState<number>(0);
 
-  const [alreadyCuted, setAlreadyCuted] = useState<boolean>(false);
-  const [alreadyFaved, setAlreadyFaved] = useState<boolean>(false);
-  const [alreadyGooded, setAlreadyGooded] = useState<boolean>(false);
-  const [alreadyCooled, setAlreadyCooled] = useState<boolean>(false);
   const [reactions, setReactions] = useState<{ id: string, kind: number }[]>();
 
   useEffect(() => {
@@ -48,11 +48,6 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
     setFavCount(post.favCount);
     setGoodCount(post.goodCount);
     setCoolCount(post.coolCount);
-
-    setAlreadyCuted(post.alreadyCuted || false);
-    setAlreadyFaved(post.alreadyFaved || false);
-    setAlreadyGooded(post.alreadyGooded || false);
-    setAlreadyCooled(post.alreadyCooled || false);
 
     setReactions(post.reactions);
   }, [post]);
@@ -70,12 +65,10 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
               <IconButton className={classes.iconCell} style={{ color: alreadyCuted ? 'rgb(231, 76, 60)' : '' }}>
                 <FavoriteIcon onClick={() => {
                   if (alreadyCuted) {
-                    const reaction = reactions!.find((r) => r.kind === 1);
+                    const reaction = reactions?.find((r) => r.kind === 1);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'cute' }));
-                    setAlreadyCuted(false);
                   } else {
                     dispatch(postReactions({ id, kind: 'cute' }));
-                    setAlreadyCuted(true);
                   }
                 }}
                 />
@@ -89,12 +82,10 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
               <IconButton className={classes.iconCell} style={{ color: alreadyFaved ? 'rgb(236, 240, 21)' : '' }}>
                 <GradeIcon onClick={() => {
                   if (alreadyFaved) {
-                    const reaction = reactions!.find((r) => r.kind === 2);
+                    const reaction = reactions?.find((r) => r.kind === 2);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'fav' }));
-                    setAlreadyFaved(false);
                   } else {
                     dispatch(postReactions({ id, kind: 'fav' }));
-                    setAlreadyFaved(true);
                   }
                 }}
                 />
@@ -108,12 +99,10 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
               <IconButton className={classes.iconCell} style={{ color: alreadyGooded ? 'rgb(8, 130, 245)' : '' }}>
                 <ThumbUpAltIcon onClick={() => {
                   if (alreadyGooded) {
-                    const reaction = reactions!.find((r) => r.kind === 3);
+                    const reaction = reactions?.find((r) => r.kind === 3);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'good' }));
-                    setAlreadyGooded(false);
                   } else {
                     dispatch(postReactions({ id, kind: 'good' }));
-                    setAlreadyGooded(true);
                   }
                 }}
                 />
@@ -127,12 +116,10 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
               <IconButton className={classes.iconCell} style={{ color: alreadyCooled ? 'rgb(8, 245, 48)' : '' }}>
                 <FlareIcon onClick={() => {
                   if (alreadyCooled) {
-                    const reaction = reactions!.find((r) => r.kind === 4);
+                    const reaction = reactions?.find((r) => r.kind === 4);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'cool' }));
-                    setAlreadyCooled(false);
                   } else {
                     dispatch(postReactions({ id, kind: 'cool' }));
-                    setAlreadyCooled(true);
                   }
                 }}
                 />

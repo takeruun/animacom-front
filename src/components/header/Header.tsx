@@ -3,6 +3,7 @@ import {
   useCallback,
   useState,
   KeyboardEvent,
+  MouseEvent,
 } from 'react';
 import { push } from 'connected-react-router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -125,8 +126,8 @@ const Header: FC = () => {
     }
   };
 
-  const handleDrawerToggle = useCallback((event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+  const handleDrawerToggle = useCallback((event: MouseEvent) => {
+    if (event.type === 'keydown' && (event.metaKey || event.shiftKey)) {
       return;
     }
     setOpen(!open);

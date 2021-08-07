@@ -8,13 +8,12 @@ import UsersReducer from 're-ducks/users/reducers';
 import PostReducer from 're-ducks/post/reducers';
 import PostsReducer from 're-ducks/posts/reducers';
 import ApiStatusReducer from 're-ducks/apiStatus/reducers';
-import { History } from 'history';
+import { History, createBrowserHistory } from 'history';
 import thunk from 'redux-thunk';
 import { userPostModule } from 'modules/userPostModule';
 import { reactionCountsModule } from 'modules/reactionCountsModule';
 import { categoryModule } from 'modules/categoryModule';
 import { configureStore } from '@reduxjs/toolkit';
-import { createBrowserHistory } from 'history';
 import { postModule } from 'modules/postModule';
 import { commentModule } from 'modules/commentModule';
 

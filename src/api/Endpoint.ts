@@ -1,7 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import ActionCable from 'actioncable';
 import { Action, Dispatch } from 'redux';
-import { getSuccessComment } from 'modules/commentModule';
+import { PostType } from 'modules/postModule';
+import { CategoryType } from 'modules/categoryModule';
+import { CommentType, getSuccessComment } from 'modules/commentModule';
 
 const url = 'http://localhost:3001';
 
@@ -33,7 +35,9 @@ export const fetchUserReactionPostsAPI = async (kind: string) => {
 
   if (localStorage.getItem('anima')) {
     reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data)
@@ -57,7 +61,9 @@ export const fetchUserReactionCountsAPI = async () => {
 
   if (localStorage.getItem('anima')) {
     reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data.reactions.counts)
@@ -68,7 +74,7 @@ export const fetchUserReactionCountsAPI = async () => {
   return res;
 };
 
-export const fetchCategoriesAPI = async () => {
+export const fetchCategoriesAPI = async (): Promise<Array<CategoryType>> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -78,8 +84,9 @@ export const fetchCategoriesAPI = async () => {
     headers: {},
     method: 'get',
   };
+
   const res = await client(reqConfig)
-    .then((response) => response.data)
+    .then((response) => response.data.categories)
     .catch((e) => {
       throw new Error(e);
     });
@@ -87,7 +94,7 @@ export const fetchCategoriesAPI = async () => {
   return res;
 };
 
-export const fetchRootCategoriesAPI = async () => {
+export const fetchRootCategoriesAPI = async (): Promise<Array<CategoryType>> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -98,7 +105,7 @@ export const fetchRootCategoriesAPI = async () => {
     method: 'get',
   };
   const res = await client(reqConfig)
-    .then((response) => response.data)
+    .then((response) => response.data.rootCategories)
     .catch((e) => {
       throw new Error(e);
     });
@@ -130,7 +137,9 @@ export const fetchUserAPI = async () => {
   return res;
 };
 
-export const searchPostsAPI = async (params: { keyword?: string, categoryId?: number }) => {
+export const searchPostsAPI = async (
+  params: { keyword?: string, categoryId?: number },
+): Promise<Array<PostType>> => {
   const { keyword, categoryId } = params;
 
   const client = axios.create({
@@ -156,7 +165,7 @@ export const searchPostsAPI = async (params: { keyword?: string, categoryId?: nu
   return res;
 };
 
-export const fetchPostsAPI = async (path: string) => {
+export const fetchPostsAPI = async (path: string): Promise<Array<PostType>> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -176,7 +185,7 @@ export const fetchPostsAPI = async (path: string) => {
   return res;
 };
 
-export const fetchPostAPI = async (id: string) => {
+export const fetchPostAPI = async (id: string): Promise<PostType> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -189,7 +198,9 @@ export const fetchPostAPI = async (id: string) => {
 
   if (localStorage.getItem('anima')) {
     reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data.post)
@@ -200,7 +211,7 @@ export const fetchPostAPI = async (id: string) => {
   return res;
 };
 
-export const createPostAPI = async (data: FormData) => {
+export const createPostAPI = async (data: FormData): Promise<PostType> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -217,7 +228,9 @@ export const createPostAPI = async (data: FormData) => {
       ...authHeaders(JSON.parse(localStorage.getItem('anima') || '')),
       'Content-Type': 'multipart/form-data',
     };
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data.post)
@@ -228,7 +241,7 @@ export const createPostAPI = async (data: FormData) => {
   return res;
 };
 
-export const editPostAPI = async (id: string, data: FormData) => {
+export const editPostAPI = async (id: string, data: FormData): Promise<PostType> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -245,7 +258,9 @@ export const editPostAPI = async (id: string, data: FormData) => {
       ...authHeaders(JSON.parse(localStorage.getItem('anima') || '')),
       'Content-Type': 'multipart/form-data',
     };
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data.post)
@@ -280,7 +295,7 @@ export const destroyPostAPI = async (id: string) => {
   return res;
 };
 
-export const postReactionsAPI = async (id: string, kind: string) => {
+export const postReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -298,7 +313,9 @@ export const postReactionsAPI = async (id: string, kind: string) => {
 
   if (localStorage.getItem('anima')) {
     reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data.post)
@@ -309,7 +326,7 @@ export const postReactionsAPI = async (id: string, kind: string) => {
   return res;
 };
 
-export const destroyReactionsAPI = async (id: string, kind: string) => {
+export const destroyReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -327,7 +344,9 @@ export const destroyReactionsAPI = async (id: string, kind: string) => {
 
   if (localStorage.getItem('anima')) {
     reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return {};
+  } else {
+    throw new Error('please login');
+  }
 
   const res = await client(reqConfig)
     .then((response) => response.data.post)
@@ -336,6 +355,14 @@ export const destroyReactionsAPI = async (id: string, kind: string) => {
     });
 
   return res;
+};
+
+export type ReciveDataType = {
+  id: number,
+  userId: number,
+  postId: number,
+  body: string,
+  createdAt: string,
 };
 
 export const createCommentSocketAPI = (postId: string) => (
@@ -355,13 +382,14 @@ export const createCommentSocketAPI = (postId: string) => (
             body,
           });
         },
-        received: (data: any) => {
+        received: (data: ReciveDataType) => {
+          console.log(data);
           const comment = {
             id: data.id,
-            userId: data.user_id,
-            postId: data.post_id,
+            userId: data.userId,
+            postId: data.postId,
             body: data.body,
-            createdAt: new Date(data.created_at).toISOString(),
+            createdAt: new Date(data.createdAt).toISOString(),
           };
 
           dispatch(getSuccessComment(comment));
@@ -374,7 +402,7 @@ export const createCommentSocketAPI = (postId: string) => (
   }
 );
 
-export const fetchCommentsAPI = async (id: string) => {
+export const fetchCommentsAPI = async (id: string): Promise<Array<CommentType>> => {
   const client = axios.create({
     baseURL: url,
   });

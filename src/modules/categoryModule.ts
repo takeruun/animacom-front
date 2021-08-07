@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchCategoriesAPI, fetchRootCategoriesAPI } from 'api/Endpoint';
 
-type CategoryType = {
-  categories: Array<{ id: string, name: string }>,
-  rootCategories: Array<{ id: string, name: string }>,
+export type CategoryType = {
+  id: string,
+  name: string,
 };
 
-export type CategoryStateType = {
+type CategoryStateType = {
   loading: boolean,
   error: string,
   categories: Array<{ id: string, name: string }>,
@@ -21,7 +21,7 @@ const initialState: CategoryStateType = {
 };
 
 export const fetchCategories = createAsyncThunk<
-  CategoryType,
+  Array<CategoryType>,
   void,
   { rejectValue: { message: string } }
 >(
@@ -29,7 +29,7 @@ export const fetchCategories = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await fetchCategoriesAPI();
-      return res.categories;
+      return res;
     } catch (e) {
       return _thunkApi.rejectWithValue({
         message: e.stack,
@@ -39,7 +39,7 @@ export const fetchCategories = createAsyncThunk<
 );
 
 export const fetchRootCategories = createAsyncThunk<
-  CategoryType,
+  Array<CategoryType>,
   void,
   { rejectValue: { message: string } }
 >(
@@ -47,7 +47,7 @@ export const fetchRootCategories = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await fetchRootCategoriesAPI();
-      return res.rootCategories;
+      return res;
     } catch (e) {
       return _thunkApi.rejectWithValue({
         message: e.stack,

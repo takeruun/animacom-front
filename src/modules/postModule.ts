@@ -10,7 +10,7 @@ import {
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 
-type PostType = {
+export type PostType = {
   id: string,
   title: string,
   subTitle: string,
@@ -77,7 +77,7 @@ export const fetchCategoryPosts = createAsyncThunk<
       return res;
     } catch (e) {
       return _thunkApi.rejectWithValue({
-        message: e.stack,
+        message: e.message,
       });
     }
   },
@@ -95,7 +95,7 @@ export const fetchPosts = createAsyncThunk<
       return { posts: res, path: _args };
     } catch (e) {
       return _thunkApi.rejectWithValue({
-        message: e.stack,
+        message: e.message,
       });
     }
   },
@@ -113,7 +113,7 @@ export const fetchPost = createAsyncThunk<
       return res;
     } catch (e) {
       return _thunkApi.rejectWithValue({
-        message: e.stack,
+        message: e.message,
       });
     }
   },
@@ -170,7 +170,7 @@ export const postReactions = createAsyncThunk<
     } catch (e) {
       console.log(e);
       return _thunkApi.rejectWithValue({
-        message: e.stack,
+        message: e.message,
       });
     }
   },
@@ -188,7 +188,7 @@ export const destroyReactions = createAsyncThunk<
       return res;
     } catch (e) {
       return _thunkApi.rejectWithValue({
-        message: e.stack,
+        message: e.message,
       });
     }
   },
@@ -279,6 +279,12 @@ export const postModule = createSlice({
     builder.addCase(destroyReactions.fulfilled, (state, action) => {
       const getAction = postModule.actions.destorySuccessReactions(action.payload);
       postModule.caseReducers.destorySuccessReactions(state, getAction);
+    });
+    builder.addCase(postReactions.rejected, (_state, action) => {
+      alert(action.payload?.message);
+    });
+    builder.addCase(destroyReactions.rejected, (_state, action) => {
+      alert(action.payload?.message);
     });
   },
 });

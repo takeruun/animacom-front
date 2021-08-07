@@ -1,23 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUserReactionPostsAPI } from 'api/Endpoint';
-
-type PostType = {
-  id: string,
-  title: string,
-  subTitle: string,
-  body: string,
-  categoryId: string,
-  images: Array<{ id: string, file: File | null, imagePath: string }>
-  cuteCount: number,
-  favCount: number,
-  goodCount: number,
-  coolCount: number,
-  alreadyCuted?: boolean,
-  alreadyFaved?: boolean,
-  alreadyGooded?: boolean,
-  alreadyCooled?: boolean,
-  reactions?: Array<{ id: string, kind: number }>,
-};
+import { PostType } from './postModule';
 
 export type UserPostStateType = {
   loading: boolean,
