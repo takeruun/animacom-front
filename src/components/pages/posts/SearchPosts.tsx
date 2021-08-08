@@ -1,15 +1,14 @@
 import { FC, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { InitialState } from 're-ducks/store/initialState';
-import { getSearchPosts } from 're-ducks/posts/selectors';
-import { searchPosts } from 're-ducks/posts/operations';
+import { AppDispatch, RootState } from 're-ducks/store/store';
+import { searchPosts } from 'modules/postModule';
 import PostCard from './PostCard';
 
 const SearchPosts: FC = () => {
-  const dispatch = useDispatch();
-  const selector = useSelector((state: InitialState) => state);
-  const posts = getSearchPosts(selector);
+  const dispatch: AppDispatch = useDispatch();
+  const postModule = useSelector((state: RootState) => state.post);
+  const posts = postModule.searchPosts;
   const { word }: { word: string } = useParams();
 
   useEffect(() => {

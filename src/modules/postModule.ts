@@ -83,6 +83,24 @@ export const fetchCategoryPosts = createAsyncThunk<
   },
 );
 
+export const searchPosts = createAsyncThunk<
+  Array<PostType>,
+  string,
+  { rejectValue: { message: string } }
+>(
+  'post/fetchCategoryPosts',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await searchPostsAPI({ keyword: _args });
+      return res;
+    } catch (e) {
+      return _thunkApi.rejectWithValue({
+        message: e.message,
+      });
+    }
+  },
+);
+
 export const fetchPosts = createAsyncThunk<
   { posts: Array<PostType>, path: string },
   string,
