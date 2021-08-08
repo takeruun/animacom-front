@@ -77,24 +77,20 @@ const PostEdit: FC = () => {
   }, [images]);
 
   const submit = (method: string) => {
-    try {
-      const data = new FormData();
-      data.append('post[title]', title);
-      data.append('post[subTitle]', subTitle);
-      data.append('post[body]', body);
-      data.append('post[categoryId]', categoryId);
-      images.forEach((image) => {
-        data.append('post[images][][id]', image.id);
-        data.append('post[images][][file]', image.file);
-      });
+    const data = new FormData();
+    data.append('post[title]', title);
+    data.append('post[subTitle]', subTitle);
+    data.append('post[body]', body);
+    data.append('post[categoryId]', categoryId);
+    images.forEach((image) => {
+      data.append('post[images][][id]', image.id);
+      data.append('post[images][][file]', image.file);
+    });
 
-      if (method === 'post') {
-        dispatch(createPost(data));
-      } else if (method === 'edit') {
-        dispatch(editPost({ id, data }));
-      }
-    } catch (err) {
-      console.error('request err', err);
+    if (method === 'post') {
+      dispatch(createPost(data));
+    } else if (method === 'edit') {
+      dispatch(editPost({ id, data }));
     }
   };
 

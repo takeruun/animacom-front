@@ -4,6 +4,7 @@ import { fetchCommentsAPI } from 'api/Endpoint';
 export type CommentType = {
   id: number,
   userId: number,
+  nickname: string,
   postId: number,
   body: string,
   createdAt: string,

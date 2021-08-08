@@ -365,8 +365,14 @@ export type ReciveDataType = {
   createdAt: string,
 };
 
+export type SocketType = ActionCable.Channel & {
+  create: (body: string) => void;
+  received: (data: ReciveDataType) => void;
+  disconnected: () => void;
+}
+
 export const createCommentSocketAPI = (postId: string) => (
-  (dispatch: Dispatch<Action>) => {
+  (dispatch: Dispatch<Action>): SocketType => {
     const cable = ActionCable.createConsumer(
       'ws:localhost:3001/v1/cable',
     );
@@ -376,14 +382,13 @@ export const createCommentSocketAPI = (postId: string) => (
         post_id: postId,
       },
       {
-        create: (userId: string, body: string) => {
+        create: (body: string) => {
           socket.perform('create', {
-            user_id: userId,
+            user_email: authHeaders(JSON.parse(localStorage.getItem('anima') || '')).uid,
             body,
           });
         },
         received: (data: ReciveDataType) => {
-          console.log(data);
           const comment = {
             id: data.id,
             userId: data.userId,

@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCommentSocketAPI, ReciveDataType } from 'api/Endpoint';
+import { createCommentSocketAPI, SocketType } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
 import { fetchPost } from 'modules/postModule';
@@ -56,12 +56,6 @@ const returnCodeToBr = (text: string) => {
   return parse(text.replace(/\r?\n/g, '<br/>'));
 };
 
-type Socket = ActionCable.Channel & {
-  create: (userId: string, body: string) => void;
-  received: (data: ReciveDataType) => void;
-  disconnected: () => void;
-}
-
 const PostDetail: FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
@@ -69,7 +63,7 @@ const PostDetail: FC = () => {
 
   const { id }: { id: string } = useParams();
   const [post, setPost] = useState<PostType>();
-  const [socket, setSocket] = useState<Socket>();
+  const [socket, setSocket] = useState<SocketType>();
   const [body, setBody] = useState('');
   const comments = commentModule.comment;
 
@@ -90,7 +84,7 @@ const PostDetail: FC = () => {
   useEffect(() => () => socket?.disconnected(), [socket]);
 
   const createComment = () => {
-    socket?.create('1', body);
+    socket?.create(body);
     setBody('');
   };
 
@@ -118,8 +112,8 @@ const PostDetail: FC = () => {
           comments.map((comment) => (
             <li key={comment.id}>
               <div>
-                userId:
-                {comment.userId}
+                nickname:
+                {comment.nickname}
               </div>
               <div>
                 {returnCodeToBr(comment.body)}

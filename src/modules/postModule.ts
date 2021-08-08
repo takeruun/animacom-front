@@ -168,7 +168,6 @@ export const postReactions = createAsyncThunk<
       const res = await postReactionsAPI(_args.id, _args.kind);
       return res;
     } catch (e) {
-      console.log(e);
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
