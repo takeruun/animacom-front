@@ -20,7 +20,9 @@ const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
   uid,
 });
 
-export const fetchUserReactionPostsAPI = async (kind: string) => {
+export const fetchUserReactionPostsAPI = async (
+  kind: string,
+): Promise<{ posts: Array<PostType>, kind: string }> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -497,4 +499,35 @@ export const signOutAPI = async (): Promise<void> => {
     .catch((e) => {
       throw new Error(e);
     });
+};
+
+export const putUserAPI = async (
+  params: { name: string, nickname: string },
+): Promise<UserType> => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users',
+    headers: {},
+    method: 'put',
+    data: {
+      user: params,
+    },
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else {
+    throw new Error('login yet');
+  }
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.user)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
 };

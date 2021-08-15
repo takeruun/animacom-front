@@ -9,7 +9,7 @@ import { InitialState } from 're-ducks/store/initialState';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 're-ducks/store/store';
 import { getUsername, getUserNickname } from 're-ducks/users/selectors';
-import { updateUser } from 're-ducks/users/operations';
+import { updateUser } from 'modules/userModule';
 import { fetchUserAPI } from 'api/Endpoint';
 import { InputText, SecondaryButton } from 'components/UIKit/index';
 

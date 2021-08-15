@@ -28,8 +28,8 @@ export const fetchUserReactionPosts = createAsyncThunk<
   'userPost/fetchUserReactionPosts',
   async (_args, thunkApi) => {
     try {
-      const posts = await fetchUserReactionPostsAPI(_args);
-      return { posts, kind: _args };
+      const res = await fetchUserReactionPostsAPI(_args);
+      return res;
     } catch (e) {
       return thunkApi.rejectWithValue({
         message: e.stack,

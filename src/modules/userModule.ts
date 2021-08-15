@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchUserAPI, signOutAPI, signInAPI } from 'api/Endpoint';
+import {
+  fetchUserAPI,
+  signOutAPI,
+  signInAPI,
+  putUserAPI,
+} from 'api/Endpoint';
 import { push } from 'connected-react-router';
 
 export type UserType = {
@@ -88,6 +93,25 @@ export const fetchUser = createAsyncThunk<
   },
 );
 
+export const updateUser = createAsyncThunk<
+  UserType,
+  { name: string, nickname: string },
+  { rejectValue: { message: string } }
+>(
+  'user/updateUser',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await putUserAPI({ ..._args });
+      _thunkApi.dispatch(push('/mypage'));
+      return res;
+    } catch (e) {
+      return _thunkApi.rejectWithValue({
+        message: e.message,
+      });
+    }
+  },
+);
+
 export const userModule = createSlice({
   name: 'user',
   initialState,
@@ -102,6 +126,9 @@ export const userModule = createSlice({
     getSuccessLogout: (state, action) => {
       state.user = action.payload;
     },
+    updateSuccessUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUser.fulfilled, (state, action) => {
@@ -111,6 +138,10 @@ export const userModule = createSlice({
     builder.addCase(signOut.fulfilled, (state, action) => {
       const getAction = userModule.actions.getSuccessLogout(action.payload);
       userModule.caseReducers.getSuccessLogout(state, getAction);
+    });
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      const getAction = userModule.actions.updateSuccessUser(action.payload);
+      userModule.caseReducers.updateSuccessUser(state, getAction);
     });
   },
 });
