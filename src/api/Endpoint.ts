@@ -248,7 +248,7 @@ export const editPostAPI = async (id: string, data: FormData): Promise<PostType>
   return res;
 };
 
-export const destroyPostAPI = async (id: string) => {
+export const destroyPostAPI = async (id: string): Promise<void> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -260,16 +260,14 @@ export const destroyPostAPI = async (id: string) => {
   };
 
   if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || '{}'));
-  } else return {};
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return;
 
-  const res = await client(reqConfig)
-    .then((response) => response.data)
+  await client(reqConfig)
+    .then()
     .catch((e) => {
       throw new Error(e);
     });
-
-  return res;
 };
 
 export const postReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
@@ -477,7 +475,7 @@ export const fetchUserAPI = async (): Promise<UserType> => {
   };
 };
 
-export const signOutAPI = async () => {
+export const signOutAPI = async (): Promise<void> => {
   const client = axios.create({
     baseURL: url,
   });
