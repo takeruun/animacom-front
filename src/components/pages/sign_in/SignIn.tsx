@@ -63,8 +63,6 @@ const InputTextMemo = memo((
 });
 
 const SignIn: FC = () => {
-  console.log('SignIn');
-
   const classes = useStyles();
 
   const dispatch = useDispatch();

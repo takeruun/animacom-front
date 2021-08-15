@@ -1,10 +1,14 @@
 import {
-  ChangeEvent, FC, useCallback, useState,
+  ChangeEvent,
+  FC,
+  useCallback,
+  useState,
+  memo,
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { signUp } from 're-ducks/users/operations';
 import { push } from 'connected-react-router';
-import TextField from '@material-ui/core/TextField';
+import { InputText } from 'components/UIKit/index';
 import Button from '@material-ui/core/Button';
 import { createStyles, makeStyles } from '@material-ui/core';
 
@@ -21,6 +25,42 @@ const useStyles = makeStyles((theme) => createStyles({
     },
   },
 }));
+
+const InputTextMemo = memo((
+  props: {
+    fullWidth: boolean,
+    label: string,
+    multiline: boolean,
+    required: boolean,
+    rows: number,
+    value: string,
+    type: string,
+    input: (event: ChangeEvent<HTMLInputElement>) => void,
+  },
+) => {
+  const {
+    fullWidth,
+    label,
+    multiline,
+    required,
+    rows,
+    value,
+    type,
+    input,
+  } = props;
+  return (
+    <InputText
+      fullWidth={fullWidth}
+      label={label}
+      multiline={multiline}
+      input={input}
+      required={required}
+      rows={rows}
+      value={value}
+      type={type}
+    />
+  );
+});
 
 const SignUp: FC = () => {
   const classes = useStyles();
@@ -51,7 +91,7 @@ const SignUp: FC = () => {
     <div className="c-section-container">
       <h2 className="u-text-center u-text__headline">アカウント登録</h2>
       <div className="module-spacer--medium" />
-      <TextField
+      <InputTextMemo
         fullWidth
         label="ユーザー名"
         multiline={false}
@@ -59,9 +99,9 @@ const SignUp: FC = () => {
         rows={1}
         value={name}
         type="text"
-        onChange={inputName}
+        input={inputName}
       />
-      <TextField
+      <InputTextMemo
         fullWidth
         label="ニックネーム"
         multiline={false}
@@ -69,9 +109,9 @@ const SignUp: FC = () => {
         rows={1}
         value={nickname}
         type="text"
-        onChange={inputNickname}
+        input={inputNickname}
       />
-      <TextField
+      <InputTextMemo
         fullWidth
         label="メールアドレス"
         multiline={false}
@@ -79,9 +119,9 @@ const SignUp: FC = () => {
         rows={1}
         value={email}
         type="email"
-        onChange={inputEmail}
+        input={inputEmail}
       />
-      <TextField
+      <InputTextMemo
         fullWidth
         label="パスワード（半角英数字で6文字以上）"
         multiline={false}
@@ -89,7 +129,7 @@ const SignUp: FC = () => {
         rows={1}
         value={password}
         type="password"
-        onChange={inputPassword}
+        input={inputPassword}
       />
       <div className="module-spacer--medium" />
       <div className="center">
