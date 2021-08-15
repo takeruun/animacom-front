@@ -21,7 +21,7 @@ const Router: FC = () => (
       <Route exact path="(/)?" component={Home} />
       <Route exact path="/sign_up" component={SignUp} />
       <Route exact path="/sign_in" component={SignIn} />
-      <Route exact path="/search/:word" component={SearchPosts} />
+      <Route exact path="/search" component={SearchPosts} />
       <Route exact path="/category/:category" component={CategoryPosts} />
       <Auth>
         <Route exact path="/posts/:id" component={PostDetail} />

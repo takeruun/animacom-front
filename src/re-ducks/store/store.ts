@@ -17,6 +17,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { postModule } from 'modules/postModule';
 import { commentModule } from 'modules/commentModule';
 import { userModule } from 'modules/userModule';
+import { searchModule } from 'modules/searchModule';
 
 export default function createStore(history: History) {
   return reduxCreateStore(
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   category: categoryModule.reducer,
   post: postModule.reducer,
   comment: commentModule.reducer,
+  search: searchModule.reducer,
 });
 export const store = configureStore(
   {

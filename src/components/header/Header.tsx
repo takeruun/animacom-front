@@ -8,9 +8,11 @@ import {
   useRef,
 } from 'react';
 import { push } from 'connected-react-router';
+import useQuery from 'hook/useQuery';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { fetchUser, signOut } from 'modules/userModule';
+import { updateWord } from 'modules/searchModule';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -110,10 +112,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Header: FC = () => {
   const classes = useStyles();
+  const query = useQuery();
   const dispatch: AppDispatch = useDispatch();
   const userModule = useSelector((state: RootState) => state.user);
   const isSignedIn = userModule.user.isSignedIn;
-
   const searchKeywordInputRef = useRef<HTMLInputElement>(null);
 
   const [open, setOpen] = useState(false);
@@ -124,10 +126,18 @@ const Header: FC = () => {
 
   const search = (event: KeyboardEvent<HTMLDivElement>) => {
     const keyword = searchKeywordInputRef.current?.value;
+
     if (event.key === 'Enter') {
-      dispatch(push(`/search/${keyword}`));
+      dispatch(updateWord(keyword));
+      dispatch(push(`/search?word=${keyword}`));
     }
   };
+
+  useEffect(() => {
+    const setWord = query.get('word') || '';
+    dispatch(updateWord(setWord));
+    searchKeywordInputRef.current!.value = setWord;
+  }, [dispatch, query]);
 
   const handleDrawerToggle = useCallback((event: MouseEvent) => {
     if (event.type === 'keydown' && (event.metaKey || event.shiftKey)) {
