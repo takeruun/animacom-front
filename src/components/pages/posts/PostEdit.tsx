@@ -1,7 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
 import {
-  ChangeEvent, FC, useCallback, useEffect, useState,
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useState,
+  memo,
 } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from 'modules/categoryModule';
 import { createPost, editPost, fetchPost } from 'modules/postModule';
 import { AppDispatch, RootState } from 're-ducks/store/store';
@@ -26,6 +31,42 @@ const useStyles = makeStyles({
     height: 48,
     width: 48,
   },
+});
+
+const InputTextMemo = memo((
+  props: {
+    fullWidth: boolean,
+    label: string,
+    multiline: boolean,
+    required: boolean,
+    rows: number,
+    value: string,
+    type: string,
+    input: (event: ChangeEvent<HTMLInputElement>) => void,
+  },
+) => {
+  const {
+    fullWidth,
+    label,
+    multiline,
+    required,
+    rows,
+    value,
+    type,
+    input,
+  } = props;
+  return (
+    <InputText
+      fullWidth={fullWidth}
+      label={label}
+      multiline={multiline}
+      input={input}
+      required={required}
+      rows={rows}
+      value={value}
+      type={type}
+    />
+  );
 });
 
 const PostEdit: FC = () => {
@@ -134,7 +175,7 @@ const PostEdit: FC = () => {
     <section>
       <h2 className="u-text-center u-text__headline">投稿画面</h2>
       <div className="c-section-container">
-        <InputText
+        <InputTextMemo
           label="タイトル🐾"
           fullWidth
           multiline
@@ -144,7 +185,7 @@ const PostEdit: FC = () => {
           type="text"
           input={inputTitle}
         />
-        <InputText
+        <InputTextMemo
           label="サブタイトル🐾"
           fullWidth
           multiline
@@ -154,7 +195,7 @@ const PostEdit: FC = () => {
           type="text"
           input={inputSubTitle}
         />
-        <InputText
+        <InputTextMemo
           label="説明🐾"
           fullWidth
           multiline

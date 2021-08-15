@@ -1,5 +1,11 @@
 import {
-  FC, useCallback, useState, MouseEvent, useEffect,
+  FC,
+  useCallback,
+  useState,
+  memo,
+  MouseEvent,
+  useEffect,
+  ChangeEvent,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
@@ -55,6 +61,27 @@ const useStyles = makeStyles((theme) => createStyles({
   },
 }));
 
+const InputTextMemo = memo((
+  props: {
+    input: (event: ChangeEvent<HTMLInputElement>) => void,
+    value: string,
+  },
+) => {
+  const { input, value } = props;
+  return (
+    <InputText
+      fullWidth={false}
+      label="キーワードを入力"
+      multiline={false}
+      input={input}
+      required={false}
+      rows={1}
+      value={value}
+      type="text"
+    />
+  );
+});
+
 const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
   const classes = useStyles();
   const { open, onClose } = props;
@@ -65,7 +92,7 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
 
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const inputSearchKeyword = useCallback((event) => {
+  const inputSearchKeyword = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setSearchKeyword(event.target.value);
   }, [setSearchKeyword]);
 
@@ -115,16 +142,7 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
       >
         <div>
           <div className={classes.searchField}>
-            <InputText
-              fullWidth={false}
-              label="キーワードを入力"
-              multiline={false}
-              input={inputSearchKeyword}
-              required={false}
-              rows={1}
-              value={searchKeyword}
-              type="text"
-            />
+            <InputTextMemo input={inputSearchKeyword} value={searchKeyword} />
             <IconButton>
               <SearchIcon />
             </IconButton>

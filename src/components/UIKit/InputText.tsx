@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import TextField from '@material-ui/core/TextField';
 
-type Props = {
+type PropsType = {
   fullWidth: boolean,
   label: string,
   multiline: boolean,
@@ -12,7 +12,7 @@ type Props = {
   input: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-const InputText: FC<Props> = (props: Props) => {
+const InputText: FC<PropsType> = (props: PropsType) => {
   const {
     fullWidth,
     label,
