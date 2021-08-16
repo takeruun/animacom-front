@@ -3,6 +3,7 @@ import ActionCable from 'actioncable';
 import { Action, Dispatch } from 'redux';
 import { PostType } from 'modules/postModule';
 import { CategoryType } from 'modules/categoryModule';
+import { UserType } from 'modules/userModule';
 import { CommentType, getSuccessComment } from 'modules/commentModule';
 
 const url = 'http://localhost:3001';
@@ -19,7 +20,9 @@ const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
   uid,
 });
 
-export const fetchUserReactionPostsAPI = async (kind: string) => {
+export const fetchUserReactionPostsAPI = async (
+  kind: string,
+): Promise<{ posts: Array<PostType>, kind: string }> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -106,30 +109,6 @@ export const fetchRootCategoriesAPI = async (): Promise<Array<CategoryType>> => 
   };
   const res = await client(reqConfig)
     .then((response) => response.data.rootCategories)
-    .catch((e) => {
-      throw new Error(e);
-    });
-
-  return res;
-};
-
-export const fetchUserAPI = async () => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
-    url: '/v1/users',
-    headers: {},
-    method: 'get',
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return {};
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.user)
     .catch((e) => {
       throw new Error(e);
     });
@@ -271,7 +250,7 @@ export const editPostAPI = async (id: string, data: FormData): Promise<PostType>
   return res;
 };
 
-export const destroyPostAPI = async (id: string) => {
+export const destroyPostAPI = async (id: string): Promise<void> => {
   const client = axios.create({
     baseURL: url,
   });
@@ -283,16 +262,14 @@ export const destroyPostAPI = async (id: string) => {
   };
 
   if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || '{}'));
-  } else return {};
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else return;
 
-  const res = await client(reqConfig)
-    .then((response) => response.data)
+  await client(reqConfig)
+    .then()
     .catch((e) => {
       throw new Error(e);
     });
-
-  return res;
 };
 
 export const postReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
@@ -420,6 +397,134 @@ export const fetchCommentsAPI = async (id: string): Promise<Array<CommentType>> 
 
   const res = await client(reqConfig)
     .then((response) => response.data.comments)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return res;
+};
+
+export const signInAPI = async (
+  params: { email: string, password: string },
+): Promise<UserType> => {
+  const { email, password } = params;
+
+  if (email === '' || password === '') {
+    alert('入力しろ');
+  }
+
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: 'v1/users/auth/sign_in',
+    headers: {},
+    method: 'post',
+    data: {
+      email,
+      password,
+    },
+  };
+
+  const res = await client(reqConfig)
+    .then((response) => {
+      const headers = {
+        accessToken: response.headers['access-token'],
+        client: response.headers.client,
+        expiry: response.headers.expiry,
+        uid: response.headers.uid,
+      };
+      localStorage.setItem('anima', JSON.stringify(headers));
+      return response.data.user;
+    })
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return {
+    isSignedIn: true,
+    ...res,
+  };
+};
+
+export const fetchUserAPI = async (): Promise<UserType> => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users',
+    headers: {},
+    method: 'get',
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else {
+    throw new Error('please login');
+  }
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.user)
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return {
+    isSignedIn: true,
+    ...res,
+  };
+};
+
+export const signOutAPI = async (): Promise<void> => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users/auth/sign_out',
+    headers: {},
+    method: 'delete',
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else {
+    throw new Error('login yet');
+  }
+
+  await client(reqConfig)
+    .then()
+    .catch((e) => {
+      throw new Error(e);
+    });
+};
+
+export const putUserAPI = async (
+  params: { name: string, nickname: string },
+): Promise<UserType> => {
+  const client = axios.create({
+    baseURL: url,
+  });
+
+  const reqConfig: AxiosRequestConfig = {
+    url: '/v1/users',
+    headers: {},
+    method: 'put',
+    data: {
+      user: params,
+    },
+  };
+
+  if (localStorage.getItem('anima')) {
+    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
+  } else {
+    throw new Error('login yet');
+  }
+
+  const res = await client(reqConfig)
+    .then((response) => response.data.user)
     .catch((e) => {
       throw new Error(e);
     });

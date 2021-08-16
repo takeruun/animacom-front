@@ -4,12 +4,15 @@ import {
   useState,
   KeyboardEvent,
   MouseEvent,
+  useEffect,
+  useRef,
 } from 'react';
 import { push } from 'connected-react-router';
+import useQuery from 'hook/useQuery';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsSignedIn } from 're-ducks/users/selectors';
-import { signOut } from 're-ducks/users/operations';
-import { InitialState } from 're-ducks/store/initialState';
+import { AppDispatch, RootState } from 're-ducks/store/store';
+import { fetchUser, signOut } from 'modules/userModule';
+import { updateWord } from 'modules/searchModule';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -109,22 +112,32 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const Header: FC = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const selector = useSelector((state: InitialState) => state);
-  const isSignedIn = getIsSignedIn(selector);
+  const query = useQuery();
+  const dispatch: AppDispatch = useDispatch();
+  const userModule = useSelector((state: RootState) => state.user);
+  const isSignedIn = userModule.user.isSignedIn;
+  const searchKeywordInputRef = useRef<HTMLInputElement>(null);
+
   const [open, setOpen] = useState(false);
 
-  const [searchKeyword, setSearchKeyword] = useState('');
-
-  const inputSearchKeyword = useCallback((event) => {
-    setSearchKeyword(event.target.value);
-  }, [setSearchKeyword]);
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   const search = (event: KeyboardEvent<HTMLDivElement>) => {
+    const keyword = searchKeywordInputRef.current?.value;
+
     if (event.key === 'Enter') {
-      dispatch(push(`/search/${searchKeyword}`));
+      dispatch(updateWord(keyword));
+      dispatch(push(`/search?word=${keyword}`));
     }
   };
+
+  useEffect(() => {
+    const setWord = query.get('word') || '';
+    dispatch(updateWord(setWord));
+    searchKeywordInputRef.current!.value = setWord;
+  }, [dispatch, query]);
 
   const handleDrawerToggle = useCallback((event: MouseEvent) => {
     if (event.type === 'keydown' && (event.metaKey || event.shiftKey)) {
@@ -182,8 +195,7 @@ const Header: FC = () => {
                 input: classes.inputInput,
               }}
               inputProps={{ 'aria-label': 'search' }}
-              value={searchKeyword}
-              onChange={(e) => inputSearchKeyword(e)}
+              inputRef={searchKeywordInputRef}
               onKeyPress={(e) => search(e)}
             />
           </div>

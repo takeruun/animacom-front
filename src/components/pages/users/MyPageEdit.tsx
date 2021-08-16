@@ -4,20 +4,54 @@ import {
   useCallback,
   useEffect,
   useState,
+  memo,
 } from 'react';
-import { InitialState } from 're-ducks/store/initialState';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { AppDispatch } from 're-ducks/store/store';
-import { getUsername, getUserNickname } from 're-ducks/users/selectors';
-import { updateUser } from 're-ducks/users/operations';
+import { updateUser } from 'modules/userModule';
 import { fetchUserAPI } from 'api/Endpoint';
 import { InputText, SecondaryButton } from 'components/UIKit/index';
 
+const InputTextMemo = memo((
+  props: {
+    fullWidth: boolean,
+    label: string,
+    multiline: boolean,
+    required: boolean,
+    rows: number,
+    value: string,
+    type: string,
+    input: (event: ChangeEvent<HTMLInputElement>) => void,
+  },
+) => {
+  const {
+    fullWidth,
+    label,
+    multiline,
+    required,
+    rows,
+    value,
+    type,
+    input,
+  } = props;
+  return (
+    <InputText
+      fullWidth={fullWidth}
+      label={label}
+      multiline={multiline}
+      input={input}
+      required={required}
+      rows={rows}
+      value={value}
+      type={type}
+    />
+  );
+});
+
 const MyPageEdit: FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const selector = useSelector((state: InitialState) => state);
-  const [nickname, setNickname] = useState(getUserNickname(selector));
-  const [name, setName] = useState(getUsername(selector));
+  const [nickname, setNickname] = useState('');
+  const [name, setName] = useState('');
 
   const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -40,7 +74,7 @@ const MyPageEdit: FC = () => {
   return (
     <section className="c-section-container">
       <h2 className="u-text__headline u-text-center">マイページ編集</h2>
-      <InputText
+      <InputTextMemo
         label="名前"
         fullWidth
         multiline
@@ -51,7 +85,7 @@ const MyPageEdit: FC = () => {
         input={inputName}
       />
       <div className="module-spacer--medium" />
-      <InputText
+      <InputTextMemo
         label="ニックネーム"
         fullWidth
         multiline

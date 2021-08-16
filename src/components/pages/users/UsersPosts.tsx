@@ -37,11 +37,15 @@ const UsersPosts: FC = () => {
 
   return (
     <div className={classes.root}>
-      {
-        posts.map((post) => (
-          <PostCard {...post} />
-        ))
-      }
+      <section className="c-section-wrapin">
+        <div className="p-grid__row">
+          {
+            posts.map((post) => (
+              <PostCard {...post} />
+            ))
+          }
+        </div>
+      </section>
     </div>
   );
 };

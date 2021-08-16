@@ -1,18 +1,19 @@
 import { FC, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { searchPosts } from 'modules/postModule';
+import useQuery from 'hook/useQuery';
 import PostCard from './PostCard';
 
 const SearchPosts: FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const postModule = useSelector((state: RootState) => state.post);
   const posts = postModule.searchPosts;
-  const { word }: { word: string } = useParams();
+  const query = useQuery();
+  const word = query.get('word');
 
   useEffect(() => {
-    dispatch(searchPosts(word));
+    dispatch(searchPosts(word!));
   }, [dispatch, word]);
 
   return (
