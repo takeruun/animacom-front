@@ -18,6 +18,7 @@ import { postModule } from 'modules/postModule';
 import { commentModule } from 'modules/commentModule';
 import { userModule } from 'modules/userModule';
 import { searchModule } from 'modules/searchModule';
+import { snackbarModule } from 'modules/snackbarModule';
 
 export default function createStore(history: History) {
   return reduxCreateStore(
@@ -51,6 +52,7 @@ const rootReducer = combineReducers({
   post: postModule.reducer,
   comment: commentModule.reducer,
   search: searchModule.reducer,
+  snackbar: snackbarModule.reducer,
 });
 export const store = configureStore(
   {

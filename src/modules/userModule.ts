@@ -6,6 +6,7 @@ import {
   putUserAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
+import showSnackbar from 'hook/showSnackbar';
 
 export type UserType = {
   isSignedIn: boolean,
@@ -45,6 +46,7 @@ export const signIn = createAsyncThunk<
       _thunkApi.dispatch(push('/'));
       return res;
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -68,6 +70,7 @@ export const signOut = createAsyncThunk<
         nickname: '',
       };
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -86,6 +89,7 @@ export const fetchUser = createAsyncThunk<
       const res = await fetchUserAPI();
       return res;
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -105,6 +109,7 @@ export const updateUser = createAsyncThunk<
       _thunkApi.dispatch(push('/mypage'));
       return res;
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.message,
       });

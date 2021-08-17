@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchCommentsAPI } from 'api/Endpoint';
+import showSnackbar from 'hook/showSnackbar';
 
 export type CommentType = {
   id: number,
@@ -31,6 +32,7 @@ export const fetchComments = createAsyncThunk<
       const res = await fetchCommentsAPI(_args);
       return res;
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });

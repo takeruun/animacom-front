@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchCategoriesAPI, fetchRootCategoriesAPI } from 'api/Endpoint';
+import showSnackbar from 'hook/showSnackbar';
 
 export type CategoryType = {
   id: string,
@@ -31,6 +32,7 @@ export const fetchCategories = createAsyncThunk<
       const res = await fetchCategoriesAPI();
       return res;
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -49,6 +51,7 @@ export const fetchRootCategories = createAsyncThunk<
       const res = await fetchRootCategoriesAPI();
       return res;
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
