@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUserReactionCountsAPI } from 'api/Endpoint';
+import showSnackbar from 'hook/showSnackbar';
 
 type ReactionCountsType = {
   cuteCount: number,
@@ -43,6 +44,7 @@ export const fetchUserReactionCounts = createAsyncThunk<
         coolCount: counts.find((c: { count: number, kind: number; }) => c.kind === 4)?.count || 0,
       };
     } catch (e) {
+      showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });

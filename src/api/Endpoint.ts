@@ -1,117 +1,54 @@
-import axios, { AxiosRequestConfig } from 'axios';
 import ActionCable from 'actioncable';
 import { Action, Dispatch } from 'redux';
 import { PostType } from 'modules/postModule';
 import { CategoryType } from 'modules/categoryModule';
 import { UserType } from 'modules/userModule';
 import { CommentType, getSuccessComment } from 'modules/commentModule';
-
-const url = 'http://localhost:3001';
-
-type AuthType = {
-  accessToken: string
-  client: string
-  uid: string
-}
-
-const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
-  'access-token': accessToken,
-  client,
-  uid,
-});
+import request, { authHeaders } from 'hook/useRequest';
 
 export const fetchUserReactionPostsAPI = async (
   kind: string,
 ): Promise<{ posts: Array<PostType>, kind: string }> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/users/posts/reactions',
-    headers: {},
     method: 'get',
-    params: {
-      kind,
+    reqParams: {
+      params: {
+        kind,
+      },
     },
-  };
+  })
+    .then(({ response }) => response);
 
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data)
-    .catch((e) => {
-      throw new Error(e);
-    });
-
-  return res;
+  return { posts: res, kind };
 };
 
 export const fetchUserReactionCountsAPI = async () => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/users/posts/reactions/counts',
-    headers: {},
     method: 'get',
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.reactions.counts)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response);
 
   return res;
 };
 
 export const fetchCategoriesAPI = async (): Promise<Array<CategoryType>> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/categories',
-    headers: {},
     method: 'get',
-  };
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.categories)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.categories);
 
   return res;
 };
 
 export const fetchRootCategoriesAPI = async (): Promise<Array<CategoryType>> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/categories/root',
-    headers: {},
     method: 'get',
-  };
-  const res = await client(reqConfig)
-    .then((response) => response.data.rootCategories)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.rootCategories);
 
   return res;
 };
@@ -121,215 +58,105 @@ export const searchPostsAPI = async (
 ): Promise<Array<PostType>> => {
   const { keyword, categoryId } = params;
 
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/posts/search',
-    headers: {},
     method: 'get',
-    params: {
-      keyword,
-      categoryId,
+    reqParams: {
+      params: {
+        keyword,
+        categoryId,
+      },
     },
-  };
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.posts)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.posts);
 
   return res;
 };
 
 export const fetchPostsAPI = async (path: string): Promise<Array<PostType>> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: `/v1/posts/${path}`,
-    headers: {},
     method: 'get',
-  };
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.posts)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.posts);
 
   return res;
 };
 
 export const fetchPostAPI = async (id: string): Promise<PostType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: `/v1/users/posts/${id}`,
-    headers: {},
     method: 'get',
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.post)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.post);
 
   return res;
 };
 
 export const createPostAPI = async (data: FormData): Promise<PostType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/users/posts',
-    headers: {},
     method: 'post',
-    data,
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = {
-      ...authHeaders(JSON.parse(localStorage.getItem('anima') || '')),
-      'Content-Type': 'multipart/form-data',
-    };
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.post)
-    .catch((e) => {
-      throw new Error(e);
-    });
+    reqParams: {
+      data,
+    },
+  })
+    .then(({ response }) => response.post);
 
   return res;
 };
 
 export const editPostAPI = async (id: string, data: FormData): Promise<PostType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: `/v1/users/posts/${id}`,
-    headers: {},
     method: 'put',
-    data,
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = {
-      ...authHeaders(JSON.parse(localStorage.getItem('anima') || '')),
-      'Content-Type': 'multipart/form-data',
-    };
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.post)
-    .catch((e) => {
-      throw new Error(e);
-    });
+    reqParams: {
+      data,
+    },
+  })
+    .then(({ response }) => response.post);
 
   return res;
 };
 
 export const destroyPostAPI = async (id: string): Promise<void> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  await request({
     url: `/v1/users/posts/${id}`,
-    headers: {},
     method: 'delete',
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else return;
-
-  await client(reqConfig)
-    .then()
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response);
 };
 
 export const postReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: `/v1/users/posts/reactions/${id}`,
-    headers: {},
     method: 'post',
-    data: {
-      reaction: {
-        kind,
+    reqParams: {
+      data: {
+        reaction: {
+          kind,
+        },
       },
     },
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.post)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.post);
 
   return res;
 };
 
 export const destroyReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: `/v1/users/posts/reactions/${id}`,
-    headers: {},
     method: 'delete',
-    data: {
-      reaction: {
-        kind,
+    reqParams: {
+      data: {
+        reaction: {
+          kind,
+        },
       },
     },
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.post)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.post);
 
   return res;
 };
@@ -385,21 +212,11 @@ export const createCommentSocketAPI = (postId: string) => (
 );
 
 export const fetchCommentsAPI = async (id: string): Promise<Array<CommentType>> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: `/v1/posts/${id}/comments`,
-    headers: {},
     method: 'get',
-  };
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.comments)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.comments);
 
   return res;
 };
@@ -413,33 +230,25 @@ export const signInAPI = async (
     alert('入力しろ');
   }
 
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: 'v1/users/auth/sign_in',
-    headers: {},
     method: 'post',
-    data: {
-      email,
-      password,
+    reqParams: {
+      data: {
+        email,
+        password,
+      },
     },
-  };
-
-  const res = await client(reqConfig)
-    .then((response) => {
-      const headers = {
-        accessToken: response.headers['access-token'],
-        client: response.headers.client,
-        expiry: response.headers.expiry,
-        uid: response.headers.uid,
+  })
+    .then(({ response, headers }) => {
+      const newheaders = {
+        accessToken: headers['access-token'],
+        client: headers.client,
+        expiry: headers.expiry,
+        uid: headers.uid,
       };
-      localStorage.setItem('anima', JSON.stringify(headers));
-      return response.data.user;
-    })
-    .catch((e) => {
-      throw new Error(e);
+      localStorage.setItem('anima', JSON.stringify(newheaders));
+      return response.user;
     });
 
   return {
@@ -449,27 +258,11 @@ export const signInAPI = async (
 };
 
 export const fetchUserAPI = async (): Promise<UserType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/users',
-    headers: {},
     method: 'get',
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('please login');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.user)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response.user);
 
   return {
     isSignedIn: true,
@@ -478,56 +271,25 @@ export const fetchUserAPI = async (): Promise<UserType> => {
 };
 
 export const signOutAPI = async (): Promise<void> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  await request({
     url: '/v1/users/auth/sign_out',
-    headers: {},
     method: 'delete',
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('login yet');
-  }
-
-  await client(reqConfig)
-    .then()
-    .catch((e) => {
-      throw new Error(e);
-    });
+  })
+    .then(({ response }) => response);
 };
 
 export const putUserAPI = async (
   params: { name: string, nickname: string },
 ): Promise<UserType> => {
-  const client = axios.create({
-    baseURL: url,
-  });
-
-  const reqConfig: AxiosRequestConfig = {
+  const res = await request({
     url: '/v1/users',
-    headers: {},
     method: 'put',
-    data: {
-      user: params,
+    reqParams: {
+      data: {
+        user: params,
+      },
     },
-  };
-
-  if (localStorage.getItem('anima')) {
-    reqConfig.headers = authHeaders(JSON.parse(localStorage.getItem('anima') || ''));
-  } else {
-    throw new Error('login yet');
-  }
-
-  const res = await client(reqConfig)
-    .then((response) => response.data.user)
-    .catch((e) => {
-      throw new Error(e);
-    });
+  }).then(({ response }) => response.user);
 
   return res;
 };

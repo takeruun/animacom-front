@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { fetchUserReactionPostsAPI } from 'api/Endpoint';
+import showSnackbar from 'hook/showSnackbar';
 import { PostType } from './postModule';
 
 export type UserPostStateType = {
@@ -26,12 +27,13 @@ export const fetchUserReactionPosts = createAsyncThunk<
   { rejectValue: { message: string } }
 >(
   'userPost/fetchUserReactionPosts',
-  async (_args, thunkApi) => {
+  async (_args, _thunkApi) => {
     try {
       const res = await fetchUserReactionPostsAPI(_args);
       return res;
     } catch (e) {
-      return thunkApi.rejectWithValue({
+      showSnackbar(e, _thunkApi);
+      return _thunkApi.rejectWithValue({
         message: e.stack,
       });
     }
