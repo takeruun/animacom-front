@@ -31,8 +31,8 @@ export const CustomizedSnackbar: FC = () => {
         onClose={handleClose}
         severity={snackbarModule.isError ? 'error' : 'success'}
       >
-        {snackbarModule.error.length > 0 && snackbarModule.error}
-        {snackbarModule.message.length > 0 && snackbarModule.isError && <br />}
+        {snackbarModule.error?.length > 0 && snackbarModule.error}
+        {snackbarModule.message?.length > 0 && snackbarModule.isError && <br />}
         {snackbarModule.message}
       </Alert>
     </Snackbar>
