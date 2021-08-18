@@ -28,7 +28,7 @@ export const fetchUserReactionCountsAPI = async () => {
     url: '/v1/users/posts/reactions/counts',
     method: 'get',
   })
-    .then(({ response }) => response);
+    .then(({ response }) => response.reactions.counts);
 
   return res;
 };
