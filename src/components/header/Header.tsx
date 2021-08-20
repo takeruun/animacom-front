@@ -157,7 +157,10 @@ const Header: FC = () => {
           >
             AnimaCom
           </Typography>
-          <Tooltip title="ユーザ一覧">
+          <Tooltip
+            title="ユーザ一覧"
+            onClick={() => dispatch(push('/users'))}
+          >
             <IconButton
               className={classes.peopleButton}
               color="default"

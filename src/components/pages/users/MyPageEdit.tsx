@@ -8,9 +8,20 @@ import {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 're-ducks/store/store';
-import { updateUser } from 'modules/userModule';
+import { updateUser, UserImageType } from 'modules/userModule';
 import { fetchUserAPI } from 'api/Endpoint';
 import { InputText, SecondaryButton } from 'components/UIKit/index';
+import { makeStyles } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import InputLable from '@material-ui/core/InputLabel';
+import { AddPhotoAlternate } from '@material-ui/icons';
+
+const useStyles = makeStyles({
+  icon: {
+    height: 48,
+    width: 48,
+  },
+});
 
 const InputTextMemo = memo((
   props: {
@@ -49,9 +60,11 @@ const InputTextMemo = memo((
 });
 
 const MyPageEdit: FC = () => {
+  const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
   const [nickname, setNickname] = useState('');
   const [name, setName] = useState('');
+  const [image, setImage] = useState<UserImageType>();
 
   const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -61,15 +74,38 @@ const MyPageEdit: FC = () => {
     setName(event.target.value);
   }, [setName]);
 
+  const inputImage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files !== null) {
+      const reader = new FileReader();
+      const imageFile = event.target.files[0];
+      reader.readAsDataURL(imageFile);
+      reader.onload = () => {
+        const newImage = { file: imageFile, imagePath: URL.createObjectURL(imageFile) };
+        setImage(newImage);
+      };
+    }
+  }, [setImage]);
+
   useEffect(() => {
     const getUser = async () => {
       const user = await fetchUserAPI();
       setName(user.name);
       setNickname(user.nickname);
+      setImage(user.image);
     };
 
     getUser();
   }, [dispatch]);
+
+  const submit = () => {
+    const data = new FormData();
+    data.append('user[name]', name);
+    data.append('user[nickname]', nickname);
+    if (image && image.file) {
+      data.append('user[image]', image.file);
+    }
+    dispatch(updateUser(data));
+  };
 
   return (
     <section className="c-section-container">
@@ -96,8 +132,20 @@ const MyPageEdit: FC = () => {
         input={inputNickname}
       />
       <div className="module-spacer--medium" />
+      <div className="u-text-rigth">
+        <span>画像を登録する🐾</span>
+        <IconButton className={classes.icon}>
+          <InputLable>
+            <AddPhotoAlternate />
+            <input className="u-display-none" type="file" id="image" onChange={inputImage} />
+          </InputLable>
+        </IconButton>
+        {image && (
+          <img src={image.imagePath} alt="ユーザ画像" />
+        )}
+      </div>
       <div className="center">
-        <SecondaryButton label="編集" onClick={() => dispatch(updateUser({ name, nickname }))} />
+        <SecondaryButton label="編集" onClick={() => submit()} />
       </div>
     </section>
   );

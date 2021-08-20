@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { PostType } from 're-ducks/post/types';
 import { push } from 'connected-react-router';
 import { useDispatch } from 'react-redux';
-import { destroyPost } from 're-ducks/post/operations';
+import { destroyPost } from 'modules/postModule';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
