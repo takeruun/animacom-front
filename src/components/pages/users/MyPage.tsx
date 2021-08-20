@@ -1,17 +1,17 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextDetail, SecondaryButton } from 'components/UIKit/index';
-import { AppDispatch } from 're-ducks/store/store';
-import { getUsername, getUserNickname } from 're-ducks/users/selectors';
-import { InitialState } from 're-ducks/store/initialState';
-import { fetchUser } from 're-ducks/users/operations';
+import { AppDispatch, RootState } from 're-ducks/store/store';
+import { fetchUser } from 'modules/userModule';
 import { push } from 'connected-react-router';
+import { TextDetail, SecondaryButton } from 'components/UIKit/index';
 
 const MyPage: FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const selector = useSelector((state: InitialState) => state);
-  const name = getUsername(selector);
-  const nickname = getUserNickname(selector);
+
+  const userModule = useSelector((state: RootState) => state.user);
+  const name = userModule.user.name;
+  const nickname = userModule.user.nickname;
+  const imagePath = userModule.user.image?.imagePath;
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -24,6 +24,9 @@ const MyPage: FC = () => {
       <TextDetail label="名前" value={name} />
       <div className="module-spacer--medium" />
       <TextDetail label="ニックネーム名" value={nickname} />
+      <div className="module-spacer--small" />
+
+      <img src={imagePath} alt="ユーザ画像" />
       <div className="module-spacer--small" />
       <div className="center">
         <SecondaryButton label="情報の編集" onClick={() => dispatch(push('/mypage/edit'))} />

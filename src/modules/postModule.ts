@@ -7,6 +7,7 @@ import {
   editPostAPI,
   postReactionsAPI,
   destroyReactionsAPI,
+  destroyPostAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 import showSnackbar from 'hook/showSnackbar';
@@ -173,6 +174,25 @@ export const createPost = createAsyncThunk<
       const res = await createPostAPI(_args);
       _thunkApi.dispatch(push('/'));
       return res;
+    } catch (e) {
+      showSnackbar(e, _thunkApi);
+      return _thunkApi.rejectWithValue({
+        message: e.stack,
+      });
+    }
+  },
+);
+
+export const destroyPost = createAsyncThunk<
+  '',
+  string,
+  { rejectValue: { message: string } }
+>(
+  'post/destroyPost',
+  async (_args, _thunkApi) => {
+    try {
+      await destroyPostAPI(_args);
+      return '';
     } catch (e) {
       showSnackbar(e, _thunkApi);
       return _thunkApi.rejectWithValue({

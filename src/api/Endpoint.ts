@@ -257,6 +257,32 @@ export const signInAPI = async (
   };
 };
 
+export const signUpAPI = async (
+  data: FormData,
+): Promise<UserType> => {
+  const res = request({
+    url: '/v1/users/auth',
+    method: 'post',
+    reqParams: {
+      data,
+    },
+  }).then(({ response, headers }) => {
+    const newheaders = {
+      accessToken: headers['access-token'],
+      client: headers.client,
+      expiry: headers.expiry,
+      uid: headers.uid,
+    };
+    localStorage.setItem('anima', JSON.stringify(newheaders));
+    return response.user;
+  });
+
+  return {
+    isSignedIn: true,
+    ...res,
+  };
+};
+
 export const fetchUserAPI = async (): Promise<UserType> => {
   const res = await request({
     url: '/v1/users/my_page',
@@ -279,15 +305,13 @@ export const signOutAPI = async (): Promise<void> => {
 };
 
 export const putUserAPI = async (
-  params: { name: string, nickname: string },
+  data: FormData,
 ): Promise<UserType> => {
   const res = await request({
     url: '/v1/users',
     method: 'put',
     reqParams: {
-      data: {
-        user: params,
-      },
+      data,
     },
   }).then(({ response }) => response.user);
 

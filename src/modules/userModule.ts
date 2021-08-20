@@ -7,9 +7,15 @@ import {
   fetchUsersAPI,
   followUserAPI,
   unfollowUserAPI,
+  signUpAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 import showSnackbar from 'hook/showSnackbar';
+
+export type UserImageType = {
+  file?: File,
+  imagePath: string,
+};
 
 export type UserType = {
   isSignedIn: boolean,
@@ -18,9 +24,9 @@ export type UserType = {
   nickname: string,
   followerCount: number,
   followingCount: number,
-  image: { id: string, file: File | null, imagePath: string },
+  image: UserImageType,
   follow?: boolean,
-}
+};
 
 export type UserStateType = {
   loading: boolean,
@@ -40,8 +46,6 @@ const initialState: UserStateType = {
     followerCount: 0,
     followingCount: 0,
     image: {
-      id: '',
-      file: null,
       imagePath: '',
     },
   },
@@ -58,6 +62,25 @@ export const signIn = createAsyncThunk<
     try {
       const res = await signInAPI({ ..._args });
       _thunkApi.dispatch(push('/'));
+      return res;
+    } catch (e) {
+      showSnackbar(e, _thunkApi);
+      return _thunkApi.rejectWithValue({
+        message: e.message,
+      });
+    }
+  },
+);
+
+export const signUp = createAsyncThunk<
+  UserType,
+  FormData,
+  { rejectValue: { message: string } }
+>(
+  'user/signUp',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await signUpAPI(_args);
       return res;
     } catch (e) {
       showSnackbar(e, _thunkApi);
@@ -86,7 +109,6 @@ export const signOut = createAsyncThunk<
         followingCount: 0,
         image: {
           id: '',
-          file: null,
           imagePath: '',
         },
       };
@@ -120,13 +142,13 @@ export const fetchUser = createAsyncThunk<
 
 export const updateUser = createAsyncThunk<
   UserType,
-  { name: string, nickname: string },
+  FormData,
   { rejectValue: { message: string } }
 >(
   'user/updateUser',
   async (_args, _thunkApi) => {
     try {
-      const res = await putUserAPI({ ..._args });
+      const res = await putUserAPI(_args);
       _thunkApi.dispatch(push('/mypage'));
       return res;
     } catch (e) {
