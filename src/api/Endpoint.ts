@@ -259,7 +259,7 @@ export const signInAPI = async (
 
 export const fetchUserAPI = async (): Promise<UserType> => {
   const res = await request({
-    url: '/v1/users',
+    url: '/v1/users/my_page',
     method: 'get',
   })
     .then(({ response }) => response.user);
@@ -292,4 +292,48 @@ export const putUserAPI = async (
   }).then(({ response }) => response.user);
 
   return res;
+};
+
+export const fetchUsersAPI = async (): Promise<Array<UserType>> => {
+  const res = await request({
+    url: '/v1/users',
+    method: 'get',
+  }).then(({ response }) => response.users);
+
+  return res;
+};
+
+export const followUserAPI = async (
+  userId: string,
+): Promise<{ followingCount: number, user: UserType }> => {
+  const res = await request({
+    url: '/v1/users/follows',
+    method: 'post',
+    reqParams: {
+      data: {
+        followId: userId,
+      },
+    },
+  }).then(({ response }) => response);
+
+  return {
+    followingCount: Number(res.followingCount),
+    user: res.followings.find((user: any) => user.id === userId),
+  };
+};
+
+export const unfollowUserAPI = async (
+  userId: string,
+): Promise<{ followingCount: number, userId: string }> => {
+  const res = await request({
+    url: '/v1/users/follows',
+    method: 'delete',
+    reqParams: {
+      data: {
+        followId: userId,
+      },
+    },
+  }).then(({ response }) => response.followingCount);
+
+  return { followingCount: Number(res), userId };
 };
