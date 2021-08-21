@@ -219,8 +219,10 @@ const Header: FC = () => {
               ログイン
             </Button>
           )}
-          <IconButton>
-            <MenuIcon onClick={(e) => handleDrawerToggle(e)} />
+          <IconButton
+            onClick={(e) => handleDrawerToggle(e)}
+          >
+            <MenuIcon />
           </IconButton>
         </Toolbar>
       </AppBar>
