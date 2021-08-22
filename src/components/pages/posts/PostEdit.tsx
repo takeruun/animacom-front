@@ -136,9 +136,9 @@ const PostEdit: FC = () => {
   };
 
   useEffect(() => {
+    dispatch(fetchCategories());
     if (id !== undefined && id !== '') {
       const execApi = async (postId: string) => {
-        dispatch(fetchCategories());
         const post = await dispatch(fetchPost(postId)).unwrap();
         setTitle(post.title);
         setSubTitle(post.subTitle);
