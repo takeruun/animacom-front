@@ -2,6 +2,7 @@ import { FC } from 'react';
 import TextField from '@material-ui/core/TextField';
 
 type PropsType = {
+  id: string,
   fullWidth: boolean,
   label: string,
   multiline: boolean,
@@ -14,6 +15,7 @@ type PropsType = {
 
 const InputText: FC<PropsType> = (props: PropsType) => {
   const {
+    id,
     fullWidth,
     label,
     multiline,
@@ -26,8 +28,10 @@ const InputText: FC<PropsType> = (props: PropsType) => {
 
   return (
     <TextField
+      id={id}
       fullWidth={fullWidth}
       label={label}
+      placeholder={label}
       multiline={multiline}
       required={required}
       rows={rows}
