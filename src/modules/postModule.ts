@@ -91,7 +91,7 @@ export const searchPosts = createAsyncThunk<
   string,
   { rejectValue: { message: string } }
 >(
-  'post/fetchCategoryPosts',
+  'post/searchPosts',
   async (_args, _thunkApi) => {
     try {
       const res = await searchPostsAPI({ keyword: _args });
