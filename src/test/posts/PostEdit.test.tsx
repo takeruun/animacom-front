@@ -1,51 +1,82 @@
-import { Provider, useSelector } from 'react-redux';
-import { render, fireEvent, screen } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
+import userEvent from "@testing-library/user-event";
+import { Provider } from 'react-redux';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import { PostEdit } from 'components/pages/posts';
-import userEvent from '@testing-library/user-event'
-import { postModule, PostType, fetchPost } from 'modules/postModule';
-import { snackbarModule } from 'modules/snackbarModule';
-import axios from 'axios';
-import { configureStore, combineReducers, createSlice } from '@reduxjs/toolkit';
+import { postModule } from 'modules/postModule';
+import { categoryModule } from 'modules/categoryModule';
 
-const mockDispatch = jest.fn();
-jest.mock('axios');
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
-  connect: () => (ReactComponent: any) => ({
-    ReactComponent
+export const history = createBrowserHistory();
+
+const headers = {
+  accessToken: 'accessToken',
+  client: 'client',
+  expiry: 'expiry',
+  uid: 'uid',
+};
+localStorage.setItem('anima', JSON.stringify(headers));
+
+const server = setupServer(
+  rest.get('http://localhost:3001/v1/categories', (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({
+      categories: [
+        {
+          id: '1',
+          name: 'TEST_CATEGORY',
+        },
+        {
+          id: '2',
+          name: 'UPDATE_CATEGORY',
+        },
+      ],
+    }));
   }),
-  Provider: ({ children }: any) => children,
-}));
-jest.mock('@reduxjs/toolkit');
+  rest.get('http://localhost:3001/v1/users/posts/1', (req, res, ctx) => {
+    return res(ctx.status(200), ctx.json({
+      post: {
+        id: '1',
+        title: 'TEST_Title',
+        subTitle: 'SubTitle',
+        body: 'Body',
+        images: [],
+        categoryId: '1',
+        cuteCount: 0,
+        favCount: 0,
+        goodCount: 0,
+        coolCount: 0,
+      }
+    }));
+  }),
+);
+
+beforeAll(() => server.listen());
+afterEach(() => {
+  server.resetHandlers();
+  cleanup();
+});
+afterAll(() => server.close());
 
 describe('renders post edit', () => {
   let store: any;
-  postModule.reducer(undefined, { type: fetchPost.pending.type })
-  const reducres = combineReducers({ post: postModule.reducer });
-  store = configureStore({ reducer: reducres })
-  const useSelectorMock = useSelector as jest.Mock;
+  const reducers = combineReducers({
+    post: postModule.reducer,
+    category: categoryModule.reducer,
+    router: connectRouter(history),
+  });
+
+  beforeEach(() => {
+    store = configureStore({
+      reducer: reducers,
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+        .concat(routerMiddleware(history)),
+    });
+  });
 
   describe('新規投稿できる', () => {
-    beforeEach(() => {
-      mockDispatch.mockImplementation(() => () => { });
-      useSelectorMock.mockImplementation((selector: any) => selector(mockStore));
-    });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    const mockStore = {
-      post: {
-        loading: false,
-      },
-      category: {
-        categories: [
-          { id: '1', name: 'TEST_CATEGORY' },
-        ],
-      },
-    };
 
     const renderComponent = () => render(
       <Provider store={store}>
@@ -93,7 +124,7 @@ describe('renders post edit', () => {
       renderComponent();
 
       userEvent.click(screen.getAllByRole('button')[1]);
-      userEvent.click(screen.getByText('TEST_CATEGORY'));
+      userEvent.click(await screen.findByText('TEST_CATEGORY'));
       expect(screen.getAllByText('TEST_CATEGORY')[0]).toBeInTheDocument();
     });
 
@@ -105,7 +136,6 @@ describe('renders post edit', () => {
   });
 
   describe('編集できる', () => {
-    const axiosMock = axios as jest.Mocked<typeof axios>;
     const renderComponent = () => render(
       <Provider store={store}>
         <PostEdit />
@@ -119,40 +149,12 @@ describe('renders post edit', () => {
       window.location = {
         pathname: 'http://dummy.com/post/edit/1',
       };
-      mockDispatch.mockImplementation(() => () => { });
-      useSelectorMock.mockImplementation((selector: any) => selector(mockStore));
     });
-
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    const mockStore = {
-      post: {
-        loading: false,
-      },
-      category: {
-        categories: [
-          { id: '1', name: 'UPDATE_CATEGORY' },
-        ],
-      },
-    };
-    const post: PostType = {
-      id: '1',
-      title: 'TEST_Title',
-      subTitle: 'SubTitle',
-      body: 'Boyd',
-      images: [],
-      categoryId: '1',
-      cuteCount: 0,
-      favCount: 0,
-      goodCount: 0,
-      coolCount: 0,
-    };
 
     it('タイトル再入力できる', async () => {
-      axiosMock.get.mockImplementationOnce(() => Promise.resolve({ data: { post } }));
       renderComponent();
+
+      expect(await screen.findByText('TEST_Title'));
 
       const titleInput = screen.getByText('TEST_Title');
       fireEvent.change(titleInput, {
@@ -160,48 +162,51 @@ describe('renders post edit', () => {
           value: 'UPDATE_Title'
         }
       });
-
       expect(screen.getByText('UPDATE_Title')).toBeInTheDocument();
     });
 
     it('サブタイトル再入力できる', async () => {
       renderComponent();
 
+      expect(await screen.findByText('SubTitle'));
+
       const titleInput = screen.getByPlaceholderText('サブタイトル🐾');
       fireEvent.change(titleInput, {
         target: {
-          value: 'サブタイトル'
+          value: 'UPDATE_SUBTITLE'
         }
       });
-      expect(screen.getByText('サブタイトル')).toBeInTheDocument();
+      expect(screen.getByText('UPDATE_SUBTITLE')).toBeInTheDocument();
     });
 
     it('説明再入力できる', async () => {
       renderComponent();
 
+      expect(await screen.findByText('Body'));
+
       const titleInput = screen.getByPlaceholderText('説明🐾');
       fireEvent.change(titleInput, {
         target: {
-          value: '説明'
+          value: 'UPDATE_BODY'
         }
       });
-      expect(screen.getByText('説明')).toBeInTheDocument();
+      expect(screen.getByText('UPDATE_BODY')).toBeInTheDocument();
     });
 
     it('カテゴリ選択できる', async () => {
       renderComponent();
 
+      expect(await screen.findByText('TEST_CATEGORY'))
+
       userEvent.click(screen.getAllByRole('button')[1]);
-      userEvent.click(screen.getByText('TEST_CATEGORY'));
-      expect(screen.getAllByText('TEST_CATEGORY')[0]).toBeInTheDocument();
+      userEvent.click(screen.getByText('UPDATE_CATEGORY'));
+      expect(screen.getAllByText('UPDATE_CATEGORY')[0]).toBeInTheDocument();
     });
 
-    it('「投稿」が表示されている', () => {
+    it('「編集」が表示されている', () => {
       renderComponent();
 
-      expect(screen.getByText('投稿！')).toBeInTheDocument();
+      expect(screen.getByText('編集！')).toBeInTheDocument();
     });
-
   });
-
 });
