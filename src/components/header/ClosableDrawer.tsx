@@ -70,6 +70,7 @@ const InputTextMemo = memo((
   const { input, value } = props;
   return (
     <InputText
+      id="keyword"
       fullWidth={false}
       label="キーワードを入力"
       multiline={false}

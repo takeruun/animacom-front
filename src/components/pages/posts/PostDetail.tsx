@@ -122,6 +122,7 @@ const PostDetail: FC = () => {
           ))
         }
         <InputText
+          id="comment"
           label="コメント"
           fullWidth={false}
           multiline

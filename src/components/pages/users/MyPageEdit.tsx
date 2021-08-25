@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 
 const InputTextMemo = memo((
   props: {
+    id: string,
     fullWidth: boolean,
     label: string,
     multiline: boolean,
@@ -36,6 +37,7 @@ const InputTextMemo = memo((
   },
 ) => {
   const {
+    id,
     fullWidth,
     label,
     multiline,
@@ -47,6 +49,7 @@ const InputTextMemo = memo((
   } = props;
   return (
     <InputText
+      id={id}
       fullWidth={fullWidth}
       label={label}
       multiline={multiline}
@@ -111,6 +114,7 @@ const MyPageEdit: FC = () => {
     <section className="c-section-container">
       <h2 className="u-text__headline u-text-center">マイページ編集</h2>
       <InputTextMemo
+        id="name"
         label="名前"
         fullWidth
         multiline
@@ -122,6 +126,7 @@ const MyPageEdit: FC = () => {
       />
       <div className="module-spacer--medium" />
       <InputTextMemo
+        id="nickname"
         label="ニックネーム"
         fullWidth
         multiline

@@ -1,0 +1,29 @@
+version: 2.1
+orbs:
+  aws-cli: circleci/aws-cli@2.0.3
+jobs:
+  test:
+    docker:
+      - image: circleci/node:15.14.0
+    steps:
+      - checkout
+      - aws-cli/setup
+      - restore_cache:
+          keys:
+            - react-modules-v2-{{ checksum "yarn.lock" }}
+            - react-modules-v2-
+      - run:
+          name: yarn install
+          command: yarn install
+      - save_cache:
+          key: react-modules-v2-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+      - run: 
+          name: Run test
+          command: yarn test
+workflows:
+  version: 2.1
+  test:
+    jobs:
+      - test

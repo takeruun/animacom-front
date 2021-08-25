@@ -108,18 +108,22 @@ const PostCard: FC<PostType> = (props: PostType) => {
           <colgroup span={1} className="fav" />
           <colgroup span={1} className="good" />
           <colgroup span={1} className="cool" />
-          <tr>
-            <td><FavoriteIcon fontSize="small" /></td>
-            <td><GradeIcon fontSize="small" /></td>
-            <td><ThumbUpAltIcon fontSize="small" /></td>
-            <td><FlareIcon fontSize="small" /></td>
-          </tr>
-          <tr>
-            <td>{cuteCount}</td>
-            <td>{favCount}</td>
-            <td>{goodCount}</td>
-            <td>{coolCount}</td>
-          </tr>
+          <thead>
+            <tr>
+              <td><FavoriteIcon fontSize="small" /></td>
+              <td><GradeIcon fontSize="small" /></td>
+              <td><ThumbUpAltIcon fontSize="small" /></td>
+              <td><FlareIcon fontSize="small" /></td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{cuteCount}</td>
+              <td>{favCount}</td>
+              <td>{goodCount}</td>
+              <td>{coolCount}</td>
+            </tr>
+          </tbody>
         </table>
       </CardContent>
     </Card>

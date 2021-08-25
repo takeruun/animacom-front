@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => createStyles({
 
 const InputTextMemo = memo((
   props: {
+    id: string,
     fullWidth: boolean,
     label: string,
     multiline: boolean,
@@ -46,6 +47,7 @@ const InputTextMemo = memo((
   },
 ) => {
   const {
+    id,
     fullWidth,
     label,
     multiline,
@@ -57,6 +59,7 @@ const InputTextMemo = memo((
   } = props;
   return (
     <InputText
+      id={id}
       fullWidth={fullWidth}
       label={label}
       multiline={multiline}
@@ -124,6 +127,7 @@ const SignUp: FC = () => {
       <h2 className="u-text-center u-text__headline">アカウント登録</h2>
       <div className="module-spacer--medium" />
       <InputTextMemo
+        id="name"
         fullWidth
         label="ユーザー名"
         multiline={false}
@@ -134,6 +138,7 @@ const SignUp: FC = () => {
         input={inputName}
       />
       <InputTextMemo
+        id="nickname"
         fullWidth
         label="ニックネーム"
         multiline={false}
@@ -144,6 +149,7 @@ const SignUp: FC = () => {
         input={inputNickname}
       />
       <InputTextMemo
+        id="email"
         fullWidth
         label="メールアドレス"
         multiline={false}
@@ -154,6 +160,7 @@ const SignUp: FC = () => {
         input={inputEmail}
       />
       <InputTextMemo
+        id="password"
         fullWidth
         label="パスワード（半角英数字で6文字以上）"
         multiline={false}
