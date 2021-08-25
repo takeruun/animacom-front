@@ -1,10 +1,55 @@
-import { PostType } from "modules/postModule";
-import { render, screen } from '@testing-library/react';
+import { render, screen, cleanup } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { createBrowserHistory } from 'history';
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import { postModule, PostType } from "modules/postModule";
 import { PostList } from 'components/pages/posts/index';
 
+export const history = createBrowserHistory();
+
+const headers = {
+  accessToken: 'accessToken',
+  client: 'client',
+  expiry: 'expiry',
+  uid: 'uid',
+};
+localStorage.setItem('anima', JSON.stringify(headers));
+
+const server = setupServer(
+  rest.get('http://localhost:3001/v1/posts', (_, res, ctx) => {
+    return res(ctx.status(200), ctx.json({
+      posts: [{}]
+    }));
+  })
+);
+
+beforeAll(() => server.listen());
+afterEach(() => {
+  server.resetHandlers();
+  cleanup();
+});
+afterAll(() => server.close());
+
 describe('renders posts data', () => {
-  test("今日の投稿一覧が表示される", async () => {
-    const fakeLatestPosts: Array<PostType> = [{
+  let store: any;
+  const reducers = combineReducers({
+    post: postModule.reducer,
+    router: connectRouter(history),
+  });
+
+  beforeEach(() => {
+    store = configureStore({
+      reducer: reducers,
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware()
+        .concat(routerMiddleware(history)),
+    });
+  });
+
+  it("今日の投稿一覧が表示される", async () => {
+    const posts: Array<PostType> = [{
       id: "1",
       title: "latest_title",
       subTitle: "latest_sub_title",
@@ -17,8 +62,18 @@ describe('renders posts data', () => {
       coolCount: 0,
     }];
 
+    server.use(
+      rest.get('http://localhost:3001/v1/posts/latest', (_, res, ctx) => {
+        return res(ctx.status(200), ctx.json({
+          posts,
+        }));
+      }),
+    );
+
     render(
-      <PostList path="latest" posts={fakeLatestPosts} />
+      <Provider store={store}>
+        <PostList path="latest" posts={posts} />
+      </Provider>
     );
 
     expect(screen.getByText('今日の投稿一覧')).toBeInTheDocument();
@@ -26,8 +81,8 @@ describe('renders posts data', () => {
     expect(screen.getByText('latest_sub_title')).toBeInTheDocument();
   });
 
-  test("昨日の投稿一覧が表示される", async () => {
-    const fakeDayAgoPosts: Array<PostType> = [{
+  it("昨日の投稿一覧が表示される", async () => {
+    const posts: Array<PostType> = [{
       id: "1",
       title: "day_ago_title",
       subTitle: "day_ago_sub_title",
@@ -40,8 +95,18 @@ describe('renders posts data', () => {
       coolCount: 0,
     }];
 
+    server.use(
+      rest.get('http://localhost:3001/v1/posts/latest', (_, res, ctx) => {
+        return res(ctx.status(200), ctx.json({
+          posts,
+        }));
+      }),
+    );
+
     render(
-      <PostList path="day_ago" posts={fakeDayAgoPosts} />
+      <Provider store={store}>
+        <PostList path="day_ago" posts={posts} />
+      </Provider>
     );
 
     expect(screen.getByText('昨日の投稿一覧')).toBeInTheDocument();
@@ -49,8 +114,8 @@ describe('renders posts data', () => {
     expect(screen.getByText('day_ago_sub_title')).toBeInTheDocument();
   });
 
-  test("かわいい一覧 best5の投稿一覧が表示される", async () => {
-    const cute5: Array<PostType> = [{
+  it("かわいい一覧 best5の投稿一覧が表示される", async () => {
+    const posts: Array<PostType> = [{
       id: "1",
       title: "cute5_title",
       subTitle: "cute5_sub_title",
@@ -63,8 +128,18 @@ describe('renders posts data', () => {
       coolCount: 0,
     }];
 
+    server.use(
+      rest.get('http://localhost:3001/v1/posts/latest', (_, res, ctx) => {
+        return res(ctx.status(200), ctx.json({
+          posts,
+        }));
+      }),
+    );
+
     render(
-      <PostList path="reactions/bests/cute" posts={cute5} />
+      <Provider store={store}>
+        <PostList path="reactions/bests/cute" posts={posts} />
+      </Provider>
     );
 
     expect(screen.getByText('かわいい一覧 best5')).toBeInTheDocument();
@@ -72,8 +147,8 @@ describe('renders posts data', () => {
     expect(screen.getByText('cute5_sub_title')).toBeInTheDocument();
   });
 
-  test("お気に入り一覧 best5の投稿一覧が表示される", async () => {
-    const fav5: Array<PostType> = [{
+  it("お気に入り一覧 best5の投稿一覧が表示される", async () => {
+    const posts: Array<PostType> = [{
       id: "1",
       title: "fav5_title",
       subTitle: "fav5_sub_title",
@@ -86,8 +161,18 @@ describe('renders posts data', () => {
       coolCount: 0,
     }];
 
+    server.use(
+      rest.get('http://localhost:3001/v1/posts/latest', (_, res, ctx) => {
+        return res(ctx.status(200), ctx.json({
+          posts,
+        }));
+      }),
+    );
+
     render(
-      <PostList path="reactions/bests/fav" posts={fav5} />
+      <Provider store={store}>
+        <PostList path="reactions/bests/fav" posts={posts} />
+      </Provider>
     );
 
     expect(screen.getByText('お気に入り一覧 best5')).toBeInTheDocument();
@@ -95,8 +180,8 @@ describe('renders posts data', () => {
     expect(screen.getByText('fav5_sub_title')).toBeInTheDocument();
   });
 
-  test("いいね一覧 best5の投稿一覧が表示される", async () => {
-    const good5: Array<PostType> = [{
+  it("いいね一覧 best5の投稿一覧が表示される", async () => {
+    const posts: Array<PostType> = [{
       id: "1",
       title: "good5_title",
       subTitle: "good5_sub_title",
@@ -109,8 +194,18 @@ describe('renders posts data', () => {
       coolCount: 0,
     }];
 
+    server.use(
+      rest.get('http://localhost:3001/v1/posts/latest', (_, res, ctx) => {
+        return res(ctx.status(200), ctx.json({
+          posts,
+        }));
+      }),
+    );
+
     render(
-      <PostList path="reactions/bests/good" posts={good5} />
+      <Provider store={store}>
+        <PostList path="reactions/bests/good" posts={posts} />
+      </Provider>
     );
 
     expect(screen.getByText('いいね一覧 best5')).toBeInTheDocument();
@@ -118,8 +213,8 @@ describe('renders posts data', () => {
     expect(screen.getByText('good5_sub_title')).toBeInTheDocument();
   });
 
-  test("かっこいい一覧 best5の投稿一覧が表示される", async () => {
-    const cool5: Array<PostType> = [{
+  it("かっこいい一覧 best5の投稿一覧が表示される", async () => {
+    const posts: Array<PostType> = [{
       id: "1",
       title: "cool5_title",
       subTitle: "cool5_sub_title",
@@ -132,8 +227,18 @@ describe('renders posts data', () => {
       coolCount: 0,
     }];
 
+    server.use(
+      rest.get('http://localhost:3001/v1/posts/latest', (_, res, ctx) => {
+        return res(ctx.status(200), ctx.json({
+          posts,
+        }));
+      }),
+    );
+
     render(
-      <PostList path="reactions/bests/cool" posts={cool5} />
+      <Provider store={store}>
+        <PostList path="reactions/bests/cool" posts={posts} />
+      </Provider>
     );
 
     expect(screen.getByText('かっこいい一覧 best5')).toBeInTheDocument();
