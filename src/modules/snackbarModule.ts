@@ -22,7 +22,7 @@ export const snackbarModule = createSlice({
       state.isShow = true;
       state.isError = action.payload.isError ?? initialState.isError;
       state.error = action.payload.error ?? initialState.error;
-      state.message = action.payload.message;
+      state.message = action.payload.message ?? initialState.message;
     },
     close: (state) => {
       state.isShow = false;

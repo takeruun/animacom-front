@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from 're-ducks/store/store';
 import { fetchUser } from 'modules/userModule';
 import { push } from 'connected-react-router';
 import { TextDetail, SecondaryButton } from 'components/UIKit/index';
+import NoImage from '../../../assets/no_image.png';
 
 const MyPage: FC = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -12,6 +13,10 @@ const MyPage: FC = () => {
   const name = userModule.user.name;
   const nickname = userModule.user.nickname;
   const imagePath = userModule.user.image?.imagePath;
+  const userImage: {
+    path: string;
+    alt: string;
+  } = { path: imagePath || NoImage, alt: imagePath ? 'ユーザ画像' : 'NoImage' };
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -26,7 +31,7 @@ const MyPage: FC = () => {
       <TextDetail label="ニックネーム名" value={nickname} />
       <div className="module-spacer--small" />
 
-      <img src={imagePath} alt="ユーザ画像" />
+      <img src={userImage.path} alt={userImage.alt} />
       <div className="module-spacer--small" />
       <div className="center">
         <SecondaryButton label="情報の編集" onClick={() => dispatch(push('/mypage/edit'))} />

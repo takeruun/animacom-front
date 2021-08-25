@@ -1,27 +1,34 @@
 import { Provider, useSelector } from 'react-redux';
 import { render, fireEvent, screen } from '@testing-library/react';
-import { store } from 're-ducks/store/store';
 import { PostEdit } from 'components/pages/posts';
 import userEvent from '@testing-library/user-event'
-import { PostType } from 'modules/postModule';
+import { postModule, PostType, fetchPost } from 'modules/postModule';
+import { snackbarModule } from 'modules/snackbarModule';
 import axios from 'axios';
+import { configureStore, combineReducers, createSlice } from '@reduxjs/toolkit';
 
 const mockDispatch = jest.fn();
 jest.mock('axios');
 jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
-  useDispatch: () => mockDispatch,
+  useDispatch: jest.fn(),
   connect: () => (ReactComponent: any) => ({
     ReactComponent
   }),
   Provider: ({ children }: any) => children,
 }));
+jest.mock('@reduxjs/toolkit');
 
 describe('renders post edit', () => {
+  let store: any;
+  postModule.reducer(undefined, { type: fetchPost.pending.type })
+  const reducres = combineReducers({ post: postModule.reducer });
+  store = configureStore({ reducer: reducres })
   const useSelectorMock = useSelector as jest.Mock;
 
   describe('新規投稿できる', () => {
     beforeEach(() => {
+      mockDispatch.mockImplementation(() => () => { });
       useSelectorMock.mockImplementation((selector: any) => selector(mockStore));
     });
 
@@ -112,6 +119,7 @@ describe('renders post edit', () => {
       window.location = {
         pathname: 'http://dummy.com/post/edit/1',
       };
+      mockDispatch.mockImplementation(() => () => { });
       useSelectorMock.mockImplementation((selector: any) => selector(mockStore));
     });
 
