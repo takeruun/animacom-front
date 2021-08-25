@@ -6,7 +6,7 @@ import { createBrowserHistory } from 'history';
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { postModule, PostType } from "modules/postModule";
-import { PostList } from 'components/pages/posts/index';
+import PostList from 'components/pages/posts/PostList';
 
 export const history = createBrowserHistory();
 

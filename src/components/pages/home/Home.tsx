@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from 're-ducks/store/store';
 import { fetchPosts } from 'modules/postModule';
 import { startFetch, endFetch } from 're-ducks/apiStatus/operations';
 import { makeStyles } from '@material-ui/core/styles';
-import { PostList } from 'components/pages/posts/index';
+import PostList from 'components/pages/posts/PostList';
 
 const useStyles = makeStyles(() => ({
   root: {
