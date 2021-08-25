@@ -21,7 +21,7 @@ const headers = {
 localStorage.setItem('anima', JSON.stringify(headers));
 
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/users/my_page', (req, res, ctx) => {
+  rest.get('http://localhost:3001/v1/users/my_page', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({
       user: {
         id: '1',
@@ -35,7 +35,7 @@ const server = setupServer(
       }
     }));
   })
-)
+);
 
 beforeAll(() => server.listen());
 afterEach(() => {
@@ -108,7 +108,7 @@ describe('MyPage', () => {
   describe('Fetch failuer', () => {
     beforeEach(() => {
       server.use(
-        rest.get('http://localhost:3001/v1/users/my_page', (req, res, ctx) => {
+        rest.get('http://localhost:3001/v1/users/my_page', (_, res, ctx) => {
           return res(ctx.status(200), ctx.json({ error: '失敗しました。' }));
         })
       );

@@ -1,4 +1,4 @@
-import { render, screen, cleanup, fireEvent, act } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from "@testing-library/user-event";
 import { Provider } from 'react-redux';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
@@ -21,7 +21,7 @@ const headers = {
 localStorage.setItem('anima', JSON.stringify(headers));
 
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/categories', (req, res, ctx) => {
+  rest.get('http://localhost:3001/v1/categories', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({
       categories: [
         {
@@ -35,7 +35,7 @@ const server = setupServer(
       ],
     }));
   }),
-  rest.get('http://localhost:3001/v1/users/posts/1', (req, res, ctx) => {
+  rest.get('http://localhost:3001/v1/users/posts/1', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json({
       post: {
         id: '1',
@@ -152,61 +152,77 @@ describe('renders post edit', () => {
     });
 
     it('タイトル再入力できる', async () => {
-      renderComponent();
+      const { getByText } = renderComponent();
 
       expect(await screen.findByText('TEST_Title'));
 
       const titleInput = screen.getByText('TEST_Title');
-      fireEvent.change(titleInput, {
-        target: {
-          value: 'UPDATE_Title'
-        }
+
+      await waitFor(() => {
+        fireEvent.change(titleInput, {
+          target: {
+            value: 'UPDATE_Title'
+          }
+        });
+        expect(getByText('UPDATE_Title')).toBeInTheDocument();
       });
-      expect(screen.getByText('UPDATE_Title')).toBeInTheDocument();
     });
 
     it('サブタイトル再入力できる', async () => {
-      renderComponent();
+      const { getByText } = renderComponent();
 
       expect(await screen.findByText('SubTitle'));
 
       const titleInput = screen.getByPlaceholderText('サブタイトル🐾');
-      fireEvent.change(titleInput, {
-        target: {
-          value: 'UPDATE_SUBTITLE'
-        }
+
+      await waitFor(() => {
+        fireEvent.change(titleInput, {
+          target: {
+            value: 'UPDATE_SUBTITLE'
+          }
+        });
+        expect(getByText('UPDATE_SUBTITLE')).toBeInTheDocument();
       });
-      expect(screen.getByText('UPDATE_SUBTITLE')).toBeInTheDocument();
     });
 
     it('説明再入力できる', async () => {
-      renderComponent();
+      const { getByText } = renderComponent();
 
       expect(await screen.findByText('Body'));
 
       const titleInput = screen.getByPlaceholderText('説明🐾');
-      fireEvent.change(titleInput, {
-        target: {
-          value: 'UPDATE_BODY'
-        }
+
+      await waitFor(() => {
+        fireEvent.change(titleInput, {
+          target: {
+            value: 'UPDATE_BODY'
+          }
+        });
+        expect(getByText('UPDATE_BODY')).toBeInTheDocument();
       });
-      expect(screen.getByText('UPDATE_BODY')).toBeInTheDocument();
     });
 
     it('カテゴリ選択できる', async () => {
-      renderComponent();
+      const { getAllByText } = renderComponent();
 
       expect(await screen.findByText('TEST_CATEGORY'))
 
       userEvent.click(screen.getAllByRole('button')[1]);
-      userEvent.click(screen.getByText('UPDATE_CATEGORY'));
-      expect(screen.getAllByText('UPDATE_CATEGORY')[0]).toBeInTheDocument();
+
+      await waitFor(() => {
+        userEvent.click(screen.getByText('UPDATE_CATEGORY'));
+        expect(getAllByText('UPDATE_CATEGORY')[0]).toBeInTheDocument();
+      });
     });
 
-    it('「編集」が表示されている', () => {
-      renderComponent();
+    it('「編集！」が表示されている', async () => {
+      const { getByText } = renderComponent();
 
-      expect(screen.getByText('編集！')).toBeInTheDocument();
+      expect(await screen.findByText('編集！')).toBeInTheDocument();
+
+      await waitFor(() => {
+        expect(getByText('編集！')).toBeInTheDocument();
+      });
     });
   });
 });
