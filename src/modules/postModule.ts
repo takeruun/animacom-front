@@ -43,7 +43,7 @@ export type PostStateType = {
   searchPosts: Array<PostType>,
 };
 
-const initialState: PostStateType = {
+export const initialState: PostStateType = {
   loading: false,
   error: '',
   post: {
