@@ -18,7 +18,7 @@ export type ReactionCountsStateType = {
   coolCount: number,
 };
 
-const initialState: ReactionCountsStateType = {
+export const initialState: ReactionCountsStateType = {
   loading: false,
   error: '',
   cuteCount: 0,
@@ -77,3 +77,9 @@ export const reactionCountsModule = createSlice({
     });
   },
 });
+
+export const {
+  getSuccessReactionCounts,
+} = reactionCountsModule.actions;
+
+export default reactionCountsModule.reducer;
