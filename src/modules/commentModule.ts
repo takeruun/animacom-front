@@ -13,12 +13,12 @@ export type CommentType = {
 
 export type CommentStateType = {
   loading: boolean,
-  comment: Array<CommentType>,
+  comments: Array<CommentType>,
 };
 
-const initialState: CommentStateType = {
+export const initialState: CommentStateType = {
   loading: false,
-  comment: [],
+  comments: [],
 };
 
 export const fetchComments = createAsyncThunk<
@@ -48,10 +48,10 @@ export const commentModule = createSlice({
       state.loading = true;
     },
     getSuccessComment: (state, action) => {
-      state.comment.push(action.payload);
+      state.comments.push(action.payload);
     },
     getSuccessComments: (state, action) => {
-      state.comment = action.payload;
+      state.comments = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -64,4 +64,7 @@ export const commentModule = createSlice({
 
 export const {
   getSuccessComment,
+  getSuccessComments,
 } = commentModule.actions;
+
+export default commentModule.reducer;

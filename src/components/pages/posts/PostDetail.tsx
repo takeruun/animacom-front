@@ -65,7 +65,7 @@ const PostDetail: FC = () => {
   const [post, setPost] = useState<PostType>();
   const [socket, setSocket] = useState<SocketType>();
   const [body, setBody] = useState('');
-  const comments = commentModule.comment;
+  const comments = commentModule.comments;
 
   const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setBody(event.target.value);
