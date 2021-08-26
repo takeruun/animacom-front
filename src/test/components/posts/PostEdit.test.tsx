@@ -60,7 +60,7 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
-describe('renders post edit', () => {
+describe('Rendering PostEdit', () => {
   let store: any;
   const reducers = combineReducers({
     post: postModule.reducer,

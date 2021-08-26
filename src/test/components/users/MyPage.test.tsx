@@ -44,7 +44,7 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
-describe('MyPage', () => {
+describe('Rendering MyPage', () => {
   let store: any;
   const reducers = combineReducers({
     snackbar: snackbarModule.reducer,

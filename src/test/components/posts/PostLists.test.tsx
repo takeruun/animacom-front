@@ -33,7 +33,7 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
-describe('renders posts data', () => {
+describe('Rendering PostLists', () => {
   let store: any;
   const reducers = combineReducers({
     post: postModule.reducer,
