@@ -7,7 +7,7 @@ export type SnackbarStateType = {
   message: string,
 };
 
-const initialState: SnackbarStateType = {
+export const initialState: SnackbarStateType = {
   isShow: false,
   isError: false,
   error: '',
@@ -52,3 +52,5 @@ export const closeSnackbar = createAsyncThunk<
     _thunkApi.dispatch(close());
   },
 );
+
+export default snackbarModule.reducer;
