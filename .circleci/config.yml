@@ -21,7 +21,7 @@ jobs:
             - ./node_modules
       - run: 
           name: Run test
-          command: yarn test
+          command: yarn test --maxWorkers=1
 workflows:
   version: 2.1
   test:
