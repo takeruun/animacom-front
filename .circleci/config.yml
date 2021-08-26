@@ -5,6 +5,7 @@ jobs:
   test:
     docker:
       - image: circleci/node:15.14.0
+    working_directory: ~/animacom-front
     steps:
       - checkout
       - aws-cli/setup
