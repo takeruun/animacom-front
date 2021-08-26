@@ -14,7 +14,7 @@ type CategoryStateType = {
   rootCategories: Array<{ id: string, name: string }>,
 };
 
-const initialState: CategoryStateType = {
+export const initialState: CategoryStateType = {
   loading: false,
   error: '',
   categories: [],
@@ -86,3 +86,9 @@ export const categoryModule = createSlice({
     });
   },
 });
+export const {
+  getSuccessCategory,
+  getSuccessRootCategory,
+} = categoryModule.actions;
+
+export default categoryModule.reducer;
