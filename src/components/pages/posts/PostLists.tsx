@@ -7,7 +7,7 @@ type PropsType = {
   posts: Array<PostType>,
 }
 
-const PostList: FC<PropsType> = (props: PropsType) => {
+const PostLists: FC<PropsType> = (props: PropsType) => {
   const { path, posts } = props;
 
   return (
@@ -34,4 +34,4 @@ const PostList: FC<PropsType> = (props: PropsType) => {
   );
 };
 
-export default PostList;
+export default PostLists;
