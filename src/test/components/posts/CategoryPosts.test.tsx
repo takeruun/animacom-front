@@ -1,8 +1,8 @@
 import { render, screen, cleanup } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { rest } from "msw";
-import { setupServer } from "msw/node";
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import { postModule } from 'modules/postModule';
 import { categoryModule } from 'modules/categoryModule';
 import { snackbarModule } from 'modules/snackbarModule';
@@ -31,25 +31,21 @@ const posts = [{
 }];
 
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/posts/search', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({
-      posts,
-    }));
-  }),
-  rest.get('http://localhost:3001/v1/categories', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({
-      categories: [
-        {
-          id: '1',
-          name: 'TEST_CATEGORY',
-        },
-        {
-          id: '2',
-          name: 'TEST_CATEGORY2',
-        },
-      ],
-    }));
-  }),
+  rest.get('http://localhost:3001/v1/posts/search', (_, res, ctx) => res(ctx.status(200), ctx.json({
+    posts,
+  }))),
+  rest.get('http://localhost:3001/v1/categories', (_, res, ctx) => res(ctx.status(200), ctx.json({
+    categories: [
+      {
+        id: '1',
+        name: 'TEST_CATEGORY',
+      },
+      {
+        id: '2',
+        name: 'TEST_CATEGORY2',
+      },
+    ],
+  }))),
 );
 
 jest.mock('react-router-dom', () => ({
@@ -67,6 +63,7 @@ afterEach(() => {
 afterAll(() => server.close());
 
 describe('Rendering CategoryPosts', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
   const reducers = combineReducers({
     post: postModule.reducer,
@@ -83,11 +80,11 @@ describe('Rendering CategoryPosts', () => {
   const renderComponent = () => render(
     <Provider store={store}>
       <CategoryPosts />
-    </Provider>
+    </Provider>,
   );
 
   it('「カテゴリ:」が表示されている', () => {
-    renderComponent()
+    renderComponent();
     expect(screen.getByText('カテゴリ:'));
   });
 
@@ -131,9 +128,7 @@ describe('Rendering CategoryPosts', () => {
   describe('Fetch Failure', () => {
     beforeEach(() => {
       server.use(
-        rest.get('http://localhost:3001/v1/posts/search', (_, res, ctx) => {
-          return res(ctx.status(200), ctx.json({ error: '失敗しました。' }));
-        }),
+        rest.get('http://localhost:3001/v1/posts/search', (_, res, ctx) => res(ctx.status(200), ctx.json({ error: '失敗しました。' }))),
       );
     });
 
@@ -142,7 +137,7 @@ describe('Rendering CategoryPosts', () => {
         <Provider store={store}>
           <CustomizedSnackbar />
           <CategoryPosts />
-        </Provider>
+        </Provider>,
       );
 
       expect(await screen.findByText('失敗しました。')).toBeInTheDocument();

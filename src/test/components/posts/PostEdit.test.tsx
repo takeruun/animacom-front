@@ -60,6 +60,7 @@ afterEach(() => {
 afterAll(() => server.close());
 
 describe('Rendering PostEdit', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
   const reducers = combineReducers({
     post: postModule.reducer,

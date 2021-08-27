@@ -44,6 +44,7 @@ afterEach(() => {
 afterAll(() => server.close());
 
 describe('Rendering MyPage', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
   const reducers = combineReducers({
     snackbar: snackbarModule.reducer,
