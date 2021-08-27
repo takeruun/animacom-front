@@ -4,7 +4,7 @@ import { PostType } from 'modules/postModule';
 import { CategoryType } from 'modules/categoryModule';
 import { UserType } from 'modules/userModule';
 import { CommentType, getSuccessComment } from 'modules/commentModule';
-import request, { authHeaders } from 'hook/useRequest';
+import request, { authHeaders, noAuthRequest } from 'hook/useRequest';
 
 export const fetchUserReactionPostsAPI = async (
   kind: string,
@@ -23,6 +23,7 @@ export const fetchUserReactionPostsAPI = async (
   return { posts: res, kind };
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const fetchUserReactionCountsAPI = async () => {
   const res = await request({
     url: '/v1/users/posts/reactions/counts',
@@ -177,37 +178,40 @@ export type SocketType = ActionCable.Channel & {
 
 export const createCommentSocketAPI = (postId: string) => (
   (dispatch: Dispatch<Action>): SocketType => {
-    const cable = ActionCable.createConsumer(
-      'ws:localhost:3001/v1/cable',
-    );
-    const socket = cable.subscriptions.create(
-      {
-        channel: 'CommentChannel',
-        post_id: postId,
-      },
-      {
-        create: (body: string) => {
-          socket.perform('create', {
-            user_email: authHeaders(JSON.parse(localStorage.getItem('anima') || '')).uid,
-            body,
-          });
+    try {
+      const cable = ActionCable.createConsumer(
+        'ws:localhost:3001/v1/cable',
+      );
+      const socket = cable.subscriptions.create(
+        {
+          channel: 'CommentChannel',
+          post_id: postId,
         },
-        received: (data: ReciveDataType) => {
-          const comment = {
-            id: data.id,
-            userId: data.userId,
-            postId: data.postId,
-            body: data.body,
-            createdAt: new Date(data.createdAt).toISOString(),
-          };
+        {
+          create: (body: string) => {
+            socket.perform('create', {
+              user_email: authHeaders(JSON.parse(localStorage.getItem('anima') || '')).uid,
+              body,
+            });
+          },
+          received: (data: ReciveDataType) => {
+            const comment = {
+              id: data.id,
+              userId: data.userId,
+              postId: data.postId,
+              body: data.body,
+              createdAt: new Date(data.createdAt).toISOString(),
+            };
 
-          dispatch(getSuccessComment(comment));
+            dispatch(getSuccessComment(comment));
+          },
+          disconnected: () => cable.disconnect(),
         },
-        disconnected: () => cable.disconnect(),
-      },
-    );
-
-    return socket;
+      );
+      return socket;
+    } catch (e) {
+      throw new Error('コメント通信でエラーが発生しました。');
+    }
   }
 );
 
@@ -227,10 +231,10 @@ export const signInAPI = async (
   const { email, password } = params;
 
   if (email === '' || password === '') {
-    alert('入力しろ');
+    throw new Error('メールアドレス or パスワードが入力されていません。');
   }
 
-  const res = await request({
+  const res = await noAuthRequest({
     url: 'v1/users/auth/sign_in',
     method: 'post',
     reqParams: {
@@ -260,7 +264,7 @@ export const signInAPI = async (
 export const signUpAPI = async (
   data: FormData,
 ): Promise<UserType> => {
-  const res = request({
+  const res = noAuthRequest({
     url: '/v1/users/auth',
     method: 'post',
     reqParams: {
@@ -342,7 +346,7 @@ export const followUserAPI = async (
 
   return {
     followingCount: Number(res.followingCount),
-    user: res.followings.find((user: any) => user.id === userId),
+    user: res.followings.find((user: UserType) => user.id === userId),
   };
 };
 

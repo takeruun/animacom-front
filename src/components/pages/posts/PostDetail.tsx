@@ -16,6 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
 import { InputText } from 'components/UIKit/index';
 import Button from '@material-ui/core/Button';
+import { close, open } from 'modules/snackbarModule';
 import { ImageSwiper, SizeTable } from './index';
 
 const useStyles = makeStyles((theme) => ({
@@ -75,8 +76,18 @@ const PostDetail: FC = () => {
     const execApi = async (postId: string) => {
       const data = await dispatch(fetchPost(postId)).unwrap();
       setPost(data);
-      setSocket(dispatch(createCommentSocketAPI(id)));
       dispatch(fetchComments(postId));
+
+      try {
+        setSocket(dispatch(createCommentSocketAPI(id)));
+      } catch (e) {
+        dispatch(close());
+        dispatch(open({
+          isShow: true,
+          isError: true,
+          error: e.message,
+        }));
+      }
     };
     execApi(id);
   }, [dispatch, id]);
