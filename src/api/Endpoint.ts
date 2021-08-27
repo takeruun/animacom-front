@@ -264,7 +264,11 @@ export const signInAPI = async (
 export const signUpAPI = async (
   data: FormData,
 ): Promise<UserType> => {
-  const res = noAuthRequest({
+  if (data.get('user[name]') === '' || data.get('user[email]') === '' || data.get('user[password]') === '') {
+    throw new Error('名前 or メールアドレス or パスワードが入力されていません。');
+  }
+
+  const res = await noAuthRequest({
     url: '/v1/users/auth',
     method: 'post',
     reqParams: {
