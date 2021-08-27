@@ -62,8 +62,11 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
             <TableCell component="th" scope="row">かわいい</TableCell>
             <TableCell>{cuteCount}</TableCell>
             <TableCell className={classes.iconCell}>
-              <IconButton className={classes.iconCell} style={{ color: alreadyCuted ? 'rgb(231, 76, 60)' : '' }}>
-                <FavoriteIcon onClick={() => {
+              <IconButton
+                role="button"
+                className={classes.iconCell}
+                style={{ color: alreadyCuted ? 'rgb(231, 76, 60)' : '' }}
+                onClick={() => {
                   if (alreadyCuted) {
                     const reaction = reactions?.find((r) => r.kind === 1);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'cute' }));
@@ -71,7 +74,8 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                     dispatch(postReactions({ id, kind: 'cute' }));
                   }
                 }}
-                />
+              >
+                <FavoriteIcon />
               </IconButton>
             </TableCell>
           </TableRow>
@@ -79,8 +83,11 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
             <TableCell component="th" scope="row">お気に入り</TableCell>
             <TableCell>{favCount}</TableCell>
             <TableCell className={classes.iconCell}>
-              <IconButton className={classes.iconCell} style={{ color: alreadyFaved ? 'rgb(236, 240, 21)' : '' }}>
-                <GradeIcon onClick={() => {
+              <IconButton
+                role="button"
+                className={classes.iconCell}
+                style={{ color: alreadyFaved ? 'rgb(236, 240, 21)' : '' }}
+                onClick={() => {
                   if (alreadyFaved) {
                     const reaction = reactions?.find((r) => r.kind === 2);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'fav' }));
@@ -88,7 +95,8 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                     dispatch(postReactions({ id, kind: 'fav' }));
                   }
                 }}
-                />
+              >
+                <GradeIcon />
               </IconButton>
             </TableCell>
           </TableRow>
@@ -96,8 +104,11 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
             <TableCell component="th" scope="row">いいね</TableCell>
             <TableCell>{goodCount}</TableCell>
             <TableCell className={classes.iconCell}>
-              <IconButton className={classes.iconCell} style={{ color: alreadyGooded ? 'rgb(8, 130, 245)' : '' }}>
-                <ThumbUpAltIcon onClick={() => {
+              <IconButton
+                role="button"
+                className={classes.iconCell}
+                style={{ color: alreadyGooded ? 'rgb(8, 130, 245)' : '' }}
+                onClick={() => {
                   if (alreadyGooded) {
                     const reaction = reactions?.find((r) => r.kind === 3);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'good' }));
@@ -105,7 +116,8 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                     dispatch(postReactions({ id, kind: 'good' }));
                   }
                 }}
-                />
+              >
+                <ThumbUpAltIcon />
               </IconButton>
             </TableCell>
           </TableRow>
@@ -113,8 +125,11 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
             <TableCell component="th" scope="row">かっこいい</TableCell>
             <TableCell>{coolCount}</TableCell>
             <TableCell className={classes.iconCell}>
-              <IconButton className={classes.iconCell} style={{ color: alreadyCooled ? 'rgb(8, 245, 48)' : '' }}>
-                <FlareIcon onClick={() => {
+              <IconButton
+                role="button"
+                className={classes.iconCell}
+                style={{ color: alreadyCooled ? 'rgb(8, 245, 48)' : '' }}
+                onClick={() => {
                   if (alreadyCooled) {
                     const reaction = reactions?.find((r) => r.kind === 4);
                     dispatch(destroyReactions({ id: reaction!.id, kind: 'cool' }));
@@ -122,7 +137,8 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                     dispatch(postReactions({ id, kind: 'cool' }));
                   }
                 }}
-                />
+              >
+                <FlareIcon />
               </IconButton>
             </TableCell>
           </TableRow>
