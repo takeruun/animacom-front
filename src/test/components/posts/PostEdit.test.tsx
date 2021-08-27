@@ -1,16 +1,19 @@
-import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from "@testing-library/user-event";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import {
+  render, screen, cleanup, fireEvent, waitFor,
+} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
-import { rest } from "msw";
-import { setupServer } from "msw/node";
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import { PostEdit } from 'components/pages/posts';
 import { postModule } from 'modules/postModule';
 import { categoryModule } from 'modules/categoryModule';
 
-export const history = createBrowserHistory();
+const history = createBrowserHistory();
 
 const headers = {
   accessToken: 'accessToken',
@@ -21,36 +24,32 @@ const headers = {
 localStorage.setItem('anima', JSON.stringify(headers));
 
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/categories', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({
-      categories: [
-        {
-          id: '1',
-          name: 'TEST_CATEGORY',
-        },
-        {
-          id: '2',
-          name: 'UPDATE_CATEGORY',
-        },
-      ],
-    }));
-  }),
-  rest.get('http://localhost:3001/v1/users/posts/1', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({
-      post: {
+  rest.get('http://localhost:3001/v1/categories', (_, res, ctx) => res(ctx.status(200), ctx.json({
+    categories: [
+      {
         id: '1',
-        title: 'TEST_Title',
-        subTitle: 'SubTitle',
-        body: 'Body',
-        images: [],
-        categoryId: '1',
-        cuteCount: 0,
-        favCount: 0,
-        goodCount: 0,
-        coolCount: 0,
-      }
-    }));
-  }),
+        name: 'TEST_CATEGORY',
+      },
+      {
+        id: '2',
+        name: 'UPDATE_CATEGORY',
+      },
+    ],
+  }))),
+  rest.get('http://localhost:3001/v1/users/posts/1', (_, res, ctx) => res(ctx.status(200), ctx.json({
+    post: {
+      id: '1',
+      title: 'TEST_Title',
+      subTitle: 'SubTitle',
+      body: 'Body',
+      images: [],
+      categoryId: '1',
+      cuteCount: 0,
+      favCount: 0,
+      goodCount: 0,
+      coolCount: 0,
+    },
+  }))),
 );
 
 beforeAll(() => server.listen());
@@ -77,11 +76,10 @@ describe('Rendering PostEdit', () => {
   });
 
   describe('新規投稿できる', () => {
-
     const renderComponent = () => render(
       <Provider store={store}>
         <PostEdit />
-      </Provider>
+      </Provider>,
     );
 
     it('タイトル入力できる', async () => {
@@ -90,8 +88,8 @@ describe('Rendering PostEdit', () => {
       const titleInput = screen.getByPlaceholderText('タイトル🐾');
       fireEvent.change(titleInput, {
         target: {
-          value: 'タイトル'
-        }
+          value: 'タイトル',
+        },
       });
       expect(screen.getByText('タイトル')).toBeInTheDocument();
     });
@@ -102,8 +100,8 @@ describe('Rendering PostEdit', () => {
       const titleInput = screen.getByPlaceholderText('サブタイトル🐾');
       fireEvent.change(titleInput, {
         target: {
-          value: 'サブタイトル'
-        }
+          value: 'サブタイトル',
+        },
       });
       expect(screen.getByText('サブタイトル')).toBeInTheDocument();
     });
@@ -114,8 +112,8 @@ describe('Rendering PostEdit', () => {
       const titleInput = screen.getByPlaceholderText('説明🐾');
       fireEvent.change(titleInput, {
         target: {
-          value: '説明'
-        }
+          value: '説明',
+        },
       });
       expect(screen.getByText('説明')).toBeInTheDocument();
     });
@@ -139,7 +137,7 @@ describe('Rendering PostEdit', () => {
     const renderComponent = () => render(
       <Provider store={store}>
         <PostEdit />
-      </Provider>
+      </Provider>,
     );
 
     beforeEach(() => {
@@ -161,8 +159,8 @@ describe('Rendering PostEdit', () => {
       await waitFor(() => {
         fireEvent.change(titleInput, {
           target: {
-            value: 'UPDATE_Title'
-          }
+            value: 'UPDATE_Title',
+          },
         });
         expect(getByText('UPDATE_Title')).toBeInTheDocument();
       });
@@ -178,8 +176,8 @@ describe('Rendering PostEdit', () => {
       await waitFor(() => {
         fireEvent.change(titleInput, {
           target: {
-            value: 'UPDATE_SUBTITLE'
-          }
+            value: 'UPDATE_SUBTITLE',
+          },
         });
         expect(getByText('UPDATE_SUBTITLE')).toBeInTheDocument();
       });
@@ -195,8 +193,8 @@ describe('Rendering PostEdit', () => {
       await waitFor(() => {
         fireEvent.change(titleInput, {
           target: {
-            value: 'UPDATE_BODY'
-          }
+            value: 'UPDATE_BODY',
+          },
         });
         expect(getByText('UPDATE_BODY')).toBeInTheDocument();
       });
@@ -205,7 +203,7 @@ describe('Rendering PostEdit', () => {
     it('カテゴリ選択できる', async () => {
       const { getAllByText } = renderComponent();
 
-      expect(await screen.findByText('TEST_CATEGORY'))
+      expect(await screen.findByText('TEST_CATEGORY'));
 
       userEvent.click(screen.getAllByRole('button')[1]);
 

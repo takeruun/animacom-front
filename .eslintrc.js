@@ -59,6 +59,10 @@ module.exports = {
       'error',
       { props: true, ignorePropertyModificationsFor: ['state'] }
     ],
+    'import/no-extraneous-dependencies': ['error', {
+      devDependencies: ['**/*.test.tsx'],
+      optionalDependencies: false,
+    }],
   },
   settings: {
     'import/resolver': {

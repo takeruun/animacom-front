@@ -61,11 +61,8 @@ jest.mock('react-router-dom', () => ({
 beforeAll(() => server.listen());
 afterEach(() => {
   server.resetHandlers();
-  jest.clearAllMocks
-  cleanup();
-});
-afterEach(() => {
   jest.resetAllMocks();
+  cleanup();
 });
 afterAll(() => server.close());
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
 const baseURL = 'http://localhost:3001';
@@ -17,7 +18,11 @@ type RequestType = {
   },
 };
 
-export const authHeaders = ({ accessToken, client, uid }: AuthType) => ({
+export const authHeaders = ({ accessToken, client, uid }: AuthType):{
+  'access-token': string;
+  client: string;
+  uid: string;
+} => ({
   'access-token': accessToken,
   client,
   uid,
@@ -27,7 +32,10 @@ const client = axios.create({
   baseURL,
 });
 
-export default async function request({ url, method, reqParams }: RequestType) {
+export default async function request({ url, method, reqParams }: RequestType): Promise<{
+  response: any;
+  headers: any;
+}> {
   const reqConfig: AxiosRequestConfig = {
     url,
     method,
@@ -56,3 +64,30 @@ export default async function request({ url, method, reqParams }: RequestType) {
 
   return { response, headers: response.headers };
 }
+
+export const noAuthRequest = async ({ url, method, reqParams }: RequestType): Promise<{
+  response: any;
+  headers: any;
+}> => {
+  const reqConfig: AxiosRequestConfig = {
+    url,
+    method,
+    headers: {},
+    ...reqParams,
+  };
+
+  const response = await client(reqConfig)
+    .then((res) => {
+      if (res.data.error) {
+        let emsg: string = res.data.error;
+        if (res.data.msg?.length > 0) emsg += `/${res.data.msg}`;
+        throw emsg;
+      }
+      return res;
+    })
+    .catch((e) => {
+      throw new Error(e);
+    });
+
+  return { response: response.data, headers: response.headers };
+};
