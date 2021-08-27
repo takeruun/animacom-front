@@ -32,7 +32,7 @@ export const fetchUserReactionPosts = createAsyncThunk<
       const res = await fetchUserReactionPostsAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });

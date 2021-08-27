@@ -32,7 +32,7 @@ export const fetchCategories = createAsyncThunk<
       const res = await fetchCategoriesAPI();
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -51,7 +51,7 @@ export const fetchRootCategories = createAsyncThunk<
       const res = await fetchRootCategoriesAPI();
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });

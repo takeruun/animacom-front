@@ -78,7 +78,7 @@ export const fetchCategoryPosts = createAsyncThunk<
       const res = await searchPostsAPI({ categoryId: _args });
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -97,7 +97,7 @@ export const searchPosts = createAsyncThunk<
       const res = await searchPostsAPI({ keyword: _args });
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -116,7 +116,7 @@ export const fetchPosts = createAsyncThunk<
       const res = await fetchPostsAPI(_args);
       return { posts: res, path: _args };
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -135,7 +135,7 @@ export const fetchPost = createAsyncThunk<
       const res = await fetchPostAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -155,7 +155,7 @@ export const editPost = createAsyncThunk<
       _thunkApi.dispatch(push('/'));
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -175,7 +175,7 @@ export const createPost = createAsyncThunk<
       _thunkApi.dispatch(push('/'));
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -194,7 +194,7 @@ export const destroyPost = createAsyncThunk<
       await destroyPostAPI(_args);
       return '';
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -213,7 +213,7 @@ export const postReactions = createAsyncThunk<
       const res = await postReactionsAPI(_args.id, _args.kind);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -232,7 +232,7 @@ export const destroyReactions = createAsyncThunk<
       const res = await destroyReactionsAPI(_args.id, _args.kind);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      showSnackbar({ e, _thunkApi });
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
