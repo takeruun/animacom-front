@@ -18,7 +18,7 @@ export const fetchUserReactionPostsAPI = async (
       },
     },
   })
-    .then(({ response }) => response);
+    .then((response) => response);
 
   return { posts: res, kind };
 };
@@ -29,7 +29,7 @@ export const fetchUserReactionCountsAPI = async () => {
     url: '/v1/users/posts/reactions/counts',
     method: 'get',
   })
-    .then(({ response }) => response.reactions.counts);
+    .then((response) => response.reactions.counts);
 
   return res;
 };
@@ -39,7 +39,7 @@ export const fetchCategoriesAPI = async (): Promise<Array<CategoryType>> => {
     url: '/v1/categories',
     method: 'get',
   })
-    .then(({ response }) => response.categories);
+    .then((response) => response.categories);
 
   return res;
 };
@@ -49,7 +49,7 @@ export const fetchRootCategoriesAPI = async (): Promise<Array<CategoryType>> => 
     url: '/v1/categories/root',
     method: 'get',
   })
-    .then(({ response }) => response.rootCategories);
+    .then((response) => response.rootCategories);
 
   return res;
 };
@@ -69,7 +69,7 @@ export const searchPostsAPI = async (
       },
     },
   })
-    .then(({ response }) => response.posts);
+    .then((response) => response.posts);
 
   return res;
 };
@@ -79,7 +79,7 @@ export const fetchPostsAPI = async (path: string): Promise<Array<PostType>> => {
     url: `/v1/posts/${path}`,
     method: 'get',
   })
-    .then(({ response }) => response.posts);
+    .then((response) => response.posts);
 
   return res;
 };
@@ -89,7 +89,7 @@ export const fetchPostAPI = async (id: string): Promise<PostType> => {
     url: `/v1/users/posts/${id}`,
     method: 'get',
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -102,7 +102,7 @@ export const createPostAPI = async (data: FormData): Promise<PostType> => {
       data,
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -115,7 +115,7 @@ export const editPostAPI = async (id: string, data: FormData): Promise<PostType>
       data,
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -125,7 +125,7 @@ export const destroyPostAPI = async (id: string): Promise<void> => {
     url: `/v1/users/posts/${id}`,
     method: 'delete',
   })
-    .then(({ response }) => response);
+    .then((response) => response);
 };
 
 export const postReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
@@ -140,7 +140,7 @@ export const postReactionsAPI = async (id: string, kind: string): Promise<PostTy
       },
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -157,7 +157,7 @@ export const destroyReactionsAPI = async (id: string, kind: string): Promise<Pos
       },
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -220,7 +220,7 @@ export const fetchCommentsAPI = async (id: string): Promise<Array<CommentType>> 
     url: `/v1/posts/${id}/comments`,
     method: 'get',
   })
-    .then(({ response }) => response.comments);
+    .then((response) => response.comments);
 
   return res;
 };
@@ -292,7 +292,7 @@ export const fetchUserAPI = async (): Promise<UserType> => {
     url: '/v1/users/my_page',
     method: 'get',
   })
-    .then(({ response }) => response.user);
+    .then((response) => response.user);
 
   return {
     isSignedIn: true,
@@ -305,7 +305,7 @@ export const signOutAPI = async (): Promise<void> => {
     url: '/v1/users/auth/sign_out',
     method: 'delete',
   })
-    .then(({ response }) => response);
+    .then((response) => response);
 };
 
 export const putUserAPI = async (
@@ -317,7 +317,7 @@ export const putUserAPI = async (
     reqParams: {
       data,
     },
-  }).then(({ response }) => response.user);
+  }).then((response) => response.user);
 
   return res;
 };
@@ -326,7 +326,7 @@ export const fetchUsersAPI = async (): Promise<Array<UserType>> => {
   const res = await request({
     url: '/v1/users',
     method: 'get',
-  }).then(({ response }) => response.users);
+  }).then((response) => response.users);
 
   return res;
 };
@@ -342,7 +342,7 @@ export const followUserAPI = async (
         followId: userId,
       },
     },
-  }).then(({ response }) => response);
+  }).then((response) => response);
 
   return {
     followingCount: Number(res.followingCount),
@@ -361,7 +361,7 @@ export const unfollowUserAPI = async (
         followId: userId,
       },
     },
-  }).then(({ response }) => response.followingCount);
+  }).then((response) => response.followingCount);
 
   return { followingCount: Number(res), userId };
 };

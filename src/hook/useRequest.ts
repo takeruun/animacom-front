@@ -32,10 +32,7 @@ const client = axios.create({
   baseURL,
 });
 
-export default async function request({ url, method, reqParams }: RequestType): Promise<{
-  response: any;
-  headers: any;
-}> {
+export default async function request({ url, method, reqParams }: RequestType): Promise<any> {
   const reqConfig: AxiosRequestConfig = {
     url,
     method,
@@ -62,7 +59,7 @@ export default async function request({ url, method, reqParams }: RequestType): 
       throw new Error(e);
     });
 
-  return { response, headers: response.headers };
+  return response;
 }
 
 export const noAuthRequest = async ({ url, method, reqParams }: RequestType): Promise<{
