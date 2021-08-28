@@ -62,10 +62,10 @@ export const signIn = createAsyncThunk<
     try {
       const res = await signInAPI({ ..._args });
       _thunkApi.dispatch(push('/'));
-      showSnackbar({ _thunkApi, msg: 'ログインしました。', isError: false });
+      _thunkApi.dispatch(showSnackbar({ msg: 'ログインしました。', isError: false }));
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -82,10 +82,10 @@ export const signUp = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await signUpAPI(_args);
-      showSnackbar({ _thunkApi, msg: 'アカウント作成、ログインしました。', isError: false });
+      _thunkApi.dispatch(showSnackbar({ msg: 'アカウント作成、ログインしました。', isError: false }));
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -114,7 +114,7 @@ export const signOut = createAsyncThunk<
         },
       };
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -133,7 +133,7 @@ export const fetchUser = createAsyncThunk<
       const res = await fetchUserAPI();
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -150,10 +150,11 @@ export const updateUser = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await putUserAPI(_args);
+      _thunkApi.dispatch(showSnackbar({ msg: '更新成功しました。', isError: false }));
       _thunkApi.dispatch(push('/mypage'));
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -172,7 +173,7 @@ export const fetchUsers = createAsyncThunk<
       const res = await fetchUsersAPI();
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -191,7 +192,7 @@ export const followUser = createAsyncThunk<
       const res = await followUserAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -210,7 +211,7 @@ export const unfollowUser = createAsyncThunk<
       const res = await unfollowUserAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });

@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { open, close } from 'modules/snackbarModule';
+import { Action, Dispatch } from 'redux';
 
 type PropsType = {
   e?: any,
-  _thunkApi: any,
   msg?: string,
   isError?: boolean,
 };
 
-export default function showSnackbar({
-  e, _thunkApi: thunkApi, msg, isError = true,
-}: PropsType): void {
+const showSnackbar = ({
+  e, msg, isError = true,
+}: PropsType) => (dispatch: Dispatch<Action>): void => {
   let error = '';
   let message = '';
 
@@ -22,8 +22,8 @@ export default function showSnackbar({
     message = msg;
   }
 
-  thunkApi.dispatch(close());
-  thunkApi.dispatch(open(
+  dispatch(close());
+  dispatch(open(
     {
       isShow: true,
       isError,
@@ -31,4 +31,6 @@ export default function showSnackbar({
       message,
     },
   ));
-}
+};
+
+export default showSnackbar;

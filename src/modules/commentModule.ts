@@ -32,7 +32,7 @@ export const fetchComments = createAsyncThunk<
       const res = await fetchCommentsAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar({ e, _thunkApi });
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
