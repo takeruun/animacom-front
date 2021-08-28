@@ -136,7 +136,9 @@ const Header: FC = () => {
   useEffect(() => {
     const setWord = query.get('word') || '';
     dispatch(updateWord(setWord));
-    searchKeywordInputRef.current!.value = setWord;
+    if (searchKeywordInputRef.current) {
+      searchKeywordInputRef.current.value = setWord;
+    }
   }, [dispatch, query]);
 
   const handleDrawerToggle = useCallback((event: MouseEvent) => {
