@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useState,
+  useRef,
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,12 +12,12 @@ import { createCommentSocketAPI, SocketType } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
 import { fetchPost } from 'modules/postModule';
+import showSnackbar from 'hook/showSnackbar';
 import { fetchComments } from 'modules/commentModule';
 import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
 import { InputText } from 'components/UIKit/index';
 import Button from '@material-ui/core/Button';
-import { close, open } from 'modules/snackbarModule';
 import { ImageSwiper, SizeTable } from './index';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,6 +67,7 @@ const PostDetail: FC = () => {
   const [post, setPost] = useState<PostType>();
   const [socket, setSocket] = useState<SocketType>();
   const [body, setBody] = useState('');
+  const mountedRef = useRef(false);
   const comments = commentModule.comments;
 
   const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -73,22 +75,26 @@ const PostDetail: FC = () => {
   }, [setBody]);
 
   useEffect(() => {
-    const execApi = async (postId: string) => {
-      const data = await dispatch(fetchPost(postId)).unwrap();
-      setPost(data);
-      dispatch(fetchComments(postId));
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
+  useEffect(() => {
+    const execApi = async (postId: string) => {
       try {
-        setSocket(dispatch(createCommentSocketAPI(id)));
+        const data = await dispatch(fetchPost(postId)).unwrap();
+        if (mountedRef.current) {
+          setPost(data);
+          dispatch(fetchComments(postId));
+          setSocket(dispatch(createCommentSocketAPI(id)));
+        }
       } catch (e) {
-        dispatch(close());
-        dispatch(open({
-          isShow: true,
-          isError: true,
-          error: e.message,
-        }));
+        dispatch(showSnackbar({ e }));
       }
     };
+
     execApi(id);
   }, [dispatch, id]);
 

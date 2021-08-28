@@ -5,11 +5,12 @@ import {
   useEffect,
   useState,
   memo,
+  useRef,
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 're-ducks/store/store';
-import { updateUser, UserImageType } from 'modules/userModule';
-import { fetchUserAPI } from 'api/Endpoint';
+import { fetchUser, updateUser, UserImageType } from 'modules/userModule';
+import showSnackbar from 'hook/showSnackbar';
 import { InputText, SecondaryButton } from 'components/UIKit/index';
 import { makeStyles } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
@@ -68,6 +69,7 @@ const MyPageEdit: FC = () => {
   const [nickname, setNickname] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState<UserImageType>();
+  const mountedRef = useRef(false);
 
   const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setNickname(event.target.value);
@@ -90,11 +92,24 @@ const MyPageEdit: FC = () => {
   }, [setImage]);
 
   useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const getUser = async () => {
-      const user = await fetchUserAPI();
-      setName(user.name);
-      setNickname(user.nickname);
-      setImage(user.image);
+      try {
+        const user = await dispatch(fetchUser()).unwrap();
+        if (mountedRef.current) {
+          setName(user.name);
+          setNickname(user.nickname);
+          setImage(user.image);
+        }
+      } catch (e) {
+        dispatch(showSnackbar({ e }));
+      }
     };
 
     getUser();
@@ -115,7 +130,7 @@ const MyPageEdit: FC = () => {
       <h2 className="u-text__headline u-text-center">マイページ編集</h2>
       <InputTextMemo
         id="name"
-        label="名前"
+        label="ユーザー名"
         fullWidth
         multiline
         required

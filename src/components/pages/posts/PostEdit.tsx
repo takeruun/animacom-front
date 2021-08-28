@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
   memo,
+  useRef,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from 'modules/categoryModule';
@@ -18,6 +19,7 @@ import { AddPhotoAlternate } from '@material-ui/icons';
 import IconButton from '@material-ui/core/IconButton';
 import InputLable from '@material-ui/core/InputLabel';
 import { makeStyles } from '@material-ui/core';
+import showSnackbar from 'hook/showSnackbar';
 import ImagePreview from './ImagePreview';
 
 export type ImageType = {
@@ -90,6 +92,7 @@ const PostEdit: FC = () => {
   const [body, setBody] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [images, setImages] = useState<Array<ImageType>>([]);
+  const mountedRef = useRef(false);
 
   const inputTitle = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -139,15 +142,28 @@ const PostEdit: FC = () => {
   };
 
   useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
     dispatch(fetchCategories());
     if (id !== undefined && id !== '') {
       const execApi = async (postId: string) => {
-        const post = await dispatch(fetchPost(postId)).unwrap();
-        setTitle(post.title);
-        setSubTitle(post.subTitle);
-        setBody(post.body);
-        setCategoryId(post.categoryId);
-        setImages(post.images);
+        try {
+          const post = await dispatch(fetchPost(postId)).unwrap();
+          if (mountedRef.current) {
+            setTitle(post.title);
+            setSubTitle(post.subTitle);
+            setBody(post.body);
+            setCategoryId(post.categoryId);
+            setImages(post.images);
+          }
+        } catch (e) {
+          dispatch(showSnackbar({ e }));
+        }
       };
       execApi(id);
     }
