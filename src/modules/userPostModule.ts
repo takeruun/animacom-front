@@ -12,7 +12,7 @@ export type UserPostStateType = {
   coolPosts: Array<PostType>,
 };
 
-const initialState: UserPostStateType = {
+export const initialState: UserPostStateType = {
   loading: false,
   error: '',
   cutePosts: [],
@@ -32,7 +32,7 @@ export const fetchUserReactionPosts = createAsyncThunk<
       const res = await fetchUserReactionPostsAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -49,19 +49,19 @@ export const userPostModule = createSlice({
     },
     getSuccessCutePosts: (state, action) => {
       state.loading = false;
-      state.cutePosts = action.payload.posts;
+      state.cutePosts = action.payload;
     },
     getSuccessFavPosts: (state, action) => {
       state.loading = false;
-      state.favPosts = action.payload.posts;
+      state.favPosts = action.payload;
     },
     getSuccessGoodPosts: (state, action) => {
       state.loading = false;
-      state.goodPosts = action.payload.posts;
+      state.goodPosts = action.payload;
     },
     getSuccessCoolPosts: (state, action) => {
       state.loading = false;
-      state.coolPosts = action.payload.posts;
+      state.coolPosts = action.payload;
     },
     getFailure: (state, action) => {
       state.loading = false;
@@ -101,3 +101,5 @@ export const {
   getSuccessGoodPosts,
   getSuccessCoolPosts,
 } = userPostModule.actions;
+
+export default userPostModule.reducer;

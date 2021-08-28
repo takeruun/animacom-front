@@ -4,7 +4,7 @@ type SearchType = {
   word: string,
 };
 
-const initialState: SearchType = {
+export const initialState: SearchType = {
   word: '',
 };
 
@@ -19,3 +19,5 @@ export const searchModule = createSlice({
 });
 
 export const { updateWord } = searchModule.actions;
+
+export default searchModule.reducer;

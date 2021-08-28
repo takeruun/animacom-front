@@ -35,7 +35,7 @@ export type UserStateType = {
   users: Array<UserType>,
 };
 
-const initialState: UserStateType = {
+export const initialState: UserStateType = {
   loading: false,
   error: '',
   user: {
@@ -57,14 +57,15 @@ export const signIn = createAsyncThunk<
   { email: string, password: string },
   { rejectValue: { message: string } }
 >(
-  'user/fetchUser',
+  'user/signIn',
   async (_args, _thunkApi) => {
     try {
       const res = await signInAPI({ ..._args });
       _thunkApi.dispatch(push('/'));
+      _thunkApi.dispatch(showSnackbar({ msg: 'ログインしました。', isError: false }));
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -81,9 +82,10 @@ export const signUp = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await signUpAPI(_args);
+      _thunkApi.dispatch(showSnackbar({ msg: 'アカウント作成、ログインしました。', isError: false }));
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -108,12 +110,11 @@ export const signOut = createAsyncThunk<
         followerCount: 0,
         followingCount: 0,
         image: {
-          id: '',
           imagePath: '',
         },
       };
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -132,7 +133,7 @@ export const fetchUser = createAsyncThunk<
       const res = await fetchUserAPI();
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -149,10 +150,11 @@ export const updateUser = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await putUserAPI(_args);
+      _thunkApi.dispatch(showSnackbar({ msg: '更新成功しました。', isError: false }));
       _thunkApi.dispatch(push('/mypage'));
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -171,7 +173,7 @@ export const fetchUsers = createAsyncThunk<
       const res = await fetchUsersAPI();
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -190,7 +192,7 @@ export const followUser = createAsyncThunk<
       const res = await followUserAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -209,7 +211,7 @@ export const unfollowUser = createAsyncThunk<
       const res = await unfollowUserAPI(_args);
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
       });
@@ -246,6 +248,14 @@ export const userModule = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(signIn.fulfilled, (state, action) => {
+      const getAction = userModule.actions.getSuccessUser(action.payload);
+      userModule.caseReducers.getSuccessUser(state, getAction);
+    });
+    builder.addCase(signUp.fulfilled, (state, action) => {
+      const getAction = userModule.actions.getSuccessUser(action.payload);
+      userModule.caseReducers.getSuccessUser(state, getAction);
+    });
     builder.addCase(fetchUser.fulfilled, (state, action) => {
       const getAction = userModule.actions.getSuccessUser(action.payload);
       userModule.caseReducers.getSuccessUser(state, getAction);
@@ -285,4 +295,13 @@ export const userModule = createSlice({
   },
 });
 
-export const { getSuccessUsers } = userModule.actions;
+export const {
+  getSuccessUser,
+  getSuccessUsers,
+  getSuccessLogout,
+  updateSuccessUser,
+  followSuccess,
+  unfollowSuccess,
+} = userModule.actions;
+
+export default userModule.reducer;

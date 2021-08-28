@@ -16,6 +16,7 @@ import GradeIcon from '@material-ui/icons/Grade';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
 import FlareIcon from '@material-ui/icons/Flare';
+import NoImage from '../../../assets/no_image.png';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,7 +53,6 @@ const PostCard: FC<PostType> = (props: PostType) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const NoImage = 'assets/no_image.png';
   const {
     id, title, subTitle, images, cuteCount, favCount, goodCount, coolCount,
   } = props;

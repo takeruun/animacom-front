@@ -14,7 +14,7 @@ type CategoryStateType = {
   rootCategories: Array<{ id: string, name: string }>,
 };
 
-const initialState: CategoryStateType = {
+export const initialState: CategoryStateType = {
   loading: false,
   error: '',
   categories: [],
@@ -32,7 +32,7 @@ export const fetchCategories = createAsyncThunk<
       const res = await fetchCategoriesAPI();
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -51,7 +51,7 @@ export const fetchRootCategories = createAsyncThunk<
       const res = await fetchRootCategoriesAPI();
       return res;
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -86,3 +86,9 @@ export const categoryModule = createSlice({
     });
   },
 });
+export const {
+  getSuccessCategory,
+  getSuccessRootCategory,
+} = categoryModule.actions;
+
+export default categoryModule.reducer;

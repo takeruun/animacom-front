@@ -4,13 +4,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { userModule } from 'modules/userModule';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { createBrowserHistory } from 'history';
-import { rest } from "msw";
-import { setupServer } from "msw/node";
+import { rest } from 'msw';
+import { setupServer } from 'msw/node';
 import MyPage from 'components/pages/users/MyPage';
 import CustomizedSnackbar from 'components/contents/snackbar/CustomizedSnackbar';
 import { snackbarModule } from 'modules/snackbarModule';
 
-export const history = createBrowserHistory();
+const history = createBrowserHistory();
 
 const headers = {
   accessToken: 'accessToken',
@@ -21,8 +21,8 @@ const headers = {
 localStorage.setItem('anima', JSON.stringify(headers));
 
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/users/my_page', (_, res, ctx) => {
-    return res(ctx.status(200), ctx.json({
+  rest.get('http://localhost:3001/v1/users/my_page',
+    (_, res, ctx) => res(ctx.status(200), ctx.json({
       user: {
         id: '1',
         name: 'NAME',
@@ -31,10 +31,9 @@ const server = setupServer(
         followingCount: 0,
         image: {
           imagePath: 'http://localhost:4566/anima/uploads/user/image/1/f2df4009-5b88-4a1b-9514-ddb09f2ce6af.png',
-        }
-      }
-    }));
-  })
+        },
+      },
+    }))),
 );
 
 beforeAll(() => server.listen());
@@ -44,7 +43,8 @@ afterEach(() => {
 });
 afterAll(() => server.close());
 
-describe('MyPage', () => {
+describe('Rendering MyPage', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let store: any;
   const reducers = combineReducers({
     snackbar: snackbarModule.reducer,
@@ -65,7 +65,7 @@ describe('MyPage', () => {
       render(
         <Provider store={store}>
           <MyPage />
-        </Provider>
+        </Provider>,
       );
 
       expect(screen.getByText('マイページ')).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe('MyPage', () => {
       render(
         <Provider store={store}>
           <MyPage />
-        </Provider>
+        </Provider>,
       );
 
       expect(screen.queryByText(/NAME/)).toBeNull();
@@ -86,7 +86,7 @@ describe('MyPage', () => {
       render(
         <Provider store={store}>
           <MyPage />
-        </Provider>
+        </Provider>,
       );
 
       expect(screen.queryByText(/NICKNAME/)).toBeNull();
@@ -97,7 +97,7 @@ describe('MyPage', () => {
       render(
         <Provider store={store}>
           <MyPage />
-        </Provider>
+        </Provider>,
       );
 
       expect(screen.queryByText(/ユーザ画像/)).toBeNull();
@@ -108,9 +108,7 @@ describe('MyPage', () => {
   describe('Fetch failuer', () => {
     beforeEach(() => {
       server.use(
-        rest.get('http://localhost:3001/v1/users/my_page', (_, res, ctx) => {
-          return res(ctx.status(200), ctx.json({ error: '失敗しました。' }));
-        })
+        rest.get('http://localhost:3001/v1/users/my_page', (_, res, ctx) => res(ctx.status(200), ctx.json({ error: '失敗しました。' }))),
       );
     });
 
@@ -118,7 +116,7 @@ describe('MyPage', () => {
       render(
         <Provider store={store}>
           <MyPage />
-        </Provider>
+        </Provider>,
       );
 
       expect(screen.getByText('マイページ')).toBeInTheDocument();
@@ -129,7 +127,7 @@ describe('MyPage', () => {
         <Provider store={store}>
           <CustomizedSnackbar />
           <MyPage />
-        </Provider>
+        </Provider>,
       );
 
       expect(await screen.findByText('失敗しました。')).toBeInTheDocument();

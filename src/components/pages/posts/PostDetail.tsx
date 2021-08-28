@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useState,
+  useRef,
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,6 +12,7 @@ import { createCommentSocketAPI, SocketType } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
 import { PostType } from 're-ducks/post/types';
 import { fetchPost } from 'modules/postModule';
+import showSnackbar from 'hook/showSnackbar';
 import { fetchComments } from 'modules/commentModule';
 import { makeStyles } from '@material-ui/core/styles';
 import parse from 'html-react-parser';
@@ -65,19 +67,34 @@ const PostDetail: FC = () => {
   const [post, setPost] = useState<PostType>();
   const [socket, setSocket] = useState<SocketType>();
   const [body, setBody] = useState('');
-  const comments = commentModule.comment;
+  const mountedRef = useRef(false);
+  const comments = commentModule.comments;
 
   const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setBody(event.target.value);
   }, [setBody]);
 
   useEffect(() => {
-    const execApi = async (postId: string) => {
-      const data = await dispatch(fetchPost(postId)).unwrap();
-      setPost(data);
-      setSocket(dispatch(createCommentSocketAPI(id)));
-      dispatch(fetchComments(postId));
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
     };
+  }, []);
+
+  useEffect(() => {
+    const execApi = async (postId: string) => {
+      try {
+        const data = await dispatch(fetchPost(postId)).unwrap();
+        if (mountedRef.current) {
+          setPost(data);
+          dispatch(fetchComments(postId));
+          setSocket(dispatch(createCommentSocketAPI(id)));
+        }
+      } catch (e) {
+        dispatch(showSnackbar({ e }));
+      }
+    };
+
     execApi(id);
   }, [dispatch, id]);
 

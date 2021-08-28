@@ -18,7 +18,7 @@ export type ReactionCountsStateType = {
   coolCount: number,
 };
 
-const initialState: ReactionCountsStateType = {
+export const initialState: ReactionCountsStateType = {
   loading: false,
   error: '',
   cuteCount: 0,
@@ -44,7 +44,7 @@ export const fetchUserReactionCounts = createAsyncThunk<
         coolCount: counts.find((c: { count: number, kind: number; }) => c.kind === 4)?.count || 0,
       };
     } catch (e) {
-      showSnackbar(e, _thunkApi);
+      _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
       });
@@ -77,3 +77,9 @@ export const reactionCountsModule = createSlice({
     });
   },
 });
+
+export const {
+  getSuccessReactionCounts,
+} = reactionCountsModule.actions;
+
+export default reactionCountsModule.reducer;

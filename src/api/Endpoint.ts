@@ -4,7 +4,7 @@ import { PostType } from 'modules/postModule';
 import { CategoryType } from 'modules/categoryModule';
 import { UserType } from 'modules/userModule';
 import { CommentType, getSuccessComment } from 'modules/commentModule';
-import request, { authHeaders } from 'hook/useRequest';
+import request, { authHeaders, noAuthRequest } from 'hook/useRequest';
 
 export const fetchUserReactionPostsAPI = async (
   kind: string,
@@ -18,17 +18,18 @@ export const fetchUserReactionPostsAPI = async (
       },
     },
   })
-    .then(({ response }) => response);
+    .then((response) => response);
 
   return { posts: res, kind };
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const fetchUserReactionCountsAPI = async () => {
   const res = await request({
     url: '/v1/users/posts/reactions/counts',
     method: 'get',
   })
-    .then(({ response }) => response.reactions.counts);
+    .then((response) => response.reactions.counts);
 
   return res;
 };
@@ -38,7 +39,7 @@ export const fetchCategoriesAPI = async (): Promise<Array<CategoryType>> => {
     url: '/v1/categories',
     method: 'get',
   })
-    .then(({ response }) => response.categories);
+    .then((response) => response.categories);
 
   return res;
 };
@@ -48,7 +49,7 @@ export const fetchRootCategoriesAPI = async (): Promise<Array<CategoryType>> => 
     url: '/v1/categories/root',
     method: 'get',
   })
-    .then(({ response }) => response.rootCategories);
+    .then((response) => response.rootCategories);
 
   return res;
 };
@@ -68,7 +69,7 @@ export const searchPostsAPI = async (
       },
     },
   })
-    .then(({ response }) => response.posts);
+    .then((response) => response.posts);
 
   return res;
 };
@@ -78,7 +79,7 @@ export const fetchPostsAPI = async (path: string): Promise<Array<PostType>> => {
     url: `/v1/posts/${path}`,
     method: 'get',
   })
-    .then(({ response }) => response.posts);
+    .then((response) => response.posts);
 
   return res;
 };
@@ -88,7 +89,7 @@ export const fetchPostAPI = async (id: string): Promise<PostType> => {
     url: `/v1/users/posts/${id}`,
     method: 'get',
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -101,7 +102,7 @@ export const createPostAPI = async (data: FormData): Promise<PostType> => {
       data,
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -114,7 +115,7 @@ export const editPostAPI = async (id: string, data: FormData): Promise<PostType>
       data,
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -124,7 +125,7 @@ export const destroyPostAPI = async (id: string): Promise<void> => {
     url: `/v1/users/posts/${id}`,
     method: 'delete',
   })
-    .then(({ response }) => response);
+    .then((response) => response);
 };
 
 export const postReactionsAPI = async (id: string, kind: string): Promise<PostType> => {
@@ -139,7 +140,7 @@ export const postReactionsAPI = async (id: string, kind: string): Promise<PostTy
       },
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -156,7 +157,7 @@ export const destroyReactionsAPI = async (id: string, kind: string): Promise<Pos
       },
     },
   })
-    .then(({ response }) => response.post);
+    .then((response) => response.post);
 
   return res;
 };
@@ -177,37 +178,40 @@ export type SocketType = ActionCable.Channel & {
 
 export const createCommentSocketAPI = (postId: string) => (
   (dispatch: Dispatch<Action>): SocketType => {
-    const cable = ActionCable.createConsumer(
-      'ws:localhost:3001/v1/cable',
-    );
-    const socket = cable.subscriptions.create(
-      {
-        channel: 'CommentChannel',
-        post_id: postId,
-      },
-      {
-        create: (body: string) => {
-          socket.perform('create', {
-            user_email: authHeaders(JSON.parse(localStorage.getItem('anima') || '')).uid,
-            body,
-          });
+    try {
+      const cable = ActionCable.createConsumer(
+        'ws:localhost:3001/v1/cable',
+      );
+      const socket = cable.subscriptions.create(
+        {
+          channel: 'CommentChannel',
+          post_id: postId,
         },
-        received: (data: ReciveDataType) => {
-          const comment = {
-            id: data.id,
-            userId: data.userId,
-            postId: data.postId,
-            body: data.body,
-            createdAt: new Date(data.createdAt).toISOString(),
-          };
+        {
+          create: (body: string) => {
+            socket.perform('create', {
+              user_email: authHeaders(JSON.parse(localStorage.getItem('anima') || '')).uid,
+              body,
+            });
+          },
+          received: (data: ReciveDataType) => {
+            const comment = {
+              id: data.id,
+              userId: data.userId,
+              postId: data.postId,
+              body: data.body,
+              createdAt: new Date(data.createdAt).toISOString(),
+            };
 
-          dispatch(getSuccessComment(comment));
+            dispatch(getSuccessComment(comment));
+          },
+          disconnected: () => cable.disconnect(),
         },
-        disconnected: () => cable.disconnect(),
-      },
-    );
-
-    return socket;
+      );
+      return socket;
+    } catch (e) {
+      throw new Error('コメント通信でエラーが発生しました。');
+    }
   }
 );
 
@@ -216,7 +220,7 @@ export const fetchCommentsAPI = async (id: string): Promise<Array<CommentType>> 
     url: `/v1/posts/${id}/comments`,
     method: 'get',
   })
-    .then(({ response }) => response.comments);
+    .then((response) => response.comments);
 
   return res;
 };
@@ -227,10 +231,10 @@ export const signInAPI = async (
   const { email, password } = params;
 
   if (email === '' || password === '') {
-    alert('入力しろ');
+    throw new Error('メールアドレス or パスワードが入力されていません。');
   }
 
-  const res = await request({
+  const res = await noAuthRequest({
     url: 'v1/users/auth/sign_in',
     method: 'post',
     reqParams: {
@@ -260,7 +264,11 @@ export const signInAPI = async (
 export const signUpAPI = async (
   data: FormData,
 ): Promise<UserType> => {
-  const res = request({
+  if (data.get('user[name]') === '' || data.get('user[email]') === '' || data.get('user[password]') === '') {
+    throw new Error('名前 or メールアドレス or パスワードが入力されていません。');
+  }
+
+  const res = await noAuthRequest({
     url: '/v1/users/auth',
     method: 'post',
     reqParams: {
@@ -288,7 +296,7 @@ export const fetchUserAPI = async (): Promise<UserType> => {
     url: '/v1/users/my_page',
     method: 'get',
   })
-    .then(({ response }) => response.user);
+    .then((response) => response.user);
 
   return {
     isSignedIn: true,
@@ -301,7 +309,7 @@ export const signOutAPI = async (): Promise<void> => {
     url: '/v1/users/auth/sign_out',
     method: 'delete',
   })
-    .then(({ response }) => response);
+    .then((response) => response);
 };
 
 export const putUserAPI = async (
@@ -313,7 +321,7 @@ export const putUserAPI = async (
     reqParams: {
       data,
     },
-  }).then(({ response }) => response.user);
+  }).then((response) => response.user);
 
   return res;
 };
@@ -322,7 +330,7 @@ export const fetchUsersAPI = async (): Promise<Array<UserType>> => {
   const res = await request({
     url: '/v1/users',
     method: 'get',
-  }).then(({ response }) => response.users);
+  }).then((response) => response.users);
 
   return res;
 };
@@ -338,11 +346,11 @@ export const followUserAPI = async (
         followId: userId,
       },
     },
-  }).then(({ response }) => response);
+  }).then((response) => response);
 
   return {
     followingCount: Number(res.followingCount),
-    user: res.followings.find((user: any) => user.id === userId),
+    user: res.followings.find((user: UserType) => user.id === userId),
   };
 };
 
@@ -357,7 +365,7 @@ export const unfollowUserAPI = async (
         followId: userId,
       },
     },
-  }).then(({ response }) => response.followingCount);
+  }).then((response) => response.followingCount);
 
   return { followingCount: Number(res), userId };
 };
