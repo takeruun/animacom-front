@@ -1,7 +1,7 @@
 import { FC, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { postReactions, destroyReactions } from 'modules/postModule';
-import { AppDispatch, RootState } from 're-ducks/store/store';
+import { useDispatch } from 'react-redux';
+import { postReactions, destroyReactions, PostType } from 'modules/postModule';
+import { AppDispatch } from 're-ducks/store/store';
 import Table from '@material-ui/core/Table';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -22,19 +22,13 @@ const useStyles = makeStyles({
   },
 });
 
-type PropsType = {
-  id: string,
-}
-
-const SizeTable: FC<PropsType> = (props: PropsType) => {
+const SizeTable: FC<PostType> = (post: PostType) => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
-  const postModule = useSelector((state: RootState) => state.post);
-  const post = postModule.post;
-  const alreadyCuted = post.alreadyCuted;
-  const alreadyFaved = post.alreadyFaved;
-  const alreadyGooded = post.alreadyGooded;
-  const alreadyCooled = post.alreadyCooled;
+
+  const {
+    id, alreadyCuted, alreadyFaved, alreadyGooded, alreadyCooled,
+  } = post;
 
   const [cuteCount, setCuteCount] = useState<number>(0);
   const [favCount, setFavCount] = useState<number>(0);
@@ -51,8 +45,6 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
 
     setReactions(post.reactions);
   }, [post]);
-
-  const { id } = props;
 
   return (
     <TableContainer>
