@@ -10,8 +10,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCommentSocketAPI, SocketType } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
-import { PostType } from 're-ducks/post/types';
-import { fetchPost } from 'modules/postModule';
+import { PostType, fetchPost } from 'modules/postModule';
 import showSnackbar from 'hook/showSnackbar';
 import { fetchComments } from 'modules/commentModule';
 import { makeStyles } from '@material-ui/core/styles';
@@ -119,7 +118,7 @@ const PostDetail: FC = () => {
               <div className="module-spacer--small" />
               <p>{returnCodeToBr(post.body)}</p>
               <div className="module-spacer--small" />
-              <SizeTable id={post.id} />
+              <SizeTable {...post} />
             </div>
           </div>
         )}

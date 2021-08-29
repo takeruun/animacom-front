@@ -59,6 +59,7 @@ describe('Rendering PostLists', () => {
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     }];
 
     server.use(
@@ -90,6 +91,7 @@ describe('Rendering PostLists', () => {
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     }];
 
     server.use(
@@ -121,6 +123,7 @@ describe('Rendering PostLists', () => {
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     }];
 
     server.use(
@@ -152,6 +155,7 @@ describe('Rendering PostLists', () => {
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     }];
 
     server.use(
@@ -183,6 +187,7 @@ describe('Rendering PostLists', () => {
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     }];
 
     server.use(
@@ -214,6 +219,7 @@ describe('Rendering PostLists', () => {
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     }];
 
     server.use(

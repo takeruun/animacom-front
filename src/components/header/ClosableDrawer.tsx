@@ -34,6 +34,7 @@ import { Badge } from '@material-ui/core';
 
 type PropsType = {
   open: boolean,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onClose: (event: any) => void,
 }
 

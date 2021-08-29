@@ -48,6 +48,7 @@ const server = setupServer(
       favCount: 0,
       goodCount: 0,
       coolCount: 0,
+      reactions: [],
     },
   }))),
 );
