@@ -67,9 +67,9 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                 className={classes.iconCell}
                 style={{ color: alreadyCuted ? 'rgb(231, 76, 60)' : '' }}
                 onClick={() => {
-                  if (alreadyCuted) {
-                    const reaction = reactions?.find((r) => r.kind === 1);
-                    dispatch(destroyReactions({ id: reaction!.id, kind: 'cute' }));
+                  const reaction = reactions?.find((r) => r.kind === 1);
+                  if (alreadyCuted && reaction) {
+                    dispatch(destroyReactions({ id: reaction.id, kind: 'cute' }));
                   } else {
                     dispatch(postReactions({ id, kind: 'cute' }));
                   }
@@ -88,9 +88,9 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                 className={classes.iconCell}
                 style={{ color: alreadyFaved ? 'rgb(236, 240, 21)' : '' }}
                 onClick={() => {
-                  if (alreadyFaved) {
-                    const reaction = reactions?.find((r) => r.kind === 2);
-                    dispatch(destroyReactions({ id: reaction!.id, kind: 'fav' }));
+                  const reaction = reactions?.find((r) => r.kind === 2);
+                  if (alreadyFaved && reaction) {
+                    dispatch(destroyReactions({ id: reaction.id, kind: 'fav' }));
                   } else {
                     dispatch(postReactions({ id, kind: 'fav' }));
                   }
@@ -109,9 +109,9 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                 className={classes.iconCell}
                 style={{ color: alreadyGooded ? 'rgb(8, 130, 245)' : '' }}
                 onClick={() => {
-                  if (alreadyGooded) {
-                    const reaction = reactions?.find((r) => r.kind === 3);
-                    dispatch(destroyReactions({ id: reaction!.id, kind: 'good' }));
+                  const reaction = reactions?.find((r) => r.kind === 3);
+                  if (alreadyGooded && reaction) {
+                    dispatch(destroyReactions({ id: reaction.id, kind: 'good' }));
                   } else {
                     dispatch(postReactions({ id, kind: 'good' }));
                   }
@@ -130,9 +130,9 @@ const SizeTable: FC<PropsType> = (props: PropsType) => {
                 className={classes.iconCell}
                 style={{ color: alreadyCooled ? 'rgb(8, 245, 48)' : '' }}
                 onClick={() => {
-                  if (alreadyCooled) {
-                    const reaction = reactions?.find((r) => r.kind === 4);
-                    dispatch(destroyReactions({ id: reaction!.id, kind: 'cool' }));
+                  const reaction = reactions?.find((r) => r.kind === 4);
+                  if (alreadyCooled && reaction) {
+                    dispatch(destroyReactions({ id: reaction.id, kind: 'cool' }));
                   } else {
                     dispatch(postReactions({ id, kind: 'cool' }));
                   }

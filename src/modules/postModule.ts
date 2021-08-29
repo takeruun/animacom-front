@@ -27,7 +27,7 @@ export type PostType = {
   alreadyFaved?: boolean,
   alreadyGooded?: boolean,
   alreadyCooled?: boolean,
-  reactions?: Array<{ id: string, kind: number }>,
+  reactions: Array<{ id: string, kind: number }>,
 };
 
 export type PostStateType = {
@@ -57,6 +57,7 @@ export const initialState: PostStateType = {
     favCount: 0,
     goodCount: 0,
     coolCount: 0,
+    reactions: [],
   },
   latest: [],
   dayAgo: [],
@@ -325,12 +326,6 @@ export const postModule = createSlice({
     builder.addCase(destroyReactions.fulfilled, (state, action) => {
       const getAction = postModule.actions.destorySuccessReactions(action.payload);
       postModule.caseReducers.destorySuccessReactions(state, getAction);
-    });
-    builder.addCase(postReactions.rejected, (_state, action) => {
-      alert(action.payload?.message);
-    });
-    builder.addCase(destroyReactions.rejected, (_state, action) => {
-      alert(action.payload?.message);
     });
   },
 });

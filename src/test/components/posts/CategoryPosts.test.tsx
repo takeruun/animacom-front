@@ -28,6 +28,7 @@ const posts = [{
   favCount: 2,
   goodCount: 3,
   coolCount: 4,
+  reactions: [],
 }];
 
 const server = setupServer(
