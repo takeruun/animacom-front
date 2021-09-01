@@ -138,7 +138,7 @@ describe('Rendering MyPageEdit', () => {
     });
   });
 
-  describe('Fetch failuer', () => {
+  describe('Fetch failure', () => {
     beforeEach(() => {
       server.use(
         rest.get('http://localhost:3001/v1/users/my_page',
@@ -184,7 +184,7 @@ describe('Rendering MyPageEdit', () => {
     });
   });
 
-  describe('Put failuer', () => {
+  describe('Put failure', () => {
     beforeEach(() => {
       server.use(
         rest.put('http://localhost:3001/v1/users',
