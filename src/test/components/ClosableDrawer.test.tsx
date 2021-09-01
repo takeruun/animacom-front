@@ -213,7 +213,7 @@ describe('Rendering ClosableDrawer', () => {
     });
   });
 
-  describe('Fetch Failure', () => {
+  describe('Fetch failure', () => {
     beforeEach(() => {
       server.use(
         rest.get('http://localhost:3001/v1/users/posts/reactions/counts',

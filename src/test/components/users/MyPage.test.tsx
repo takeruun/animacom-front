@@ -105,7 +105,7 @@ describe('Rendering MyPage', () => {
     });
   });
 
-  describe('Fetch failuer', () => {
+  describe('Fetch failure', () => {
     beforeEach(() => {
       server.use(
         rest.get('http://localhost:3001/v1/users/my_page', (_, res, ctx) => res(ctx.status(200), ctx.json({ error: '失敗しました。' }))),
