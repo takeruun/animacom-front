@@ -10,9 +10,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { RootState } from 're-ducks/store/store';
-import { signOut } from 're-ducks/users/operations';
 import { fetchRootCategories } from 'modules/categoryModule';
 import { fetchUserReactionCounts } from 'modules/reactionCountsModule';
+import { signOut } from 'modules/userModule';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import { InputText } from 'components/UIKit/index';
 import Drawer from '@material-ui/core/Drawer';
@@ -90,7 +90,10 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
   const dispatch = useDispatch();
   const reactionCounts = useSelector((state: RootState) => state.reactionCounts);
   const categoryModule = useSelector((state: RootState) => state.category);
+  const userModule = useSelector((state:RootState) => state.user);
+
   const rootCategories = categoryModule.rootCategories;
+  const isSignedIn = userModule.user.isSignedIn;
 
   const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -165,13 +168,13 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
             ))}
             <ListItem
               button
-              key="logout"
-              onClick={() => dispatch(signOut())}
+              key={isSignedIn ? 'logout' : 'login'}
+              onClick={() => dispatch(isSignedIn ? signOut() : push('/sign_in'))}
             >
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              <ListItemText primary="Logout" />
+              <ListItemText primary={isSignedIn ? 'ログアウト' : 'ログイン'} />
             </ListItem>
           </List>
         </div>

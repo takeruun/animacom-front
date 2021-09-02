@@ -133,11 +133,6 @@ describe('Rendering ClosableDrawer', () => {
     expect(screen.getByText('投稿登録')).toBeInTheDocument();
   });
 
-  it('「Logout」が表示される', () => {
-    renderComponent();
-    expect(screen.getByText('Logout')).toBeInTheDocument();
-  });
-
   it('「本日のリアクション」が表示される', () => {
     renderComponent();
     expect(screen.getByText('本日のリアクション')).toBeInTheDocument();

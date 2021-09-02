@@ -40,6 +40,8 @@ const server = setupServer(
         },
       }),
     )),
+  rest.delete('http://localhost:3001/v1/users/auth/sign_out',
+    (_, res, ctx) => res(ctx.status(200))),
   rest.get('http://localhost:3001/v1/users/posts/reactions/counts',
     (_, res, ctx) => res(
       ctx.status(200),
@@ -164,9 +166,9 @@ describe('Rendering Header', () => {
       localStorage.removeItem('anima');
       renderComponent();
 
-      expect(screen.getByText('ログイン')).toBeInTheDocument();
+      expect(screen.getAllByText('ログイン').length).toBe(2);
 
-      const loginBt = screen.getAllByRole('button')[3];
+      const loginBt = screen.getAllByText('ログイン')[0];
       userEvent.click(loginBt);
       expect(history.location.pathname).toBe('/sign_in');
     });
@@ -176,7 +178,7 @@ describe('Rendering Header', () => {
     it('「ログアウト」が表示される', async () => {
       renderComponent();
 
-      expect(await screen.findByText('ログアウト')).toBeInTheDocument();
+      expect((await screen.findAllByText('ログアウト')).length).toBe(2);
     });
   });
 
@@ -185,16 +187,18 @@ describe('Rendering Header', () => {
       localStorage.removeItem('anima');
       renderComponent();
 
-      expect(screen.getByText('ログイン')).toBeInTheDocument();
+      expect(screen.getAllByText('ログイン').length).toBe(2);
     });
   });
 
-  it('ログアウトクリック、「ログイン」が表示される', async () => {
+  it('ログアウトできる', async () => {
     renderComponent();
+    expect((await screen.findAllByText('ログアウト')).length).toBe(2);
 
-    const loginBt = screen.getAllByRole('button')[3];
+    const loginBt = screen.getAllByText('ログアウト')[0];
+
     userEvent.click(loginBt);
-    expect(await screen.findByText('ログイン')).toBeInTheDocument();
+    expect((await screen.findAllByText('ログイン')).length).toBe(2);
   });
 
   it('ドロワー表示できる', async () => {
@@ -204,6 +208,50 @@ describe('Rendering Header', () => {
 
     userEvent.click(drawerBt);
     expect(await screen.findByText('本日のリアクション')).toBeInTheDocument();
+  });
+
+  describe('ドロワー内の一部テスト', () => {
+    describe('ログイン中', () => {
+      it('「ログアウト」が表示される', async () => {
+        renderComponent();
+        const drawerBt = screen.getAllByRole('button')[4];
+        userEvent.click(drawerBt);
+
+        expect((await screen.findAllByText('ログアウト')).length).toBe(2);
+      });
+
+      it('ログアウトできる', async () => {
+        renderComponent();
+        expect((await screen.findAllByText('ログアウト')).length).toBe(2);
+
+        const loginBt = screen.getAllByText('ログアウト')[1];
+
+        userEvent.click(loginBt);
+        expect((await screen.findAllByText('ログイン')).length).toBe(2);
+      });
+    });
+
+    describe('ログアウト中', () => {
+      beforeEach(() => {
+        localStorage.removeItem('anima');
+      });
+
+      it('「ログイン」が表示される', () => {
+        renderComponent();
+
+        expect(screen.getAllByText('ログイン').length).toBe(2);
+      });
+
+      it('ログインページに遷移できる', () => {
+        renderComponent();
+
+        expect(screen.getAllByText('ログイン').length).toBe(2);
+
+        const loginBt = screen.getAllByText('ログイン')[1];
+        userEvent.click(loginBt);
+        expect(history.location.pathname).toBe('/sign_in');
+      });
+    });
   });
 
   describe('Fetch fauiler', () => {

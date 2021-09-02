@@ -67,7 +67,7 @@ describe('Reducer of userModule', () => {
         image: {
           imagePath: '',
         },
-      }
+      },
     };
     const state = reducer(initialState, action);
     expect(state.user).toEqual({
@@ -84,32 +84,32 @@ describe('Reducer of userModule', () => {
   });
 
   it('updateSuccessUser', () => {
-    const action = { type: updateSuccessUser.type, payload: user }
+    const action = { type: updateSuccessUser.type, payload: user };
     const state = reducer(initialState, action);
     expect(state.user).toEqual(user);
   });
 
   it('followSuccess', () => {
-    const action = { type: followSuccess.type, payload: 2 }
+    const action = { type: followSuccess.type, payload: 2 };
     const state = reducer(initialState, action);
     expect(state.user.followingCount).toEqual(2);
   });
 
   it('unfollowSuccess', () => {
-    const action = { type: unfollowSuccess.type, payload: 1 }
+    const action = { type: unfollowSuccess.type, payload: 1 };
     const state = reducer(initialState, action);
     expect(state.user.followingCount).toEqual(1);
   });
 
   describe('extraReducer', () => {
     it('signIn', () => {
-      const action = { type: signIn.fulfilled.type, payload: { ...user, isSignedIn: true } }
+      const action = { type: signIn.fulfilled.type, payload: { ...user, isSignedIn: true } };
       const state = reducer(initialState, action);
       expect(state.user).toEqual({ ...user, isSignedIn: true });
     });
 
     it('signUp', () => {
-      const action = { type: signUp.fulfilled.type, payload: { ...user, isSignedIn: true } }
+      const action = { type: signUp.fulfilled.type, payload: { ...user, isSignedIn: true } };
       const state = reducer(initialState, action);
       expect(state.user).toEqual({ ...user, isSignedIn: true });
     });
@@ -145,7 +145,7 @@ describe('Reducer of userModule', () => {
     });
 
     it('fetchUser', () => {
-      const action = { type: fetchUser.fulfilled.type, payload: user }
+      const action = { type: fetchUser.fulfilled.type, payload: user };
       const state = reducer(initialState, action);
       expect(state.user).toEqual(user);
     });
