@@ -1,6 +1,7 @@
 import { FC, useState } from 'react';
 import Swiper from 'react-id-swiper';
 import 'swiper/css/swiper.css';
+import NoImage from '../../../assets/no_image.png';
 
 type PropsType = {
   images: {
@@ -11,8 +12,6 @@ type PropsType = {
 };
 
 const ImageSwiper: FC<PropsType> = (props: PropsType) => {
-  const NoImage = 'assets/no_image.png';
-
   const [params] = useState({
     pagination: {
       el: '.swiper-pagination',

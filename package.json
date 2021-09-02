@@ -85,5 +85,6 @@
     "*.{ts,tsx}": [
       "prettier --write"
     ]
-  }
+  },
+  "test:unit": "jest --maxWorkers=1"
 }

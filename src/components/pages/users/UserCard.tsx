@@ -9,6 +9,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import NoImage from '../../../assets/no_image.png';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const UserCard: FC<UserType> = (props: UserType) => {
-  const NoImage = 'assets/no_image.png';
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
 
