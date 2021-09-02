@@ -1,7 +1,7 @@
 import reducer, {
   open,
   close,
-  initialState
+  initialState,
 } from 'modules/snackbarModule';
 
 describe('Reducer of snackbarModule', () => {

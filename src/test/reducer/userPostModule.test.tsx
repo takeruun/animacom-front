@@ -10,16 +10,17 @@ import reducer, {
 
 describe('Reducer of userPostModule', () => {
   const posts: Array<PostType> = [{
-    id: "1",
-    title: "title",
-    subTitle: "sub_title",
-    body: "body",
-    categoryId: "1",
+    id: '1',
+    title: 'title',
+    subTitle: 'sub_title',
+    body: 'body',
+    categoryId: '1',
     images: [],
     cuteCount: 0,
     favCount: 0,
     goodCount: 0,
     coolCount: 0,
+    reactions: [],
   }];
 
   it('getSuccessCutePosts', () => {

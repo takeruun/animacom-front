@@ -1,7 +1,7 @@
 import reducer, {
   getSuccessReactionCounts,
   initialState,
-  fetchUserReactionCounts
+  fetchUserReactionCounts,
 } from 'modules/reactionCountsModule';
 
 describe('Reducer of reactionCountsModule', () => {
