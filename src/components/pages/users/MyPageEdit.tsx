@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 're-ducks/store/store';
-import { fetchUser, updateUser, UserImageType } from 'modules/userModule';
+import { fetchMyUser, updateUser, UserImageType } from 'modules/userModule';
 import showSnackbar from 'hook/showSnackbar';
 import { InputText, SecondaryButton } from 'components/UIKit/index';
 import { makeStyles } from '@material-ui/core';
@@ -101,7 +101,7 @@ const MyPageEdit: FC = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const user = await dispatch(fetchUser()).unwrap();
+        const user = await dispatch(fetchMyUser()).unwrap();
         if (mountedRef.current) {
           setName(user.name);
           setNickname(user.nickname);

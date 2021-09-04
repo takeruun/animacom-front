@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   fetchUserAPI,
+  fetchMyUserAPI,
   signOutAPI,
   signInAPI,
   putUserAPI,
@@ -24,7 +25,10 @@ export type UserType = {
   nickname: string,
   followerCount: number,
   followingCount: number,
+  petCount: number,
   image: UserImageType,
+  postCount: number,
+  introduction: string,
   follow?: boolean,
 };
 
@@ -33,6 +37,7 @@ export type UserStateType = {
   error: string,
   user: UserType,
   users: Array<UserType>,
+  selectUser: UserType,
 };
 
 export const initialState: UserStateType = {
@@ -45,9 +50,26 @@ export const initialState: UserStateType = {
     nickname: '',
     followerCount: 0,
     followingCount: 0,
+    petCount: 0,
     image: {
       imagePath: '',
     },
+    postCount: 0,
+    introduction: '',
+  },
+  selectUser: {
+    isSignedIn: false,
+    id: '',
+    name: '',
+    nickname: '',
+    followerCount: 0,
+    followingCount: 0,
+    petCount: 0,
+    image: {
+      imagePath: '',
+    },
+    postCount: 0,
+    introduction: '',
   },
   users: [],
 };
@@ -103,15 +125,7 @@ export const signOut = createAsyncThunk<
     try {
       await signOutAPI();
       return {
-        isSignedIn: false,
-        id: '',
-        name: '',
-        nickname: '',
-        followerCount: 0,
-        followingCount: 0,
-        image: {
-          imagePath: '',
-        },
+        ...initialState.user,
       };
     } catch (e) {
       _thunkApi.dispatch(showSnackbar({ e }));
@@ -124,13 +138,32 @@ export const signOut = createAsyncThunk<
 
 export const fetchUser = createAsyncThunk<
   UserType,
-  void,
+  string,
   { rejectValue: { message: string } }
 >(
   'user/fetchUser',
   async (_args, _thunkApi) => {
     try {
-      const res = await fetchUserAPI();
+      const res = await fetchUserAPI(_args);
+      return res;
+    } catch (e) {
+      _thunkApi.dispatch(showSnackbar({ e }));
+      return _thunkApi.rejectWithValue({
+        message: e.message,
+      });
+    }
+  },
+);
+
+export const fetchMyUser = createAsyncThunk<
+  UserType,
+  void,
+  { rejectValue: { message: string } }
+>(
+  'user/fetchMyUser',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await fetchMyUserAPI();
       return res;
     } catch (e) {
       _thunkApi.dispatch(showSnackbar({ e }));
@@ -230,6 +263,9 @@ export const userModule = createSlice({
       state.loading = false;
       state.user = action.payload;
     },
+    getSuccessSelectUser: (state, action) => {
+      state.selectUser = action.payload;
+    },
     getSuccessUsers: (state, action) => {
       state.loading = false;
       state.users = action.payload;
@@ -257,6 +293,10 @@ export const userModule = createSlice({
       userModule.caseReducers.getSuccessUser(state, getAction);
     });
     builder.addCase(fetchUser.fulfilled, (state, action) => {
+      const getAction = userModule.actions.getSuccessSelectUser(action.payload);
+      userModule.caseReducers.getSuccessSelectUser(state, getAction);
+    });
+    builder.addCase(fetchMyUser.fulfilled, (state, action) => {
       const getAction = userModule.actions.getSuccessUser(action.payload);
       userModule.caseReducers.getSuccessUser(state, getAction);
     });

@@ -15,6 +15,7 @@ const MyPageEdit = lazy(() => import('components/pages/users/MyPageEdit'));
 const SearchPosts = lazy(() => import('components/pages/posts/SearchPosts'));
 const CategoryPosts = lazy(() => import('components/pages/posts/CategoryPosts'));
 const UserList = lazy(() => import('components/pages/users/UserList'));
+const UserDetail = lazy(() => import('components/pages/users/UserDetail'));
 
 const Router: FC = () => (
   <Suspense fallback={null}>
@@ -31,6 +32,7 @@ const Router: FC = () => (
         <Route exact path="/posts/reaction/:kind" component={UsersPosts} />
         <Route exact path="/mypage" component={MyPage} />
         <Route exact path="/mypage/edit" component={MyPageEdit} />
+        <Route exact path="/users/:id" component={UserDetail} />
       </Auth>
     </Switch>
   </Suspense>

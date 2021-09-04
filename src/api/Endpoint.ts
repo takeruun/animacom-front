@@ -291,7 +291,19 @@ export const signUpAPI = async (
   };
 };
 
-export const fetchUserAPI = async (): Promise<UserType> => {
+export const fetchUserAPI = async (userId: string): Promise<UserType> => {
+  const res = await request({
+    url: `/v1/users/${userId}`,
+    method: 'get',
+  }).then((response) => response.user);
+
+  return {
+    isSignedIn: false,
+    ...res,
+  };
+};
+
+export const fetchMyUserAPI = async (): Promise<UserType> => {
   const res = await request({
     url: '/v1/users/my_page',
     method: 'get',

@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 're-ducks/store/store';
-import { fetchUser } from 'modules/userModule';
+import { fetchMyUser } from 'modules/userModule';
 import { push } from 'connected-react-router';
 import { TextDetail, SecondaryButton } from 'components/UIKit/index';
 import NoImage from '../../../assets/no_image.png';
@@ -19,7 +19,7 @@ const MyPage: FC = () => {
   } = { path: imagePath || NoImage, alt: imagePath ? 'ユーザ画像' : 'NoImage' };
 
   useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(fetchMyUser());
   }, [dispatch]);
 
   return (
