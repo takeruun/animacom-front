@@ -80,6 +80,7 @@ const SignUp: FC = () => {
   const [email, setEmail] = useState('');
   const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [introduction, setIntroduction] = useState('');
   const [image, setImage] = useState<UserImageType>();
 
   const inputName = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -98,6 +99,10 @@ const SignUp: FC = () => {
     setPassword(event.target.value);
   }, [setPassword]);
 
+  const inputIntroduction = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIntroduction(event.target.value);
+  }, [setIntroduction]);
+
   const inputImage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files !== null) {
       const reader = new FileReader();
@@ -112,12 +117,13 @@ const SignUp: FC = () => {
 
   const submit = () => {
     const data = new FormData();
-    data.append('user[name]', name);
-    data.append('user[nickname]', nickname);
-    data.append('user[email]', email);
-    data.append('user[password]', password);
+    data.append('name', name);
+    data.append('nickname', nickname);
+    data.append('email', email);
+    data.append('password', password);
+    data.append('introduction', introduction);
     if (image && image.file) {
-      data.append('user[image]', image.file);
+      data.append('image', image.file);
     }
     dispatch(signUp(data));
   };
@@ -169,6 +175,17 @@ const SignUp: FC = () => {
         value={password}
         type="password"
         input={inputPassword}
+      />
+      <InputTextMemo
+        id="introduction"
+        fullWidth
+        label="自己紹介"
+        multiline
+        required
+        rows={3}
+        value={introduction}
+        type="text"
+        input={inputIntroduction}
       />
       <div className="u-text-rigth">
         <span>画像を登録する🐾</span>

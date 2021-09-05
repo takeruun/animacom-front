@@ -8,11 +8,15 @@ import {
 import { AppDispatch } from 're-ducks/store/store';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchUser, UserType } from 'modules/userModule';
+import {
+  fetchUser, followUsers, followerUsers, UserType,
+} from 'modules/userModule';
 import showSnackbar from 'hook/showSnackbar';
 import { Grid } from '@material-ui/core';
 import NoImage from '../../../assets/no_image.png';
 import Introduction from './profInfos/Introduction';
+import FollowUsers from './profInfos/FollowUsers';
+import FollowerUsers from './profInfos/FollowerUsers';
 
 const UserDetail: FC = () => {
   const { id }: { id: string } = useParams();
@@ -37,6 +41,8 @@ const UserDetail: FC = () => {
   useEffect(() => {
     const execApi = async (userId: string) => {
       try {
+        dispatch(followUsers(userId));
+        dispatch(followerUsers(userId));
         const data = await dispatch(fetchUser(userId)).unwrap();
         if (mountedRef.current) {
           setUser(data);
@@ -59,7 +65,7 @@ const UserDetail: FC = () => {
       func: selectInfosMenu, value: 'profile', name: 'プロフィール', className: 'w-20-percent self-center',
     },
     {
-      func: selectInfosMenu, value: 'followers', name: 'フォワー', className: 'w-20-percent', count: selectUser?.followerCount,
+      func: selectInfosMenu, value: 'followers', name: 'フォロワー', className: 'w-20-percent', count: selectUser?.followerCount,
     },
     {
       func: selectInfosMenu, value: 'followings', name: 'フォロー', className: 'w-20-percent', count: selectUser?.followingCount,
@@ -76,8 +82,8 @@ const UserDetail: FC = () => {
   if (selectUser) {
     menuComponets = [
       { id: 'profile', component: <Introduction introduction={selectUser?.introduction} /> },
-      { id: 'followers', component: <Introduction introduction="followers" /> },
-      { id: 'followings', component: <Introduction introduction="followings" /> },
+      { id: 'followers', component: <FollowerUsers /> },
+      { id: 'followings', component: <FollowUsers /> },
       { id: 'pets', component: <Introduction introduction="pets" /> },
       { id: 'posts', component: <Introduction introduction="posts" /> },
     ];

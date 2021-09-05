@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-import { userModule } from 'modules/userModule';
+import { userModule, UserType } from 'modules/userModule';
 import UserDetail from 'components/pages/users/UserDetail';
 
 const headers = {
@@ -16,21 +16,41 @@ const headers = {
   uid: 'uid',
 };
 
+const user: UserType = {
+  id: '2',
+  name: 'NAME',
+  nickname: 'NICKNAME',
+  followerCount: 0,
+  followingCount: 1,
+  petCount: 2,
+  image: {
+    imagePath: 'http://localhost:4566/anima/uploads/user/image/1/f2df4009-5b88-4a1b-9514-ddb09f2ce6af.png',
+  },
+  postCount: 3,
+  introduction: 'INTRODUCTION',
+  isSignedIn: true,
+};
+
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/users/1',
+  rest.get('http://localhost:3001/v1/users/2',
     (_, res, ctx) => res(ctx.status(200), ctx.json({
-      user: {
-        id: '1',
-        name: 'NAME',
-        nickname: 'NICKNAME',
-        followerCount: 0,
-        followingCount: 1,
-        petCount: 2,
-        image: {
-          imagePath: 'http://localhost:4566/anima/uploads/user/image/1/f2df4009-5b88-4a1b-9514-ddb09f2ce6af.png',
-        },
-        postCount: 3,
-      },
+      user,
+    }))),
+  rest.get('http://localhost:3001/v1/follows/followings/2',
+    (_, res, ctx) => res(ctx.status(200), ctx.json({
+      users: [{
+        ...user,
+        id: '3',
+        name: 'NAME_3',
+      }],
+    }))),
+  rest.get('http://localhost:3001/v1/follows/followers/2',
+    (_, res, ctx) => res(ctx.status(200), ctx.json({
+      users: [{
+        ...user,
+        id: '4',
+        name: 'NAME_4',
+      }],
     }))),
 );
 
@@ -43,7 +63,7 @@ afterAll(() => server.close());
 
 jest.mock('react-router-dom', () => ({
   useParams: () => ({
-    id: '1',
+    id: '2',
   }),
 }));
 
@@ -102,6 +122,32 @@ describe('Rendering UserDetail', () => {
       renderComponent();
 
       expect(await screen.findByText('3')).toBeInTheDocument();
+    });
+
+    it('初期はプロフィール', async () => {
+      renderComponent();
+
+      expect(await screen.findByText(/INTRODUCTION/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('ユーザメニュークリック系', () => {
+    it('フォロワー', async () => {
+      renderComponent();
+
+      const followBt = await screen.findByText('フォロワー');
+      userEvent.click(followBt);
+
+      expect(await screen.findByText('NAME_4')).toBeInTheDocument();
+    });
+
+    it('フォロー', async () => {
+      renderComponent();
+
+      const followBt = await screen.findByText('フォロー');
+      userEvent.click(followBt);
+
+      expect(await screen.findByText('NAME_3')).toBeInTheDocument();
     });
   });
 });

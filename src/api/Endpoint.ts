@@ -381,3 +381,21 @@ export const unfollowUserAPI = async (
 
   return { followingCount: Number(res), userId };
 };
+
+export const followUsersAPI = async (userId: string): Promise<Array<UserType>> => {
+  const res = await request({
+    url: `/v1/follows/followings/${userId}`,
+    method: 'get',
+  }).then((response) => response.users);
+
+  return res;
+};
+
+export const followerUsersAPI = async (userId: string): Promise<Array<UserType>> => {
+  const res = await request({
+    url: `/v1/follows/followers/${userId}`,
+    method: 'get',
+  }).then((response) => response.users);
+
+  return res;
+};

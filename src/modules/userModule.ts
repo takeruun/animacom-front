@@ -9,6 +9,8 @@ import {
   followUserAPI,
   unfollowUserAPI,
   signUpAPI,
+  followUsersAPI,
+  followerUsersAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 import showSnackbar from 'hook/showSnackbar';
@@ -38,6 +40,8 @@ export type UserStateType = {
   user: UserType,
   users: Array<UserType>,
   selectUser: UserType,
+  followings: Array<UserType>,
+  followers: Array<UserType>,
 };
 
 export const initialState: UserStateType = {
@@ -72,6 +76,8 @@ export const initialState: UserStateType = {
     introduction: '',
   },
   users: [],
+  followings: [],
+  followers: [],
 };
 
 export const signIn = createAsyncThunk<
@@ -86,7 +92,9 @@ export const signIn = createAsyncThunk<
       _thunkApi.dispatch(push('/'));
       _thunkApi.dispatch(showSnackbar({ msg: 'ログインしました。', isError: false }));
       return res;
-    } catch (e) {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -104,9 +112,12 @@ export const signUp = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await signUpAPI(_args);
+      _thunkApi.dispatch(push('/'));
       _thunkApi.dispatch(showSnackbar({ msg: 'アカウント作成、ログインしました。', isError: false }));
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -127,7 +138,9 @@ export const signOut = createAsyncThunk<
       return {
         ...initialState.user,
       };
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -146,7 +159,9 @@ export const fetchUser = createAsyncThunk<
     try {
       const res = await fetchUserAPI(_args);
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -165,7 +180,9 @@ export const fetchMyUser = createAsyncThunk<
     try {
       const res = await fetchMyUserAPI();
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -186,7 +203,9 @@ export const updateUser = createAsyncThunk<
       _thunkApi.dispatch(showSnackbar({ msg: '更新成功しました。', isError: false }));
       _thunkApi.dispatch(push('/mypage'));
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -205,7 +224,9 @@ export const fetchUsers = createAsyncThunk<
     try {
       const res = await fetchUsersAPI();
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -224,7 +245,9 @@ export const followUser = createAsyncThunk<
     try {
       const res = await followUserAPI(_args);
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -243,7 +266,51 @@ export const unfollowUser = createAsyncThunk<
     try {
       const res = await unfollowUserAPI(_args);
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      _thunkApi.dispatch(showSnackbar({ e }));
+      return _thunkApi.rejectWithValue({
+        message: e.message,
+      });
+    }
+  },
+);
+
+export const followUsers = createAsyncThunk<
+  Array<UserType>,
+  string,
+  { rejectValue: { message: string } }
+>(
+  'users/followUsers',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await followUsersAPI(_args);
+      return res;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
+      _thunkApi.dispatch(showSnackbar({ e }));
+      return _thunkApi.rejectWithValue({
+        message: e.message,
+      });
+    }
+  },
+);
+
+export const followerUsers = createAsyncThunk<
+  Array<UserType>,
+  string,
+  { rejectValue: { message: string } }
+>(
+  'users/followerUsers',
+  async (_args, _thunkApi) => {
+    try {
+      const res = await followerUsersAPI(_args);
+      return res;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -281,6 +348,12 @@ export const userModule = createSlice({
     },
     unfollowSuccess: (state, action) => {
       state.user.followingCount = action.payload;
+    },
+    getSuccessFollowings: (state, action) => {
+      state.followings = action.payload;
+    },
+    getSuccessFollowers: (state, action) => {
+      state.followers = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -331,6 +404,14 @@ export const userModule = createSlice({
       const users = state.users.map((user) => (user.id === unfollow!.id ? unfollow : user));
       const getActionUsers = userModule.actions.getSuccessUsers(users);
       userModule.caseReducers.getSuccessUsers(state, getActionUsers);
+    });
+    builder.addCase(followUsers.fulfilled, (state, action) => {
+      const getAction = userModule.actions.getSuccessFollowings(action.payload);
+      userModule.caseReducers.getSuccessFollowings(state, getAction);
+    });
+    builder.addCase(followerUsers.fulfilled, (state, action) => {
+      const getAction = userModule.actions.getSuccessFollowers(action.payload);
+      userModule.caseReducers.getSuccessFollowers(state, getAction);
     });
   },
 });
