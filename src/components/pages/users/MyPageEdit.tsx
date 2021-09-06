@@ -125,6 +125,7 @@ const MyPageEdit: FC = () => {
     const data = new FormData();
     data.append('user[name]', name);
     data.append('user[nickname]', nickname);
+    data.append('user[introduction]', introduction);
     if (image && image.file) {
       data.append('user[image]', image.file);
     }

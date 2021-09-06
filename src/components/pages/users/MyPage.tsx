@@ -10,8 +10,7 @@ const MyPage: FC = () => {
   const dispatch: AppDispatch = useDispatch();
 
   const userModule = useSelector((state: RootState) => state.user);
-  const name = userModule.user.name;
-  const nickname = userModule.user.nickname;
+  const { name, nickname, introduction } = userModule.user;
   const imagePath = userModule.user.image?.imagePath;
   const userImage: {
     path: string;
@@ -29,6 +28,9 @@ const MyPage: FC = () => {
       <TextDetail label="名前" value={name} />
       <div className="module-spacer--medium" />
       <TextDetail label="ニックネーム名" value={nickname} />
+      <div className="module-spacer--medium" />
+      <TextDetail label="自己紹介" value={introduction} />
+
       <div className="module-spacer--small" />
 
       <img src={userImage.path} alt={userImage.alt} />
