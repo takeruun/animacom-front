@@ -69,6 +69,7 @@ const MyPageEdit: FC = () => {
   const [nickname, setNickname] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState<UserImageType>();
+  const [introduction, setIntroduction] = useState('');
   const mountedRef = useRef(false);
 
   const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +92,10 @@ const MyPageEdit: FC = () => {
     }
   }, [setImage]);
 
+  const inputIntroduction = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIntroduction(event.target.value);
+  }, [setIntroduction]);
+
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -106,6 +111,7 @@ const MyPageEdit: FC = () => {
           setName(user.name);
           setNickname(user.nickname);
           setImage(user.image);
+          setIntroduction(user.introduction);
         }
       } catch (e) {
         dispatch(showSnackbar({ e }));
@@ -150,6 +156,17 @@ const MyPageEdit: FC = () => {
         value={nickname}
         type="text"
         input={inputNickname}
+      />
+      <InputTextMemo
+        id="introduction"
+        fullWidth
+        label="自己紹介"
+        multiline
+        required
+        rows={3}
+        value={introduction}
+        type="text"
+        input={inputIntroduction}
       />
       <div className="module-spacer--medium" />
       <div className="u-text-rigth">

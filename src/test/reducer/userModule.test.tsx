@@ -5,6 +5,8 @@ import reducer, {
   updateSuccessUser,
   followSuccess,
   unfollowSuccess,
+  getSuccessFollowings,
+  getSuccessFollowers,
   initialState,
   UserType,
   signIn,
@@ -15,6 +17,8 @@ import reducer, {
   fetchUsers,
   followUser,
   unfollowUser,
+  fetchFollowUsers,
+  fetchFollowerUsers,
 } from 'modules/userModule';
 
 describe('Reducer of userModule', () => {
@@ -25,6 +29,9 @@ describe('Reducer of userModule', () => {
     nickname: 'nickname',
     followerCount: 0,
     followingCount: 3,
+    petCount: 1,
+    postCount: 2,
+    introduction: 'introductin_1',
     image: {
       imagePath: '',
     },
@@ -37,6 +44,9 @@ describe('Reducer of userModule', () => {
     nickname: 'nickname2',
     followerCount: 1,
     followingCount: 1,
+    petCount: 1,
+    postCount: 1,
+    introduction: 'introductin_2',
     image: {
       imagePath: '',
     },
@@ -64,6 +74,9 @@ describe('Reducer of userModule', () => {
         nickname: '',
         followerCount: 0,
         followingCount: 0,
+        petCount: 0,
+        postCount: 0,
+        introduction: '',
         image: {
           imagePath: '',
         },
@@ -77,6 +90,9 @@ describe('Reducer of userModule', () => {
       nickname: '',
       followerCount: 0,
       followingCount: 0,
+      petCount: 0,
+      postCount: 0,
+      introduction: '',
       image: {
         imagePath: '',
       },
@@ -99,6 +115,18 @@ describe('Reducer of userModule', () => {
     const action = { type: unfollowSuccess.type, payload: 1 };
     const state = reducer(initialState, action);
     expect(state.user.followingCount).toEqual(1);
+  });
+
+  it('getSuccessFollowings', () => {
+    const action = { type: getSuccessFollowings.type, payload: [user] };
+    const state = reducer(initialState, action);
+    expect(state.followings).toEqual([user]);
+  });
+
+  it('getSuccessFollowers', () => {
+    const action = { type: getSuccessFollowers.type, payload: [user] };
+    const state = reducer(initialState, action);
+    expect(state.followers).toEqual([user]);
   });
 
   describe('extraReducer', () => {
@@ -124,6 +152,9 @@ describe('Reducer of userModule', () => {
           nickname: '',
           followerCount: 0,
           followingCount: 0,
+          petCount: 0,
+          postCount: 0,
+          introduction: '',
           image: {
             imagePath: '',
           },
@@ -138,6 +169,9 @@ describe('Reducer of userModule', () => {
         nickname: '',
         followerCount: 0,
         followingCount: 0,
+        petCount: 0,
+        postCount: 0,
+        introduction: '',
         image: {
           imagePath: '',
         },
@@ -147,7 +181,7 @@ describe('Reducer of userModule', () => {
     it('fetchUser', () => {
       const action = { type: fetchUser.fulfilled.type, payload: user };
       const state = reducer(initialState, action);
-      expect(state.user).toEqual(user);
+      expect(state.selectUser).toEqual(user);
     });
 
     it('updateUser', () => {
@@ -186,6 +220,18 @@ describe('Reducer of userModule', () => {
       const state = reducer({ ...initialState, user, users: [user, user2] }, action);
       expect(state.user.followingCount).toEqual(2);
       expect(state.users[1].followerCount).toEqual(0);
+    });
+
+    it('fetchFollowUsers', () => {
+      const action = { type: fetchFollowUsers.fulfilled.type, payload: [user] };
+      const state = reducer(initialState, action);
+      expect(state.followings).toEqual([user]);
+    });
+
+    it('fetchFollowerUsers', () => {
+      const action = { type: fetchFollowerUsers.fulfilled.type, payload: [user] };
+      const state = reducer(initialState, action);
+      expect(state.followers).toEqual([user]);
     });
   });
 });

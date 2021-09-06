@@ -9,7 +9,7 @@ import { AppDispatch } from 're-ducks/store/store';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import {
-  fetchUser, followUsers, followerUsers, UserType,
+  fetchUser, fetchFollowUsers, fetchFollowerUsers, UserType,
 } from 'modules/userModule';
 import showSnackbar from 'hook/showSnackbar';
 import { Grid } from '@material-ui/core';
@@ -41,8 +41,8 @@ const UserDetail: FC = () => {
   useEffect(() => {
     const execApi = async (userId: string) => {
       try {
-        dispatch(followUsers(userId));
-        dispatch(followerUsers(userId));
+        dispatch(fetchFollowUsers(userId));
+        dispatch(fetchFollowerUsers(userId));
         const data = await dispatch(fetchUser(userId)).unwrap();
         if (mountedRef.current) {
           setUser(data);

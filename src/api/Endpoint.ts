@@ -264,7 +264,7 @@ export const signInAPI = async (
 export const signUpAPI = async (
   data: FormData,
 ): Promise<UserType> => {
-  if (data.get('user[name]') === '' || data.get('user[email]') === '' || data.get('user[password]') === '') {
+  if (data.get('name') === '' || data.get('email') === '' || data.get('password') === '') {
     throw new Error('名前 or メールアドレス or パスワードが入力されていません。');
   }
 
@@ -382,7 +382,7 @@ export const unfollowUserAPI = async (
   return { followingCount: Number(res), userId };
 };
 
-export const followUsersAPI = async (userId: string): Promise<Array<UserType>> => {
+export const fetchFollowUsersAPI = async (userId: string): Promise<Array<UserType>> => {
   const res = await request({
     url: `/v1/follows/followings/${userId}`,
     method: 'get',
@@ -391,7 +391,7 @@ export const followUsersAPI = async (userId: string): Promise<Array<UserType>> =
   return res;
 };
 
-export const followerUsersAPI = async (userId: string): Promise<Array<UserType>> => {
+export const fetchFollowerUsersAPI = async (userId: string): Promise<Array<UserType>> => {
   const res = await request({
     url: `/v1/follows/followers/${userId}`,
     method: 'get',

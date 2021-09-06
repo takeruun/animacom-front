@@ -9,8 +9,8 @@ import {
   followUserAPI,
   unfollowUserAPI,
   signUpAPI,
-  followUsersAPI,
-  followerUsersAPI,
+  fetchFollowUsersAPI,
+  fetchFollowerUsersAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 import showSnackbar from 'hook/showSnackbar';
@@ -277,15 +277,15 @@ export const unfollowUser = createAsyncThunk<
   },
 );
 
-export const followUsers = createAsyncThunk<
+export const fetchFollowUsers = createAsyncThunk<
   Array<UserType>,
   string,
   { rejectValue: { message: string } }
 >(
-  'users/followUsers',
+  'users/fetchFollowUsers',
   async (_args, _thunkApi) => {
     try {
-      const res = await followUsersAPI(_args);
+      const res = await fetchFollowUsersAPI(_args);
       return res;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -298,15 +298,15 @@ export const followUsers = createAsyncThunk<
   },
 );
 
-export const followerUsers = createAsyncThunk<
+export const fetchFollowerUsers = createAsyncThunk<
   Array<UserType>,
   string,
   { rejectValue: { message: string } }
 >(
-  'users/followerUsers',
+  'users/fetchFollowerUsers',
   async (_args, _thunkApi) => {
     try {
-      const res = await followerUsersAPI(_args);
+      const res = await fetchFollowerUsersAPI(_args);
       return res;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -405,11 +405,11 @@ export const userModule = createSlice({
       const getActionUsers = userModule.actions.getSuccessUsers(users);
       userModule.caseReducers.getSuccessUsers(state, getActionUsers);
     });
-    builder.addCase(followUsers.fulfilled, (state, action) => {
+    builder.addCase(fetchFollowUsers.fulfilled, (state, action) => {
       const getAction = userModule.actions.getSuccessFollowings(action.payload);
       userModule.caseReducers.getSuccessFollowings(state, getAction);
     });
-    builder.addCase(followerUsers.fulfilled, (state, action) => {
+    builder.addCase(fetchFollowerUsers.fulfilled, (state, action) => {
       const getAction = userModule.actions.getSuccessFollowers(action.payload);
       userModule.caseReducers.getSuccessFollowers(state, getAction);
     });
@@ -423,6 +423,8 @@ export const {
   updateSuccessUser,
   followSuccess,
   unfollowSuccess,
+  getSuccessFollowings,
+  getSuccessFollowers,
 } = userModule.actions;
 
 export default userModule.reducer;
