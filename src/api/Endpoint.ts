@@ -5,6 +5,7 @@ import { CategoryType } from 'modules/categoryModule';
 import { UserType } from 'modules/userModule';
 import { CommentType, getSuccessComment } from 'modules/commentModule';
 import request, { authHeaders, noAuthRequest } from 'hook/useRequest';
+import { PetType } from 'modules/petModule';
 
 export const fetchUserReactionPostsAPI = async (
   kind: string,
@@ -396,6 +397,48 @@ export const fetchFollowerUsersAPI = async (userId: string): Promise<Array<UserT
     url: `/v1/follows/followers/${userId}`,
     method: 'get',
   }).then((response) => response.users);
+
+  return res;
+};
+
+export const fetchPetAPI = async (petId: string): Promise<PetType> => {
+  const res = await request({
+    url: `/v1/users/pets/${petId}`,
+    method: 'get',
+  })
+    .then((response) => response.pet);
+
+  return res;
+};
+
+export const createPetAPI = async (data: FormData): Promise<PetType> => {
+  const res = await request({
+    url: '/v1/users/pets',
+    method: 'post',
+    reqParams: { data },
+  })
+    .then((response) => response.pet);
+
+  return res;
+};
+
+export const editPetAPI = async (id: string, data: FormData): Promise<PetType> => {
+  const res = await request({
+    url: `/v1/users/pets/${id}`,
+    method: 'put',
+    reqParams: { data },
+  })
+    .then((response) => response.pet);
+
+  return res;
+};
+
+export const fetchPetsAPI = async (): Promise<Array<PetType>> => {
+  const res = await request({
+    url: '/v1/users/pets/',
+    method: 'get',
+  })
+    .then((response) => response.pets);
 
   return res;
 };
