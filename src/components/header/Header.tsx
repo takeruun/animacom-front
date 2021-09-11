@@ -11,7 +11,7 @@ import { push } from 'connected-react-router';
 import useQuery from 'hook/useQuery';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from 're-ducks/store/store';
-import { fetchUser, signOut } from 'modules/userModule';
+import { fetchMyUser, signOut } from 'modules/userModule';
 import { updateWord } from 'modules/searchModule';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -121,7 +121,7 @@ const Header: FC = () => {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchUser());
+    dispatch(fetchMyUser());
   }, [dispatch]);
 
   const search = (event: KeyboardEvent<HTMLDivElement>) => {

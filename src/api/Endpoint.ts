@@ -5,6 +5,7 @@ import { CategoryType } from 'modules/categoryModule';
 import { UserType } from 'modules/userModule';
 import { CommentType, getSuccessComment } from 'modules/commentModule';
 import request, { authHeaders, noAuthRequest } from 'hook/useRequest';
+import { PetType } from 'modules/petModule';
 
 export const fetchUserReactionPostsAPI = async (
   kind: string,
@@ -264,7 +265,7 @@ export const signInAPI = async (
 export const signUpAPI = async (
   data: FormData,
 ): Promise<UserType> => {
-  if (data.get('user[name]') === '' || data.get('user[email]') === '' || data.get('user[password]') === '') {
+  if (data.get('name') === '' || data.get('email') === '' || data.get('password') === '') {
     throw new Error('名前 or メールアドレス or パスワードが入力されていません。');
   }
 
@@ -291,7 +292,19 @@ export const signUpAPI = async (
   };
 };
 
-export const fetchUserAPI = async (): Promise<UserType> => {
+export const fetchUserAPI = async (userId: string): Promise<UserType> => {
+  const res = await request({
+    url: `/v1/users/${userId}`,
+    method: 'get',
+  }).then((response) => response.user);
+
+  return {
+    isSignedIn: false,
+    ...res,
+  };
+};
+
+export const fetchMyUserAPI = async (): Promise<UserType> => {
   const res = await request({
     url: '/v1/users/my_page',
     method: 'get',
@@ -368,4 +381,64 @@ export const unfollowUserAPI = async (
   }).then((response) => response.followingCount);
 
   return { followingCount: Number(res), userId };
+};
+
+export const fetchFollowUsersAPI = async (userId: string): Promise<Array<UserType>> => {
+  const res = await request({
+    url: `/v1/follows/followings/${userId}`,
+    method: 'get',
+  }).then((response) => response.users);
+
+  return res;
+};
+
+export const fetchFollowerUsersAPI = async (userId: string): Promise<Array<UserType>> => {
+  const res = await request({
+    url: `/v1/follows/followers/${userId}`,
+    method: 'get',
+  }).then((response) => response.users);
+
+  return res;
+};
+
+export const fetchPetAPI = async (petId: string): Promise<PetType> => {
+  const res = await request({
+    url: `/v1/users/pets/${petId}`,
+    method: 'get',
+  })
+    .then((response) => response.pet);
+
+  return res;
+};
+
+export const createPetAPI = async (data: FormData): Promise<PetType> => {
+  const res = await request({
+    url: '/v1/users/pets',
+    method: 'post',
+    reqParams: { data },
+  })
+    .then((response) => response.pet);
+
+  return res;
+};
+
+export const editPetAPI = async (id: string, data: FormData): Promise<PetType> => {
+  const res = await request({
+    url: `/v1/users/pets/${id}`,
+    method: 'put',
+    reqParams: { data },
+  })
+    .then((response) => response.pet);
+
+  return res;
+};
+
+export const fetchPetsAPI = async (): Promise<Array<PetType>> => {
+  const res = await request({
+    url: '/v1/users/pets/',
+    method: 'get',
+  })
+    .then((response) => response.pets);
+
+  return res;
 };

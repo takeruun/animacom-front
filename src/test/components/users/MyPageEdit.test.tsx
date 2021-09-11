@@ -26,6 +26,9 @@ const server = setupServer(
         nickname: 'NICKNAME',
         followerCount: 0,
         followingCount: 0,
+        petCount: 1,
+        postCount: 2,
+        introduction: 'INTRODUCTION',
         image: {
           imagePath: 'http://localhost:4566/anima/uploads/user/image/1/f2df4009-5b88-4a1b-9514-ddb09f2ce6af.png',
         },
@@ -39,6 +42,9 @@ const server = setupServer(
         nickname: 'NICKNAME_UP',
         followerCount: 2,
         followingCount: 3,
+        petCount: 1,
+        postCount: 2,
+        introduction: 'INTRODUCTION_UP',
         image: {
           imagePath: 'http://localhost:4566/anima/uploads/user/image/1/f2df4009-5b88-4a1b-9514-ddb09f2ce6af.png',
         },
@@ -93,6 +99,19 @@ describe('Rendering MyPageEdit', () => {
     expect(emailInput.value).toBe('test nick');
   });
 
+  it('「自己紹介」を入力できる', () => {
+    render(
+      <Provider store={store}>
+        <MyPageEdit />
+      </Provider>,
+    );
+
+    const emailInput = screen.getByPlaceholderText('自己紹介') as HTMLInputElement;
+    userEvent.type(emailInput, 'introduction');
+
+    expect(emailInput.value).toBe('introduction');
+  });
+
   describe('Fetch success', () => {
     it('「マイページ編集」が表示される', () => {
       render(
@@ -135,6 +154,16 @@ describe('Rendering MyPageEdit', () => {
 
       expect(screen.queryByText(/ユーザ画像/)).toBeNull();
       expect(await screen.findByAltText('ユーザ画像')).toBeInTheDocument();
+    });
+
+    it('ユーザの「自己紹介」が表示される', async () => {
+      render(
+        <Provider store={store}>
+          <MyPageEdit />
+        </Provider>,
+      );
+
+      expect(await screen.findByText('INTRODUCTION')).toBeInTheDocument();
     });
   });
 

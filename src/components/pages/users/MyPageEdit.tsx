@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 're-ducks/store/store';
-import { fetchUser, updateUser, UserImageType } from 'modules/userModule';
+import { fetchMyUser, updateUser, UserImageType } from 'modules/userModule';
 import showSnackbar from 'hook/showSnackbar';
 import { InputText, SecondaryButton } from 'components/UIKit/index';
 import { makeStyles } from '@material-ui/core';
@@ -69,6 +69,7 @@ const MyPageEdit: FC = () => {
   const [nickname, setNickname] = useState('');
   const [name, setName] = useState('');
   const [image, setImage] = useState<UserImageType>();
+  const [introduction, setIntroduction] = useState('');
   const mountedRef = useRef(false);
 
   const inputNickname = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +92,10 @@ const MyPageEdit: FC = () => {
     }
   }, [setImage]);
 
+  const inputIntroduction = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setIntroduction(event.target.value);
+  }, [setIntroduction]);
+
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -101,11 +106,12 @@ const MyPageEdit: FC = () => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        const user = await dispatch(fetchUser()).unwrap();
+        const user = await dispatch(fetchMyUser()).unwrap();
         if (mountedRef.current) {
           setName(user.name);
           setNickname(user.nickname);
           setImage(user.image);
+          setIntroduction(user.introduction);
         }
       } catch (e) {
         dispatch(showSnackbar({ e }));
@@ -119,6 +125,7 @@ const MyPageEdit: FC = () => {
     const data = new FormData();
     data.append('user[name]', name);
     data.append('user[nickname]', nickname);
+    data.append('user[introduction]', introduction);
     if (image && image.file) {
       data.append('user[image]', image.file);
     }
@@ -150,6 +157,17 @@ const MyPageEdit: FC = () => {
         value={nickname}
         type="text"
         input={inputNickname}
+      />
+      <InputTextMemo
+        id="introduction"
+        fullWidth
+        label="自己紹介"
+        multiline
+        required
+        rows={3}
+        value={introduction}
+        type="text"
+        input={inputIntroduction}
       />
       <div className="module-spacer--medium" />
       <div className="u-text-rigth">

@@ -103,6 +103,15 @@ describe('Rendering SignUp', () => {
     expect(passwordInput.value).toBe('12345678');
   });
 
+  it('「自己紹介」を入力できる', () => {
+    renderComponent();
+
+    const introInput = screen.getByPlaceholderText('自己紹介') as HTMLInputElement;
+    userEvent.type(introInput, 'test_intro');
+
+    expect(introInput.value).toBe('test_intro');
+  });
+
   it('名前未入力、「アカウント登録」ボタン押すとエラー発生する', async () => {
     render(
       <Provider store={store}>

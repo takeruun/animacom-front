@@ -29,6 +29,9 @@ const server = setupServer(
         nickname: 'NICKNAME',
         followerCount: 0,
         followingCount: 0,
+        petCount: 1,
+        postCount: 2,
+        introduction: 'INTRODUCTION',
         image: {
           imagePath: 'http://localhost:4566/anima/uploads/user/image/1/f2df4009-5b88-4a1b-9514-ddb09f2ce6af.png',
         },
@@ -102,6 +105,17 @@ describe('Rendering MyPage', () => {
 
       expect(screen.queryByText(/ユーザ画像/)).toBeNull();
       expect(await screen.findByAltText('ユーザ画像')).toBeInTheDocument();
+    });
+
+    it('ユーザの「自己紹介」が表示されている', async () => {
+      render(
+        <Provider store={store}>
+          <MyPage />
+        </Provider>,
+      );
+
+      expect(screen.queryByText(/INTRODUCTION/)).toBeNull();
+      expect(await screen.findByText('INTRODUCTION')).toBeInTheDocument();
     });
   });
 

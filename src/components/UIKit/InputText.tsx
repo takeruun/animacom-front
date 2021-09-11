@@ -8,7 +8,7 @@ type PropsType = {
   multiline: boolean,
   required: boolean,
   rows: number,
-  value: string,
+  value: string | number,
   type: string,
   input: (event: React.ChangeEvent<HTMLInputElement>) => void,
 }
