@@ -77,7 +77,7 @@ const PetEdit: FC = () => {
 
   const mountedRef = useRef(false);
   const [name, setName] = useState('');
-  const [age, setAge] = useState(0);
+  const [age, setAge] = useState('');
   const [genderId, setGender] = useState('0');
   const [image, setImage] = useState<{file: File, imagePath:string}>();
 
@@ -94,7 +94,7 @@ const PetEdit: FC = () => {
   }, [setName]);
 
   const inputAge = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    setAge(Number(event.target.value));
+    setAge(event.target.value);
   }, [setAge]);
 
   const inputImage = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -123,7 +123,7 @@ const PetEdit: FC = () => {
           const data = await dispatch(fetchPet(petId)).unwrap();
           if (mountedRef.current) {
             setName(data.name);
-            setAge(data.age);
+            setAge(String(data.age));
             setGender(data.gender.id);
           }
         } catch (e) {
@@ -165,6 +165,7 @@ const PetEdit: FC = () => {
           type="text"
           input={inputName}
         />
+        <div className="module-spacer--medium" />
         <InputTextMemo
           id="name"
           label="年齢🐾"
@@ -176,6 +177,7 @@ const PetEdit: FC = () => {
           type="number"
           input={inputAge}
         />
+        <div className="module-spacer--medium" />
         <SelectBox
           label="性別🐾"
           required
@@ -183,6 +185,7 @@ const PetEdit: FC = () => {
           value={genderId}
           select={setGender}
         />
+        <div className="module-spacer--medium" />
         <div className="u-text-rigth">
           <span>画像を登録する🐾</span>
           <IconButton className={classes.icon}>

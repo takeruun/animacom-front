@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
   createPetAPI, fetchPetAPI, fetchPetsAPI, editPetAPI,
 } from 'api/Endpoint';
+import { push } from 'connected-react-router';
 import showSnackbar from 'hook/showSnackbar';
 
 export type PetType = {
@@ -61,6 +62,8 @@ export const createPet = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await createPetAPI(_args);
+      _thunkApi.dispatch(showSnackbar({ msg: 'ペット登録しました。', isError: false }));
+      _thunkApi.dispatch(push('/'));
       return res;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,6 +85,8 @@ export const editPet = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await editPetAPI(_args.id, _args.data);
+      _thunkApi.dispatch(showSnackbar({ msg: 'ペット更新しました。', isError: false }));
+      _thunkApi.dispatch(push('/'));
       return res;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

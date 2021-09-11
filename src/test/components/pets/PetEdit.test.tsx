@@ -8,6 +8,7 @@ import { snackbarModule } from 'modules/snackbarModule';
 import { petModule, PetType } from 'modules/petModule';
 import PetEdit from 'components/pages/pets/PetEdit';
 import CustomizedSnackbar from 'components/contents/snackbar/CustomizedSnackbar';
+import Router from 'react-router-dom';
 
 const headers = {
   accessToken: 'accessToken',
@@ -33,9 +34,39 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const server = setupServer(
-  rest.get('http://localhost:3001/v1/users/pets/1', (_, res, ctx) => res(ctx.status(200), ctx.json({
-    pet,
-  }))),
+  rest.get('http://localhost:3001/v1/users/pets/1',
+    (_, res, ctx) => res(
+      ctx.status(200),
+      ctx.json({
+        pet,
+      }),
+    )),
+  rest.post('http://localhost:3001/v1/users/pets',
+    (_, res, ctx) => res(
+      ctx.status(200),
+      ctx.json({
+        ...pet,
+        name: 'test name',
+        age: 5,
+        gender: {
+          id: '1',
+          name: 'メス',
+        },
+      }),
+    )),
+  rest.put('http://localhost:3001/v1/users/pets/1',
+    (_, res, ctx) => res(
+      ctx.status(200),
+      ctx.json({
+        ...pet,
+        name: 'test name',
+        age: 5,
+        gender: {
+          id: '1',
+          name: 'メス',
+        },
+      }),
+    )),
 );
 
 beforeAll(() => server.listen());
@@ -63,6 +94,7 @@ describe('Rendering of PetEdit', () => {
 
   const renderComponent = () => render(
     <Provider store={store}>
+      <CustomizedSnackbar />
       <PetEdit />
     </Provider>,
   );
@@ -93,7 +125,37 @@ describe('Rendering of PetEdit', () => {
     });
   });
 
+  describe('入力できる', () => {
+    it('名前', () => {
+      renderComponent();
+
+      const inputName = screen.getByPlaceholderText('名前🐾');
+      userEvent.type(inputName, 'test name');
+
+      expect(screen.getByText('test name')).toBeInTheDocument();
+    });
+
+    it('年齢', () => {
+      renderComponent();
+
+      const inputAge = screen.getByPlaceholderText('年齢🐾');
+      userEvent.type(inputAge, '5');
+
+      expect(screen.getByText('5')).toBeInTheDocument();
+    });
+
+    it('性別', async () => {
+      renderComponent();
+
+      userEvent.click(screen.getAllByRole('button')[0]);
+      userEvent.click(await screen.findByText('メス'));
+      expect(screen.getAllByText('メス')[0]).toBeInTheDocument();
+    });
+  });
+
   describe('id なし', () => {
+    beforeEach(() => jest.spyOn(Router, 'useParams').mockReturnValue({ }));
+
     it('名前は空', () => {
       renderComponent();
 
@@ -119,36 +181,9 @@ describe('Rendering of PetEdit', () => {
     });
   });
 
-  describe('入力できる', () => {
-    it('名前', () => {
-      renderComponent();
-
-      const inputName = screen.getByPlaceholderText('名前🐾');
-      userEvent.type(inputName, 'test name');
-
-      expect(screen.getByText('test name')).toBeInTheDocument();
-    });
-
-    it('年齢', () => {
-      renderComponent();
-
-      const inputName = screen.getByPlaceholderText('年齢🐾');
-      userEvent.type(inputName, '5');
-
-      expect(screen.getByText('5')).toBeInTheDocument();
-    });
-
-    it('性別', async () => {
-      renderComponent();
-
-      userEvent.click(screen.getAllByRole('button')[0]);
-      userEvent.click(await screen.findByText('メス'));
-      expect(screen.getAllByText('メス')[0]).toBeInTheDocument();
-    });
-  });
-
   describe('Fetch failure', () => {
     beforeEach(() => {
+      jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1' });
       server.use(
         rest.get('http://localhost:3001/v1/users/pets/1',
           (_, res, ctx) => res(ctx.status(200), ctx.json({
@@ -157,23 +192,111 @@ describe('Rendering of PetEdit', () => {
       );
     });
     it('「ペット登録」は表示される', () => {
-      render(
-        <Provider store={store}>
-          <CustomizedSnackbar />
-          <PetEdit />
-        </Provider>,
-      );
+      renderComponent();
 
       expect(screen.getByText('ペット登録')).toBeInTheDocument();
     });
 
     it('エラーメッセージが表示される', async () => {
-      render(
-        <Provider store={store}>
-          <CustomizedSnackbar />
-          <PetEdit />
-        </Provider>,
+      renderComponent();
+
+      expect(await screen.findByText('失敗しました。')).toBeInTheDocument();
+    });
+  });
+
+  describe('Post', () => {
+    beforeEach(() => jest.spyOn(Router, 'useParams').mockReturnValue({ }));
+
+    it('Success', async () => {
+      renderComponent();
+
+      const inputName = screen.getByPlaceholderText('名前🐾');
+      userEvent.type(inputName, 'test name');
+
+      const inputAge = screen.getByPlaceholderText('年齢🐾');
+      userEvent.type(inputAge, '5');
+
+      userEvent.click(screen.getAllByRole('button')[0]);
+      userEvent.click(await screen.findByText('メス'));
+
+      const postBt = screen.getByText('登録');
+      userEvent.click(postBt);
+
+      expect(await screen.findByText('ペット登録しました。')).toBeInTheDocument();
+    });
+
+    it('Failure', async () => {
+      server.use(
+        rest.post('http://localhost:3001/v1/users/pets',
+          (_, res, ctx) => res(
+            ctx.status(200),
+            ctx.json({
+              error: '失敗しました。',
+            }),
+          )),
       );
+      renderComponent();
+
+      const inputName = screen.getByPlaceholderText('名前🐾');
+      userEvent.type(inputName, 'test name');
+
+      const inputAge = screen.getByPlaceholderText('年齢🐾');
+      userEvent.type(inputAge, '5');
+
+      userEvent.click(screen.getAllByRole('button')[0]);
+      userEvent.click(await screen.findByText('メス'));
+
+      const postBt = screen.getByText('登録');
+      userEvent.click(postBt);
+
+      expect(await screen.findByText('失敗しました。')).toBeInTheDocument();
+    });
+  });
+
+  describe('Put', () => {
+    beforeEach(() => jest.spyOn(Router, 'useParams').mockReturnValue({ id: '1' }));
+
+    it('Success', async () => {
+      renderComponent();
+
+      const inputName = screen.getByPlaceholderText('名前🐾');
+      userEvent.type(inputName, 'test name');
+
+      const inputAge = screen.getByPlaceholderText('年齢🐾');
+      userEvent.type(inputAge, '5');
+
+      userEvent.click(screen.getAllByRole('button')[0]);
+      userEvent.click(await screen.findByText('メス'));
+
+      const postBt = screen.getByText('更新');
+      userEvent.click(postBt);
+
+      expect(await screen.findByText('ペット更新しました。')).toBeInTheDocument();
+    });
+
+    it('Failure', async () => {
+      server.use(
+        rest.put('http://localhost:3001/v1/users/pets/1',
+          (_, res, ctx) => res(
+            ctx.status(200),
+            ctx.json({
+              error: '失敗しました。',
+            }),
+          )),
+      );
+      renderComponent();
+
+      const inputName = screen.getByPlaceholderText('名前🐾');
+      userEvent.type(inputName, 'test name');
+
+      const inputAge = screen.getByPlaceholderText('年齢🐾');
+      userEvent.type(inputAge, '5');
+
+      userEvent.click(screen.getAllByRole('button')[0]);
+      userEvent.click(await screen.findByText('メス'));
+
+      const postBt = screen.getByText('更新');
+      userEvent.click(postBt);
 
       expect(await screen.findByText('失敗しました。')).toBeInTheDocument();
     });
