@@ -19,6 +19,9 @@ describe('Reducer of petModule', () => {
       id: '0',
       name: 'オス',
     },
+    image: {
+      imagePath: '',
+    },
   };
 
   it('getSuccessPet', () => {

@@ -13,6 +13,10 @@ export type PetType = {
     id: string,
     name: string,
   },
+  image: {
+    file?: File,
+    imagePath: string,
+  },
 };
 
 export type PetStateType ={
@@ -28,6 +32,9 @@ export const initialState: PetStateType = {
     gender: {
       id: '0',
       name: '',
+    },
+    image: {
+      imagePath: '',
     },
   },
   pets: [],
