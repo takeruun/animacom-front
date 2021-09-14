@@ -9,7 +9,11 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
-const UserPets: FC = () => {
+type PropsType = {
+  userId: string,
+};
+
+const UserPets: FC<PropsType> = ({ userId }) => {
   const dispatch: AppDispatch = useDispatch();
   const mountedRef = useRef(false);
 
@@ -25,7 +29,7 @@ const UserPets: FC = () => {
   useEffect(() => {
     const execApi = async () => {
       try {
-        const data = await dispatch(fetchPets()).unwrap();
+        const data = await dispatch(fetchPets(userId)).unwrap();
         if (mountedRef.current) {
           setPets(data);
         }
@@ -34,7 +38,7 @@ const UserPets: FC = () => {
       }
     };
     execApi();
-  }, [dispatch]);
+  }, [userId, dispatch]);
 
   return (
     <List>

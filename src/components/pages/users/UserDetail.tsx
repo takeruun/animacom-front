@@ -85,7 +85,7 @@ const UserDetail: FC = () => {
       { id: 'profile', component: <Introduction introduction={selectUser?.introduction} /> },
       { id: 'followers', component: <FollowerUsers /> },
       { id: 'followings', component: <FollowUsers /> },
-      { id: 'pets', component: <UserPets /> },
+      { id: 'pets', component: <UserPets userId={selectUser.id} /> },
       { id: 'posts', component: <Introduction introduction="posts" /> },
     ];
   }

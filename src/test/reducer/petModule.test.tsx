@@ -4,6 +4,7 @@ import reducer, {
   initialState,
   PetType,
   fetchPet,
+  fetchMyPets,
   fetchPets,
   createPet,
   editPet,
@@ -40,6 +41,13 @@ describe('Reducer of petModule', () => {
       const state = reducer(initialState, action);
 
       expect(state.pet).toEqual(pet);
+    });
+
+    it('fetchMyPets', () => {
+      const action = { type: fetchMyPets.fulfilled.type, payload: [pet] };
+      const state = reducer(initialState, action);
+
+      expect(state.pets).toEqual([pet]);
     });
 
     it('fetchPets', () => {

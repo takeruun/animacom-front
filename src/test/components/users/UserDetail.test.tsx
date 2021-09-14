@@ -52,6 +52,18 @@ const server = setupServer(
         name: 'NAME_4',
       }],
     }))),
+  rest.get('http://localhost:3001/v1/users/2/pets',
+    (_, res, ctx) => res(ctx.status(200), ctx.json({
+      pets: [{
+        id: '1',
+        name: 'petNmae',
+        age: 1,
+        gender: {
+          id: '0',
+          name: 'オス',
+        },
+      }],
+    }))),
 );
 
 beforeAll(() => server.listen());
@@ -148,6 +160,15 @@ describe('Rendering UserDetail', () => {
       userEvent.click(followBt);
 
       expect(await screen.findByText('NAME_3')).toBeInTheDocument();
+    });
+
+    it('ペット', async () => {
+      renderComponent();
+
+      const petBt = await screen.findByText('ペット');
+      userEvent.click(petBt);
+
+      expect(await screen.findByText('petNmae')).toBeInTheDocument();
     });
   });
 });
