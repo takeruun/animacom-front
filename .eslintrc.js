@@ -63,6 +63,7 @@ module.exports = {
       devDependencies: ['**/*.test.tsx'],
       optionalDependencies: false,
     }],
+    'react/prop-types': 'off',
   },
   settings: {
     'import/resolver': {
