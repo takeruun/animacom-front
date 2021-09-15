@@ -29,8 +29,8 @@ jobs:
   deploy:
     docker:
       - image: circleci/node:15.14.0
-      environment:
-        REACT_APP_API_URL: https://api.take-h.tk
+        environment:
+          REACT_APP_API_URL: https://api.take-h.tk
     working_directory: ~/animacom-front
     steps:
       - checkout
