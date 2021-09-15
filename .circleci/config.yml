@@ -6,6 +6,8 @@ jobs:
   test:
     docker:
       - image: circleci/node:15.14.0
+        environment:
+          REACT_APP_API_URL: http://localhost:3001
     working_directory: ~/animacom-front
     steps:
       - checkout

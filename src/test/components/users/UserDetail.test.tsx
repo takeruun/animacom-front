@@ -8,6 +8,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { userModule, UserType } from 'modules/userModule';
 import UserDetail from 'components/pages/users/UserDetail';
+import { PetType } from 'modules/petModule';
 
 const headers = {
   accessToken: 'accessToken',
@@ -29,6 +30,19 @@ const user: UserType = {
   postCount: 3,
   introduction: 'INTRODUCTION',
   isSignedIn: true,
+};
+
+const pet: PetType = {
+  id: '1',
+  name: 'petNmae',
+  age: 1,
+  gender: {
+    id: '0',
+    name: 'オス',
+  },
+  image: {
+    imagePath: '',
+  },
 };
 
 const server = setupServer(
@@ -54,15 +68,7 @@ const server = setupServer(
     }))),
   rest.get('http://localhost:3001/v1/users/2/pets',
     (_, res, ctx) => res(ctx.status(200), ctx.json({
-      pets: [{
-        id: '1',
-        name: 'petNmae',
-        age: 1,
-        gender: {
-          id: '0',
-          name: 'オス',
-        },
-      }],
+      pets: [pet],
     }))),
 );
 

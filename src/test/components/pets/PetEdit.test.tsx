@@ -25,6 +25,9 @@ const pet: PetType = {
     id: '0',
     name: 'オス',
   },
+  image: {
+    imagePath: '',
+  },
 };
 
 jest.mock('react-router-dom', () => ({
