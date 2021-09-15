@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosRequestConfig, Method } from 'axios';
 
-const baseURL = 'http://localhost:3001';
+const baseURL = process.env.REACT_APP_API_URL;
 
 type AuthType = {
   accessToken: string

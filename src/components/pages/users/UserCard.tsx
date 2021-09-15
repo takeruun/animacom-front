@@ -61,7 +61,7 @@ const UserCard: FC<UserType> = (props: UserType) => {
     follow,
   } = props;
 
-  const userImage = image?.imagePath?.length > 0 ? image?.imagePath : NoImage;
+  const userImage = image.imagePath?.length > 0 ? image.imagePath : NoImage;
 
   const followButton = () => (
     <Button

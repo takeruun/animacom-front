@@ -17,6 +17,7 @@ import NoImage from '../../../assets/no_image.png';
 import Introduction from './profInfos/Introduction';
 import FollowUsers from './profInfos/FollowUsers';
 import FollowerUsers from './profInfos/FollowerUsers';
+import UserPets from './profInfos/UserPets';
 
 const UserDetail: FC = () => {
   const { id }: { id: string } = useParams();
@@ -84,7 +85,7 @@ const UserDetail: FC = () => {
       { id: 'profile', component: <Introduction introduction={selectUser?.introduction} /> },
       { id: 'followers', component: <FollowerUsers /> },
       { id: 'followings', component: <FollowUsers /> },
-      { id: 'pets', component: <Introduction introduction="pets" /> },
+      { id: 'pets', component: <UserPets userId={selectUser.id} /> },
       { id: 'posts', component: <Introduction introduction="posts" /> },
     ];
   }

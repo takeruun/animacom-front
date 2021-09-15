@@ -140,7 +140,7 @@ const PetEdit: FC = () => {
     data.append('pets[age]', String(age));
     data.append('pets[gender]', genderId);
     if (image && image.file) {
-      data.append('image', image.file);
+      data.append('pets[image]', image.file);
     }
 
     if (id !== undefined) {

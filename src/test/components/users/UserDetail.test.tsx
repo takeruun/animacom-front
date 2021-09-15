@@ -8,6 +8,7 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { userModule, UserType } from 'modules/userModule';
 import UserDetail from 'components/pages/users/UserDetail';
+import { PetType } from 'modules/petModule';
 
 const headers = {
   accessToken: 'accessToken',
@@ -31,6 +32,19 @@ const user: UserType = {
   isSignedIn: true,
 };
 
+const pet: PetType = {
+  id: '1',
+  name: 'petNmae',
+  age: 1,
+  gender: {
+    id: '0',
+    name: 'オス',
+  },
+  image: {
+    imagePath: '',
+  },
+};
+
 const server = setupServer(
   rest.get('http://localhost:3001/v1/users/2',
     (_, res, ctx) => res(ctx.status(200), ctx.json({
@@ -51,6 +65,10 @@ const server = setupServer(
         id: '4',
         name: 'NAME_4',
       }],
+    }))),
+  rest.get('http://localhost:3001/v1/users/2/pets',
+    (_, res, ctx) => res(ctx.status(200), ctx.json({
+      pets: [pet],
     }))),
 );
 
@@ -148,6 +166,15 @@ describe('Rendering UserDetail', () => {
       userEvent.click(followBt);
 
       expect(await screen.findByText('NAME_3')).toBeInTheDocument();
+    });
+
+    it('ペット', async () => {
+      renderComponent();
+
+      const petBt = await screen.findByText('ペット');
+      userEvent.click(petBt);
+
+      expect(await screen.findByText('petNmae')).toBeInTheDocument();
     });
   });
 });

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
-  createPetAPI, fetchPetAPI, fetchPetsAPI, editPetAPI,
+  createPetAPI, fetchPetAPI, fetchMyPetsAPI, editPetAPI, fetchPetsAPI,
 } from 'api/Endpoint';
 import { push } from 'connected-react-router';
 import showSnackbar from 'hook/showSnackbar';
@@ -12,6 +12,10 @@ export type PetType = {
   gender: {
     id: string,
     name: string,
+  },
+  image: {
+    file?: File,
+    imagePath: string,
   },
 };
 
@@ -28,6 +32,9 @@ export const initialState: PetStateType = {
     gender: {
       id: '0',
       name: '',
+    },
+    image: {
+      imagePath: '',
     },
   },
   pets: [],
@@ -99,15 +106,15 @@ export const editPet = createAsyncThunk<
   },
 );
 
-export const fetchPets = createAsyncThunk<
+export const fetchMyPets = createAsyncThunk<
   Array<PetType>,
   void,
   { rejectValue: { message: string } }
 >(
-  'pet/fetchPets',
+  'pet/fetchMyPets',
   async (_args, _thunkApi) => {
     try {
-      const res = await fetchPetsAPI();
+      const res = await fetchMyPetsAPI();
       return res;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -118,6 +125,27 @@ export const fetchPets = createAsyncThunk<
     }
   },
 );
+
+export const fetchPets = createAsyncThunk<
+  Array<PetType>,
+  string,
+  { rejectValue: { message: string } }
+  >(
+    'pet/fetchPets',
+    async (_args, _thunkApi) => {
+      try {
+        const res = await fetchPetsAPI(_args);
+        return res;
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (e: any) {
+        _thunkApi.dispatch(showSnackbar({ e }));
+        return _thunkApi.rejectWithValue({
+          message: e.message,
+        });
+      }
+    },
+  );
 
 export const petModule = createSlice({
   name: 'pet',
@@ -134,6 +162,10 @@ export const petModule = createSlice({
     builder.addCase(fetchPet.fulfilled, (state, action) => {
       const getAction = petModule.actions.getSuccessPet(action.payload);
       petModule.caseReducers.getSuccessPet(state, getAction);
+    });
+    builder.addCase(fetchMyPets.fulfilled, (state, action) => {
+      const getAction = petModule.actions.getSuccessPets(action.payload);
+      petModule.caseReducers.getSuccessPets(state, getAction);
     });
     builder.addCase(fetchPets.fulfilled, (state, action) => {
       const getAction = petModule.actions.getSuccessPets(action.payload);

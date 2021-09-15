@@ -19,6 +19,7 @@ import { commentModule } from 'modules/commentModule';
 import { userModule } from 'modules/userModule';
 import { searchModule } from 'modules/searchModule';
 import { snackbarModule } from 'modules/snackbarModule';
+import { petModule } from 'modules/petModule';
 
 export default function createStore(history: History) {
   return reduxCreateStore(
@@ -43,7 +44,6 @@ export const history = createBrowserHistory();
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
-  users: UsersReducer,
   apiStatus: ApiStatusReducer,
   user: userModule.reducer,
   userPost: userPostModule.reducer,
@@ -52,6 +52,7 @@ const rootReducer = combineReducers({
   post: postModule.reducer,
   comment: commentModule.reducer,
   search: searchModule.reducer,
+  pet: petModule.reducer,
   snackbar: snackbarModule.reducer,
 });
 export const store = configureStore(

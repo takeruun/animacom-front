@@ -433,9 +433,19 @@ export const editPetAPI = async (id: string, data: FormData): Promise<PetType> =
   return res;
 };
 
-export const fetchPetsAPI = async (): Promise<Array<PetType>> => {
+export const fetchMyPetsAPI = async (): Promise<Array<PetType>> => {
   const res = await request({
     url: '/v1/users/pets/',
+    method: 'get',
+  })
+    .then((response) => response.pets);
+
+  return res;
+};
+
+export const fetchPetsAPI = async (userId: string): Promise<Array<PetType>> => {
+  const res = await request({
+    url: `/v1/users/${userId}/pets`,
     method: 'get',
   })
     .then((response) => response.pets);
