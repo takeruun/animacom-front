@@ -43,7 +43,9 @@ export const fetchUserReactionCounts = createAsyncThunk<
         goodCount: counts.find((c: { count: number, kind: number; }) => c.kind === 3)?.count || 0,
         coolCount: counts.find((c: { count: number, kind: number; }) => c.kind === 4)?.count || 0,
       };
-    } catch (e) {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
