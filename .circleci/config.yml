@@ -1,5 +1,6 @@
 version: 2.1
 orbs:
+  aws-s3: circleci/aws-s3@3.0.0
   aws-cli: circleci/aws-cli@2.0.3
 jobs:
   test:
@@ -20,11 +21,44 @@ jobs:
           key: react-modules-v2-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
-      - run: 
+      - run:
           name: Run test
           command: yarn test --maxWorkers=1
+  deploy:
+    docker:
+      - image: circleci/node:15.14.0
+    working_directory: ~/animacom-front
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - react-modules-v2-{{ checksum "yarn.lock" }}
+            - react-modules-v2-
+      - run:
+          name: yarn install
+          command: yarn install
+      - save_cache:
+          key: react-modules-v2-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: build
+          command: yarn build
+      - aws-s3/sync:
+          aws-access-key-id: AWS_S3_ACCESS_KEY_ID
+          aws-region: AWS_DEFAULT_REGION
+          aws-secret-access-key: AWS_S3_SECRET_ACCESS_KEY
+          arguments: '--delete'
+          from: build
+          to: s3://animacom-s3
 workflows:
   version: 2.1
   test:
     jobs:
       - test
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: main
