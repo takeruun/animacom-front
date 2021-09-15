@@ -167,6 +167,10 @@ export const petModule = createSlice({
       const getAction = petModule.actions.getSuccessPets(action.payload);
       petModule.caseReducers.getSuccessPets(state, getAction);
     });
+    builder.addCase(fetchPets.fulfilled, (state, action) => {
+      const getAction = petModule.actions.getSuccessPets(action.payload);
+      petModule.caseReducers.getSuccessPets(state, getAction);
+    });
     builder.addCase(createPet.fulfilled, (state, action) => {
       const getAction = petModule.actions.getSuccessPet(action.payload);
       petModule.caseReducers.getSuccessPet(state, getAction);
