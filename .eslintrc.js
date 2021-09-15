@@ -20,7 +20,7 @@ module.exports = {
     },
     ecmaVersion: 12,
     tsconfigRootDir: __dirname,
-    project: ['./tsconfig.json'],
+    project: './tsconfig.json',
     sourceType: 'module',
   },
   root: true,
@@ -48,11 +48,26 @@ module.exports = {
       },
     ],
     'react/react-in-jsx-scope': 'off',
+    'import/no-unresolved': 'off',
+    'prefer-destructuring': ['error',
+      { 'object': false, 'array': false }
+    ],
+    'react/jsx-props-no-spreading': ['off', {
+      custom: 'ignore',
+    }],
+    'no-param-reassign': [
+      'error',
+      { props: true, ignorePropertyModificationsFor: ['state'] }
+    ],
+    'import/no-extraneous-dependencies': ['error', {
+      devDependencies: ['**/*.test.tsx'],
+      optionalDependencies: false,
+    }],
+    'react/prop-types': 'off',
   },
   settings: {
     'import/resolver': {
       node: {
-        paths: ['src'],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
     },

@@ -7,7 +7,11 @@ services:
     command: yarn start
     volumes:
       - .:/app
+      - modules:/app/node_modules
     ports:
       - '3000:3000'
     tty: true
     stdin_open: true
+
+volumes:
+  modules:

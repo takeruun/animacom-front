@@ -6,6 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": "src",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -22,11 +23,11 @@
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "baseUrl": "src"
   },
   "include": [
     "src/**/*.tsx",
     "src/**/*.ts",
+    "src/**/*.js",
     ".eslintrc.js"
   ]
 }
