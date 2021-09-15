@@ -40,14 +40,14 @@ jobs:
             - react-modules-v2-
       - run:
           name: yarn install
-          command: CI= yarn install
+          command: yarn install
       - save_cache:
           key: react-modules-v2-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
       - run:
           name: build
-          command: yarn build
+          command: CI= yarn build
       - aws-s3/sync:
           aws-access-key-id: AWS_S3_ACCESS_KEY_ID
           aws-region: AWS_DEFAULT_REGION
