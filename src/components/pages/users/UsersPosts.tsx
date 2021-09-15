@@ -20,14 +20,16 @@ const UsersPosts: FC = () => {
   const { kind }: { kind: string } = useParams();
   const userPost = useSelector((state: RootState) => state.userPost);
 
-  function getPosts(): PostType[] {
-    if (kind === 'cute') {
-      return userPost.cutePosts;
-    }
-    return [];
+  let posts: PostType[] = [];
+  if (kind === 'cute') {
+    posts = userPost.cutePosts;
+  } else if (kind === 'fav') {
+    posts = userPost.favPosts;
+  } else if (kind === 'cool') {
+    posts = userPost.coolPosts;
+  } else if (kind === 'good') {
+    posts = userPost.goodPosts;
   }
-
-  const posts = getPosts();
 
   useEffect(() => {
     dispatch(fetchUserReactionPosts(kind));
@@ -41,7 +43,7 @@ const UsersPosts: FC = () => {
         <div className="p-grid__row">
           {
             posts.map((post) => (
-              <PostCard {...post} />
+              <PostCard key={post.id} {...post} />
             ))
           }
         </div>

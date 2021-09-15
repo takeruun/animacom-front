@@ -19,7 +19,7 @@ export const fetchUserReactionPostsAPI = async (
       },
     },
   })
-    .then((response) => response);
+    .then((response) => response.posts);
 
   return { posts: res, kind };
 };
