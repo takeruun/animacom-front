@@ -19,7 +19,7 @@ export const fetchUserReactionPostsAPI = async (
       },
     },
   })
-    .then((response) => response);
+    .then((response) => response.posts);
 
   return { posts: res, kind };
 };
@@ -181,7 +181,7 @@ export const createCommentSocketAPI = (postId: string) => (
   (dispatch: Dispatch<Action>): SocketType => {
     try {
       const cable = ActionCable.createConsumer(
-        'ws:localhost:3001/v1/cable',
+        `${process.env.REACT_APP_SOCKET_URL}/v1/cable`,
       );
       const socket = cable.subscriptions.create(
         {

@@ -31,7 +31,9 @@ export const fetchCategories = createAsyncThunk<
     try {
       const res = await fetchCategoriesAPI();
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
@@ -50,7 +52,9 @@ export const fetchRootCategories = createAsyncThunk<
     try {
       const res = await fetchRootCategoriesAPI();
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
