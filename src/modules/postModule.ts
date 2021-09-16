@@ -348,6 +348,10 @@ export const postModule = createSlice({
       const getAction = postModule.actions.destorySuccessReactions(action.payload);
       postModule.caseReducers.destorySuccessReactions(state, getAction);
     });
+    builder.addCase(searchPosts.fulfilled, (state, action) => {
+      const getAction = postModule.actions.getSuccessSearchPosts(action.payload);
+      postModule.caseReducers.getSuccessSearchPosts(state, getAction);
+    });
   },
 });
 

@@ -195,6 +195,7 @@ const Header: FC = () => {
             </div>
             <InputBase
               placeholder="Search…"
+              type="text"
               classes={{
                 root: classes.inputRoot,
                 input: classes.inputInput,
