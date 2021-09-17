@@ -1,4 +1,6 @@
-import { render, screen, cleanup } from '@testing-library/react';
+import {
+  render, screen, cleanup, fireEvent,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Provider } from 'react-redux';
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
@@ -14,6 +16,7 @@ import { postModule } from 'modules/postModule';
 import { reactionCountsModule } from 'modules/reactionCountsModule';
 import CustomizedSnackbar from 'components/contents/snackbar/CustomizedSnackbar';
 import Header from 'components/header/Header';
+import SearchPosts from 'components/pages/posts/SearchPosts';
 
 const history = createBrowserHistory();
 const headers = {
@@ -77,6 +80,22 @@ const server = setupServer(
         ],
       }),
     )),
+  rest.get('http://localhost:3001/v1/posts/search',
+    (_, res, ctx) => res(ctx.status(200), ctx.json({
+      posts: [{
+        id: '1',
+        title: 'TEST_Title',
+        subTitle: 'SubTitle',
+        body: 'Body',
+        images: [],
+        categoryId: '1',
+        cuteCount: 0,
+        favCount: 0,
+        goodCount: 0,
+        coolCount: 0,
+        reactions: [],
+      }],
+    }))),
 );
 
 beforeAll(() => server.listen());
@@ -117,6 +136,7 @@ describe('Rendering Header', () => {
 
   const renderComponent = () => render(
     <Provider store={store}>
+      <SearchPosts />
       <Header />
     </Provider>,
   );
@@ -149,6 +169,7 @@ describe('Rendering Header', () => {
     renderComponent();
 
     const inputSearch = screen.getByPlaceholderText('Search…') as HTMLInputElement;
+    userEvent.clear(inputSearch);
     userEvent.type(inputSearch, 'testTes');
     expect(inputSearch.value).toBe('testTes');
   });
@@ -171,6 +192,16 @@ describe('Rendering Header', () => {
       const loginBt = screen.getAllByText('ログイン')[0];
       userEvent.click(loginBt);
       expect(history.location.pathname).toBe('/sign_in');
+    });
+
+    it('キーワード検索結果ページへ', async () => {
+      renderComponent();
+
+      const inputSearch = screen.getByPlaceholderText('Search…');
+      userEvent.type(inputSearch, 'test');
+      fireEvent.keyPress(inputSearch, { key: 'Enter', code: 13, charCode: 13 });
+
+      expect(history.location.pathname + history.location.search).toBe('/search?word=test');
     });
   });
 

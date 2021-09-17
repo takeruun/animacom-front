@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { createCommentSocketAPI, SocketType } from 'api/Endpoint';
 import { AppDispatch, RootState } from 're-ducks/store/store';
-import { PostType, fetchPost } from 'modules/postModule';
+import { fetchPost } from 'modules/postModule';
 import showSnackbar from 'hook/showSnackbar';
 import { fetchComments } from 'modules/commentModule';
 import { makeStyles } from '@material-ui/core/styles';
@@ -60,14 +60,16 @@ const returnCodeToBr = (text: string) => {
 const PostDetail: FC = () => {
   const classes = useStyles();
   const dispatch: AppDispatch = useDispatch();
+
+  const postModule = useSelector((state: RootState) => state.post);
   const commentModule = useSelector((state: RootState) => state.comment);
+  const post = postModule.post;
+  const comments = commentModule.comments;
 
   const { id }: { id: string } = useParams();
-  const [post, setPost] = useState<PostType>();
   const [socket, setSocket] = useState<SocketType>();
   const [body, setBody] = useState('');
   const mountedRef = useRef(false);
-  const comments = commentModule.comments;
 
   const inputBody = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     setBody(event.target.value);
@@ -83,10 +85,9 @@ const PostDetail: FC = () => {
   useEffect(() => {
     const execApi = async (postId: string) => {
       try {
-        const data = await dispatch(fetchPost(postId)).unwrap();
         if (mountedRef.current) {
-          setPost(data);
-          dispatch(fetchComments(postId));
+          await dispatch(fetchPost(postId));
+          await dispatch(fetchComments(postId));
           setSocket(dispatch(createCommentSocketAPI(id)));
         }
       } catch (e) {

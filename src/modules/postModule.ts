@@ -78,7 +78,9 @@ export const fetchCategoryPosts = createAsyncThunk<
     try {
       const res = await searchPostsAPI({ categoryId: _args });
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -97,7 +99,9 @@ export const searchPosts = createAsyncThunk<
     try {
       const res = await searchPostsAPI({ keyword: _args });
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -115,8 +119,13 @@ export const fetchPosts = createAsyncThunk<
   async (_args, _thunkApi) => {
     try {
       const res = await fetchPostsAPI(_args);
-      return { posts: res, path: _args };
-    } catch (e) {
+      return {
+        posts: res,
+        path: _args,
+      };
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -135,7 +144,9 @@ export const fetchPost = createAsyncThunk<
     try {
       const res = await fetchPostAPI(_args);
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -155,7 +166,9 @@ export const editPost = createAsyncThunk<
       const res = await editPostAPI(_args.id, _args.data);
       _thunkApi.dispatch(push('/'));
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
@@ -175,7 +188,9 @@ export const createPost = createAsyncThunk<
       const res = await createPostAPI(_args);
       _thunkApi.dispatch(push('/'));
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
@@ -194,7 +209,9 @@ export const destroyPost = createAsyncThunk<
     try {
       await destroyPostAPI(_args);
       return '';
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
@@ -213,7 +230,9 @@ export const postReactions = createAsyncThunk<
     try {
       const res = await postReactionsAPI(_args.id, _args.kind);
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -232,7 +251,9 @@ export const destroyReactions = createAsyncThunk<
     try {
       const res = await destroyReactionsAPI(_args.id, _args.kind);
       return res;
-    } catch (e) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.message,
@@ -326,6 +347,10 @@ export const postModule = createSlice({
     builder.addCase(destroyReactions.fulfilled, (state, action) => {
       const getAction = postModule.actions.destorySuccessReactions(action.payload);
       postModule.caseReducers.destorySuccessReactions(state, getAction);
+    });
+    builder.addCase(searchPosts.fulfilled, (state, action) => {
+      const getAction = postModule.actions.getSuccessSearchPosts(action.payload);
+      postModule.caseReducers.getSuccessSearchPosts(state, getAction);
     });
   },
 });

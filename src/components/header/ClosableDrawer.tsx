@@ -169,7 +169,10 @@ const ClosableDrawer: FC<PropsType> = (props: PropsType) => {
             <ListItem
               button
               key={isSignedIn ? 'logout' : 'login'}
-              onClick={() => dispatch(isSignedIn ? signOut() : push('/sign_in'))}
+              onClick={(event) => {
+                dispatch(isSignedIn ? signOut() : push('/sign_in'));
+                onClose(event);
+              }}
             >
               <ListItemIcon>
                 <ExitToAppIcon />

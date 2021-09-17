@@ -31,7 +31,9 @@ export const fetchUserReactionPosts = createAsyncThunk<
     try {
       const res = await fetchUserReactionPostsAPI(_args);
       return res;
-    } catch (e) {
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (e: any) {
       _thunkApi.dispatch(showSnackbar({ e }));
       return _thunkApi.rejectWithValue({
         message: e.stack,
