@@ -28,6 +28,8 @@
     "src/**/*.tsx",
     "src/**/*.ts",
     "src/**/*.js",
-    ".eslintrc.js"
+    ".eslintrc.js",
+    ".tailwind.config.js",
+    ".postcss.config.js"
   ]
 }
