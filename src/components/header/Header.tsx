@@ -9,9 +9,9 @@ import {
 } from 'react';
 import { push } from 'connected-react-router';
 import useQuery from 'hook/useQuery';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from 're-ducks/store/store';
-import { fetchMyUser, signOut } from 'modules/userModule';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 're-ducks/store/store';
+import { fetchMyUser } from 'modules/userModule';
 import { updateWord } from 'modules/searchModule';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -25,8 +25,6 @@ import ClosableDrawer from './ClosableDrawer';
 const Header: FC = () => {
   const query = useQuery();
   const dispatch: AppDispatch = useDispatch();
-  const userModule = useSelector((state: RootState) => state.user);
-  const isSignedIn = userModule.user.isSignedIn;
   const searchKeywordInputRef = useRef<HTMLInputElement>(null);
 
   const [open, setOpen] = useState(false);
@@ -78,7 +76,6 @@ const Header: FC = () => {
                   >
                     <PeopleIcon />
                   </IconButton>
-
                 </Tooltip>
               </li>
               <li>
@@ -106,22 +103,17 @@ const Header: FC = () => {
             </ul>
           </nav>
           <div className="relative text-gray-500">
-            <div className="absolute flex items-center h-full pointer-events-none">
+            <div className="absolute flex items-center h-full pointer-events-none z-10">
               <SearchIcon />
             </div>
             <input
               placeholder="Search…"
               type="text"
-              className="w-24 pl-8 h-full outline-none focus:w-full transition-[width] transform duration-300 delay-0"
+              className="w-24 pl-8 h-full outline-none focus:w-full transition-[width] transform duration-300 delay-300"
               ref={searchKeywordInputRef}
               onKeyPress={(e) => search(e)}
             />
           </div>
-          {isSignedIn ? (
-            <button type="button" onClick={() => dispatch(signOut())}>ログアウト</button>
-          ) : (
-            <button type="button" onClick={() => dispatch(push('/sign_in'))}>ログイン</button>
-          )}
           <IconButton
             onClick={(e) => handleDrawerToggle(e)}
           >
