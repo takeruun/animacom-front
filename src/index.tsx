@@ -1,5 +1,6 @@
 import ReactDOM from 'react-dom';
 import './index.css';
+import './tailwind.css';
 import { Provider } from 'react-redux';
 import { history, store } from 're-ducks/store/store';
 import { ConnectedRouter } from 'connected-react-router';
